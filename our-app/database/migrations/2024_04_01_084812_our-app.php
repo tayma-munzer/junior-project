@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('password');
             $table->integer('p_id');
+            $table->string('gender');
 
         });
 
@@ -177,7 +178,25 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('cache');
-        Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('role');
+        Schema::dropIfExists('preservations');
+        Schema::dropIfExists('user');
+        Schema::dropIfExists('user-role');
+        Schema::dropIfExists('course');
+        Schema::dropIfExists('media');
+        Schema::dropIfExists('job');
+        Schema::dropIfExists('services');
+        Schema::dropIfExists('rates&reviews');
+        Schema::dropIfExists('services_type');
+        Schema::dropIfExists('alt_services');
+        Schema::dropIfExists('languages');
+        Schema::dropIfExists('cv_lang');
+        Schema::dropIfExists('cv');
+        Schema::dropIfExists('education');
+        Schema::dropIfExists('projects');
+        Schema::dropIfExists('experience');
+        Schema::dropIfExists('skills');
+        Schema::dropIfExists('training_courses');
+
     }
 };
