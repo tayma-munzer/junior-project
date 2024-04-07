@@ -3,14 +3,14 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class FirstPage extends StatefulWidget {
+  const FirstPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<FirstPage> createState() => _FirstPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _FirstPageState extends State<FirstPage> {
   bool _isExpanded = false;
   bool _isAddExpanded = false;
 
