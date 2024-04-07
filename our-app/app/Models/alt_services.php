@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class alt_services extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        's_id',
+        'a_name',
+        'a_price',
+        'added_duration',
+    ];
 }

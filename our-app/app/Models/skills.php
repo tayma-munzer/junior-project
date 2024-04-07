@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class skills extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'cv_id',
+        's_name',
+        's_level',
+        'years_of_exp',
+    ];
 }

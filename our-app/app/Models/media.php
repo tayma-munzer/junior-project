@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class media extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'c_id',
+        'm_name',
+        'm_path',
+    ];
 }
