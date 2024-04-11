@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:mobile/firstpage.dart';
+import 'package:mobile/controller/authcontroller.dart';
+import 'package:mobile/signup.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -64,10 +68,42 @@ class _LoginState extends State<Login> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FirstPage()),
-                      );
+                      AuthCont.loginAuth(userEmail, userPassword).then((value) {
+                        if (value.statusCode == 200) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FirstPage()),
+                          );
+                        } else if (value.statusCode == 402) {
+                          // email or password is written wrong
+                          Map<String, dynamic> responseMap =
+                              json.decode(value.body);
+                          if (responseMap.containsKey('email')) {
+                            List<dynamic> emailErrors = responseMap['email'];
+                            if (emailErrors.isNotEmpty) {
+                              //error of the email
+                              print(
+                                  'Error in email: ${emailErrors.join(', ')}');
+                            }
+                          }
+
+                          if (responseMap.containsKey('password')) {
+                            List<dynamic> passwordErrors =
+                                responseMap['password'];
+                            if (passwordErrors.isNotEmpty) {
+                              print(
+                                  //error of the password
+                                  'Error in password: ${passwordErrors.join(', ')}');
+                            }
+                          }
+                        } else if (value.statusCode == 422) {
+                          // wrong email or password
+                          print("check your email or password");
+                        } else {
+                          // هون اي ايرور غير طبيعي متل انو مافي اتصال بالباك اند
+                        }
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

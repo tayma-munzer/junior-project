@@ -21,6 +21,9 @@ class _FirstPageState extends State<FirstPage> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
+      body: Container(
+        child: Text("home page"),
+      ),
       bottomNavigationBar: BottomBar(),
     );
   }

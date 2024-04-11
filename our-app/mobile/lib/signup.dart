@@ -23,8 +23,9 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       drawer: CustomDrawer(),
       body: Container(
-          //تسجيل
-          ),
+        child: Text("sign up page"),
+        //تسجيل
+      ),
       bottomNavigationBar: BottomBar(),
     );
   }

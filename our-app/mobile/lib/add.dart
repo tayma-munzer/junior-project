@@ -24,8 +24,9 @@ class _AddPageState extends State<AddPage> {
       ),
       drawer: CustomDrawer(),
       body: Container(
-          //هنا سيظهر عدة اختيارات للمستخدم وهم كورس او خدمة او عمل و هذا الخيار سياخذه الى الصفحة الخاصة بهذه الاضافة
-          ),
+        child: Text("addin page"),
+        //هنا سيظهر عدة اختيارات للمستخدم وهم كورس او خدمة او عمل و هذا الخيار سياخذه الى الصفحة الخاصة بهذه الاضافة
+      ),
       bottomNavigationBar: BottomBar(),
     );
   }
