@@ -1,18 +1,20 @@
 // ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class FirstPage extends StatefulWidget {
-  const FirstPage({Key? key}) : super(key: key);
+class AddPage extends StatefulWidget {
+  const AddPage({Key? key}) : super(key: key);
 
   @override
-  State<FirstPage> createState() => _FirstPageState();
+  State<AddPage> createState() => _AddPageState();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +23,9 @@ class _FirstPageState extends State<FirstPage> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
+      body: Container(
+          //هنا سيظهر عدة اختيارات للمستخدم وهم كورس او خدمة او عمل و هذا الخيار سياخذه الى الصفحة الخاصة بهذه الاضافة
+          ),
       bottomNavigationBar: BottomBar(),
     );
   }

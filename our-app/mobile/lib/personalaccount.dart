@@ -1,18 +1,19 @@
 // ignore_for_file: unused_import
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class FirstPage extends StatefulWidget {
-  const FirstPage({Key? key}) : super(key: key);
+class PersonalAccount extends StatefulWidget {
+  const PersonalAccount({Key? key}) : super(key: key);
 
   @override
-  State<FirstPage> createState() => _FirstPageState();
+  State<PersonalAccount> createState() => _PersonalAccountState();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _PersonalAccountState extends State<PersonalAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +22,9 @@ class _FirstPageState extends State<FirstPage> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
+      body: Container(
+          //عرض بيانات الحساب الشخصي للمستخدم
+          ),
       bottomNavigationBar: BottomBar(),
     );
   }
