@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class loginRequest extends FormRequest
+class addalt_serviceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,11 @@ class loginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email',
-        'password',];
+            //
+            's_id',
+            'a_name',
+            'a_price',
+            'added_duration',
+        ];
     }
 }
