@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class alt_services extends Model
 {
     use HasFactory;
+    
+    protected $table = 'alt_services';
+    public $timestamps = false;
     protected $fillable = [
         's_id',
         'a_name',

@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:http/http.dart' as http;
 import 'package:mobile/constant/links.dart';
+import 'package:http/http.dart' as http;
 
 class AuthCont {
   Future loginAuth(email, pass) async {

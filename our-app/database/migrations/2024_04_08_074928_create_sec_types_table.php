@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jobs', function (Blueprint $table) {
-            
-            $table->increments('j_id');
-            $table->string('j_name');
-            $table->longText('j_desc');
-            $table->integer('j_sal');
-            $table->longText('j_req');
-            $table->integer('u_id');
-        
+        Schema::create('secondry_type', function (Blueprint $table) {
+            $table->increments('st_id');
+            $table->integer('t_id');
+            $table->string('sec_type');
         });
     }
 
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('sec_types');
     }
 };
