@@ -6,14 +6,14 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class WhoPage extends StatefulWidget {
+  const WhoPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<WhoPage> createState() => _WhoPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _WhoPageState extends State<WhoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +23,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       drawer: CustomDrawer(),
       body: Container(
-        child: Text("sign up page"),
-        //تسجيل
-      ),
+          //من نحن حكي عن التطبيق
+          ),
       bottomNavigationBar: BottomBar(),
     );
   }
