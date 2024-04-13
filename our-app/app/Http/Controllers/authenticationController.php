@@ -10,8 +10,11 @@ use App\Models\services;
 use App\Models\job;
 use App\Http\Controllers\gets;
 use App\Http\Requests\addalt_serviceRequest;
+use App\Http\Requests\deleteRequest;
+use App\Http\Requests\discountRequest;
 use App\Models\alt_services;
 use Illuminate\Support\Facades\Validator;
+
 
 class authenticationController extends Controller
 {
@@ -37,8 +40,10 @@ class authenticationController extends Controller
         }
         else 
         return response([
-            'message'=> 'logged in'
+            'message'=> 'logged in',
+            //'token'=>$user->createToken("API TOKEN")->plainTextToken
         ],200);
+        
     }
         
     }
@@ -53,7 +58,7 @@ class authenticationController extends Controller
             'email'=>'required|email:rfc,dns|exists:user,email'
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'min:50000'=> 'the :attribute field should be minimum 50000',
+            'gte:50000'=> 'the :attribute field should be minimum 50000',
             'string'=> 'the :attribute field should be string',
             'exists'=> 'the :attribute field should be exist',
         ]);
@@ -76,7 +81,21 @@ class authenticationController extends Controller
     }   
     }
     public function addalt_service(addalt_serviceRequest $request){
-        $request->validated();
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|exists:services,s_id',
+            'a-name' => 'required|string',
+            'a_price' => 'required|gte:5000',
+            'added_duration'=>'required|string'
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'gte:5000'=> 'the :attribute field should be minimum 5000',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
         $alt_service = alt_services::create([ 
         's_id' => $request->s_id,
         'a_name' => $request->a_name,
@@ -85,11 +104,27 @@ class authenticationController extends Controller
         ]);
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200); 
+    } 
 
     }
     public function addjob (addjobRequest $request){
-        $request->validated();
+        $validator = Validator::make($request->all(), [
+            'u_id' => 'required|exists:user,u_id',
+            'j-name' => 'required|string',
+            'j_desc' => 'required|string',
+            'j_sal' => 'required|integer',
+            'j_req'=>'required|string'
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
         $job = job::create([ 
         'u_id' => $request->u_id,
         'j_name' => $request->j_name,
@@ -101,4 +136,20 @@ class authenticationController extends Controller
             'message'=> 'added successfully'
         ],200);  
     }
+    }
+    public function delete_account(deleteRequest $request){
+        $request->validated();
+        // deleting process 
+    }
+    public function add_discount(discountRequest $request){
+        $request->validated();
+        // update process to add the discount 
+        //DB::table('services')->where('s_id','=',$request->s_id)->update();
+    }
+    public function delete_discount(discountRequest $request){
+        $request->validated();
+        // update process to delete the discount 
+        //DB::table('services')->where('s_id','=',$request->s_id)->update();
+    }
+
 }

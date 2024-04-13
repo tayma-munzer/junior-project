@@ -18,5 +18,9 @@ class services extends Model
         's_desc',
         's_duration',
         't_id',
+        'discount',
+        'status',
+        's_img',
+        's_video',
     ];
 }
