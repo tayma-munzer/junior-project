@@ -12,6 +12,7 @@ use App\Http\Controllers\gets;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
+use App\Http\Requests\getsectype;
 use App\Models\alt_services;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,6 +47,10 @@ class authenticationController extends Controller
         
     }
         
+    }
+    public function sec_types (getsectype $request){
+        $types = DB::table('secondry_type')->where('t_id','=',$request->t_id);
+        return $types->get() ;
     }
 
     public function addservice(addserviceRequest $request){
@@ -137,6 +142,7 @@ class authenticationController extends Controller
         ],200);  
     }
     }
+
     public function delete_account(deleteRequest $request){
         $request->validated();
         // deleting process 

@@ -11,7 +11,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/login',[authenticationController::class,'login']);
 Route::get('/getservices',[gets::class,'services']);
 Route::get('/getfirst_type',[gets::class,'first_types']);
-Route::get('/getsec_type',[gets::class,'sec_types']);
+Route::post('/getsec_type',[authenticationController::class,'sec_types']);
 Route::post('/addalt_service',[authenticationController::class,'addalt_service']);
 Route::get('/getlanguages',[gets::class,'languages']);
 Route::get('/getroles/{u_id}',[gets::class,'user_role']);
