@@ -11,9 +11,10 @@ class AuthCont {
     return res;
   }
 
+  // مالو داعي ما استخدمتو
   static Future<http.Response> service_first_type_Auth() async {
     var url = services_first_type;
-    var res = await http.post(Uri.parse(url));
+    var res = await http.get(Uri.parse(url));
     return res;
   }
 

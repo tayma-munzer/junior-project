@@ -24,7 +24,7 @@ class _services_typesState extends State<services_types> {
   List data = [];
   void fetch() async {
     var url = services_first_type;
-    var res = await http.post(Uri.parse(url));
+    var res = await http.get(Uri.parse(url));
     setState(() {
       data = json.decode(res.body);
     });

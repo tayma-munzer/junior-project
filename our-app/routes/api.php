@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 Route::post('/login',[authenticationController::class,'login']);
 Route::get('/getservices',[gets::class,'services']);
-Route::post('/getfirst_type',[gets::class,'first_types']);
+Route::get('/getfirst_type',[gets::class,'first_types']);
 Route::post('/getsec_type',[authenticationController::class,'sec_types']);
 Route::post('/addalt_service',[authenticationController::class,'addalt_service']);
 Route::get('/getlanguages',[gets::class,'languages']);
