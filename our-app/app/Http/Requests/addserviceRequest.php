@@ -28,6 +28,7 @@ class addserviceRequest extends FormRequest
             'service_desc',
             'service_duration',
             'service_sec_type',
+            'token',
             //
         ];
     }
