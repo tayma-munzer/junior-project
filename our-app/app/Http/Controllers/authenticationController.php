@@ -14,6 +14,7 @@ use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
 use App\Http\Requests\getsectype;
 use App\Models\alt_services;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -33,15 +34,22 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user = DB::table('user')->where('email','=', $request->email)->first();
+        $user = User::where('email','=', $request->email)->first();
+        
         if(empty($user) || !($request->password === $user->password)){
             return response([
                 'message'=> 'username or password are wrong'
             ],422);
         }
-        else 
+        
+        else
+        $user->save();
+    
+        echo $user;
+        $token = $user->createToken('apitoken')->plainTextToken;
         return response([
             'message'=> 'logged in',
+            'token'=>$token,
             //'token'=>$user->createToken("API TOKEN")->plainTextToken
         ],200);
         
@@ -157,5 +165,6 @@ class authenticationController extends Controller
         // update process to delete the discount 
         //DB::table('services')->where('s_id','=',$request->s_id)->update();
     }
+
 
 }

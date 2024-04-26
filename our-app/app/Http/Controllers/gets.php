@@ -19,7 +19,10 @@ class gets extends Controller
         return services::all();
     }
     function users (){
-        return user::all();
+        return User::all();
+    }
+    function sec_types() {
+        return sec_type::all() ;
     }
     function first_types(){
         return services_type::all();

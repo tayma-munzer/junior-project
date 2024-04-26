@@ -17,3 +17,4 @@ Route::get('/getlanguages',[gets::class,'languages']);
 Route::get('/getroles/{u_id}',[gets::class,'user_role']);
 Route::post('/addjob',[authenticationController::class,'addjob']);
 Route::post('/addservice',[authenticationController::class,'addservice']);
+Route::get('/getsec_types',[gets::class,'sec_types']);
