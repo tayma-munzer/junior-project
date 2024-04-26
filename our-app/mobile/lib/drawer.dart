@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/contactus.dart';
+import 'package:mobile/rules.dart';
+import 'package:mobile/services_types.dart';
+import 'package:mobile/settings_.dart';
+import 'package:mobile/whoarewe.dart';
+
 class CustomDrawer extends StatefulWidget {
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -42,7 +48,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
             onTap: () {
-              // Handle Settings tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
             },
           ),
           ListTile(
@@ -55,7 +64,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
             onTap: () {
-              // Handle About Us tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ContactUsPage()),
+              );
             },
           ),
           ListTile(
@@ -68,7 +80,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
             onTap: () {
-              // Handle About Us tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WhoPage()),
+              );
             },
           ),
           ListTile(
@@ -81,7 +96,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
             onTap: () {
-              // Handle About Us tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RulesPage()),
+              );
             },
           ),
           ListTile(
@@ -108,7 +126,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                   onTap: () {
-                    // Handle Option 1 tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => services_types()),
+                    );
                   },
                 ),
                 ListTile(

@@ -1,17 +1,13 @@
-// ignore_for_file: unused_import
-
 import 'dart:convert';
-import 'package:mobile/constant/links.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/colors.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/itCategory.dart';
 import 'package:string_2_icon/string_2_icon.dart';
-import 'package:mobile/controller/authcontroller.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class services_types extends StatefulWidget {
   const services_types({Key? key}) : super(key: key);
@@ -22,6 +18,7 @@ class services_types extends StatefulWidget {
 
 class _services_typesState extends State<services_types> {
   List data = [];
+
   void fetch() async {
     var url = services_first_type;
     var res = await http.get(Uri.parse(url));
@@ -44,7 +41,12 @@ class _services_typesState extends State<services_types> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: ListView.separated(
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: MediaQuery.of(context).size.width /
+              (MediaQuery.of(context).size.height / 2),
+        ),
         itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
           if (data.isEmpty) {
@@ -52,15 +54,35 @@ class _services_typesState extends State<services_types> {
               child: Text('List is empty'),
             );
           }
-          return ListTile(
-            title: Text(data[index]['type'].toString()),
-            tileColor: const Color.fromARGB(255, 182, 157, 125),
-            onTap: () {},
-            trailing:
-                Icon(String2Icon.getIconDataFromString(data[index]["t_icon"])),
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ITCategoryPage()),
+                  );
+                },
+                splashColor: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.appColor,
+                  ),
+                  child: Icon(
+                    String2Icon.getIconDataFromString(data[index]["t_icon"]),
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width / 6,
+                  ),
+                ),
+              ),
+            ),
           );
         },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
       bottomNavigationBar: BottomBar(),
     );

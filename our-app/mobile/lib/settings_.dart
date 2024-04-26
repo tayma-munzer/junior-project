@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:sarah_junior/settings/help.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:mobile/appbar.dart';
+import 'package:mobile/bottombar.dart';
+import 'package:mobile/colors.dart';
+import 'package:mobile/contactus.dart';
+import 'package:mobile/drawer.dart';
+import 'package:mobile/edit_profile.dart';
+import 'package:mobile/help.dart';
+import 'package:mobile/wallet.dart';
 
 enum PopupType {
   Message,
@@ -38,64 +44,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 252, 226, 188),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_active),
-          ),
-          IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: Icon(Icons.arrow_forward),
-          ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(33.0),
+        child: CustomAppBar(),
       ),
-      drawer: SizedBox(
-        width: MediaQuery.of(context).size.width - 50,
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 225, 181),
-                ),
-                padding: EdgeInsets.all(0.0),
-                child: Container(
-                  height: 10,
-                  child: Center(),
-                ),
-              ),
-              _buildListTileWithIcon('الاعدادات', Icons.settings),
-              _buildListTileWithIcon('تواصل معنا', Icons.contact_mail),
-              _buildListTileWithIcon('من نحن', Icons.info),
-              _buildListTileWithIcon('شروط و قواعد', Icons.rule),
-              ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text('اضف'),
-                    SizedBox(width: 10),
-                    Icon(Icons.add),
-                  ],
-                ),
-                onTap: toggleAddExpansion,
-              ),
-              if (isAddExpanded)
-                Column(
-                  children: [
-                    _buildListTileWithIcon('خدمة', Icons.business),
-                    _buildListTileWithIcon('كورس', Icons.book),
-                    _buildListTileWithIcon('فرصة عمل', Icons.work),
-                  ],
-                ),
-            ],
-          ),
-        ),
-      ),
+      drawer: CustomDrawer(),
       body: SingleChildScrollView(
         child: Directionality(
           textDirection: TextDirection.rtl,
@@ -103,18 +56,18 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: EdgeInsets.only(left: 16, top: 25, right: 16),
             child: Column(
               children: [
-                Text(
+                const Text(
                   "الاعدادات",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Row(
                   children: [
                     Icon(
                       Icons.person,
-                      color: Color.fromARGB(255, 255, 224, 176),
+                      color: AppColors.appColor,
                     ),
                     SizedBox(
                       width: 8,
@@ -126,15 +79,34 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   height: 15,
                   thickness: 2,
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                buildAccountOptionRow2(context, "المساعدة"),
-                buildAccountOptionRow2(context, "المحفظة"),
+                buildAccountOptionRow2(context, "تعديل الملف الشخصي", () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                  );
+                }),
+                buildAccountOptionRow2(context, "المساعدة", () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HelpPage()),
+                  );
+                }),
+                buildAccountOptionRow2(context, "المحفظة", () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WalletPage()),
+                  );
+                }),
                 SizedBox(
                   height: 40,
                 ),
@@ -142,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Icon(
                       Icons.volume_up_outlined,
-                      color: Color.fromARGB(255, 255, 224, 176),
+                      color: AppColors.appColor,
                     ),
                     SizedBox(
                       width: 8,
@@ -230,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Icon(
                       Icons.feedback,
-                      color: Color.fromARGB(255, 255, 224, 176),
+                      color: AppColors.appColor,
                     ),
                     SizedBox(
                       width: 8,
@@ -251,7 +223,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 buildAccountOptionRow(
                     context, "تقييم التطبيق", PopupType.TextField, ""),
-                buildAccountOptionRow2(context, "تواصل معنا"),
+                buildAccountOptionRow2(context, "تواصل معنا", () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ContactUsPage()),
+                  );
+                }),
                 SizedBox(
                   height: 40,
                 ),
@@ -259,7 +237,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Icon(
                       Icons.info,
-                      color: Color.fromARGB(255, 255, 224, 176),
+                      color: AppColors.appColor,
                     ),
                     SizedBox(
                       width: 8,
@@ -295,22 +273,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 47.0,
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        color: Color.fromARGB(255, 255, 224, 176),
-        animationDuration: Duration(milliseconds: 300),
-        items: const [
-          Icon(Icons.home),
-          Icon(Icons.add),
-          Icon(Icons.search),
-          Icon(Icons.person),
-        ],
-      ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 
-  ListTile _buildListTileWithIcon(String title, IconData icon) {
+  ListTile _buildListTileWithIcon(
+      String title, IconData icon, VoidCallback onTap) {
     return ListTile(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -320,7 +288,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Icon(icon),
         ],
       ),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 
@@ -364,24 +332,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                         title: Text('أضف تقييمك'),
-                        content: SingleChildScrollView(
-                          child: RatingBar.builder(
-                            initialRating: _rating,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            itemSize: 18,
-                            itemBuilder: (context, _) => Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (rating) {
-                              setState(() {
-                                _rating = rating;
-                              });
-                            },
+                        content: RatingBar.builder(
+                          initialRating: _rating,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemSize: 18,
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
                           ),
+                          onRatingUpdate: (rating) {
+                            setState(() {
+                              _rating = rating;
+                            });
+                          },
                         ));
                   },
                 );
@@ -394,7 +360,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget buildAccountOptionRow2(BuildContext context, String title) {
+  Widget buildAccountOptionRow2(
+      BuildContext context, String title, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -404,7 +371,7 @@ class _SettingsPageState extends State<SettingsPage> {
             title,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          GestureDetector(onTap: () {}, child: Icon(Icons.arrow_forward_ios)),
+          GestureDetector(onTap: onTap, child: Icon(Icons.arrow_forward_ios)),
         ],
       ),
     );

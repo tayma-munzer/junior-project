@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/colors.dart';
 
 class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color.fromARGB(255, 252, 226, 188),
+      backgroundColor: AppColors.appColor,
       actions: [
         IconButton(
           onPressed: () {},
@@ -12,7 +13,7 @@ class CustomAppBar extends StatelessWidget {
         ),
         IconButton(
           onPressed: () {
-            Scaffold.of(context).openDrawer();
+            Navigator.pop(context); // Go back to the previous page
           },
           icon: Icon(Icons.arrow_forward),
         ),
