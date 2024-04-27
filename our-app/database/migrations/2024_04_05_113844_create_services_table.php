@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('num_of_buyers');
             $table->string('s_duration');
             $table->integer('u_id');
-            $table->integer('t_id');
+            $table->integer('st_id');
             $table->integer('discount');// a value between 0 to 100 
             $table->string('status');//pinding (waiting for admin aprove) or aproved 
             $table->string('s_img');
