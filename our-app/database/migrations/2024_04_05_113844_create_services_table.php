@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('s_name');
             $table->longText('s_desc');
             $table->integer('s_price');
-            $table->integer('num_of_buyers');
+            $table->integer('num_of_buyers')->default(0);
             $table->string('s_duration');
             $table->integer('u_id');
-            $table->integer('t_id');
-            $table->integer('discount');// a value between 0 to 100 
-            $table->string('status');//pinding (waiting for admin aprove) or aproved 
+            $table->integer('st_id');
+            $table->integer('discount')->default(0);// a value between 0 to 100 
+            $table->string('status')->default('pinding');//pinding (waiting for admin aprove) or aproved 
             $table->string('s_img');
             $table->string('s_video')->nullable(true);// it could be null 
 

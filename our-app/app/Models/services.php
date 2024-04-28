@@ -17,7 +17,7 @@ class services extends Model
         'num_of_buyers',
         's_desc',
         's_duration',
-        't_id',
+        'st_id',
         'discount',
         'status',
         's_img',

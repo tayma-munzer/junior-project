@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class addserviceRequest extends FormRequest
+class edit_profile_request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,16 @@ class addserviceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
-            'service_name',
-            'service_price',
-            'service_desc',
-            'service_duration',
-            'service_sec_type',
+            'age',
+            'u_img',
+            'u_desc',
+            'f_name',
+            'l_name',
+            'email',
+            'password',
+            'username',
             'token',
-            'img_path',
-
+            
             //
         ];
     }

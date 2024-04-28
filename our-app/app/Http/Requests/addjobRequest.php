@@ -22,7 +22,7 @@ class addjobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'u_id',
+            'token',
             'j_name',
             'j_desc',
             'j_sal',
