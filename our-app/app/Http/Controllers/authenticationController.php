@@ -8,6 +8,15 @@ use App\Http\Requests\addjobRequest;
 use App\Models\services;
 use App\Models\job;
 use App\Http\Controllers\gets;
+use App\Http\Requests\add_course_request;
+use App\Http\Requests\add_cv_request;
+use App\Http\Requests\add_education_request;
+use App\Http\Requests\add_exp_request;
+use App\Http\Requests\add_language_request;
+use App\Http\Requests\add_media_request;
+use App\Http\Requests\add_projects_request;
+use App\Http\Requests\add_skill_request;
+use App\Http\Requests\add_training_request;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
@@ -15,8 +24,17 @@ use App\Http\Requests\edit_profile_request;
 use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Models\alt_services;
+use App\Models\course;
+use App\Models\cv;
+use App\Models\cv_lang;
+use App\Models\education;
+use App\Models\experience;
+use App\Models\media;
+use App\Models\projects;
 use App\Models\sec_type;
+use App\Models\skills;
 use App\Models\token;
+use App\Models\training_courses;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
@@ -279,6 +297,278 @@ class authenticationController extends Controller
         }
     } 
     }
+    //done
+    public function add_course(add_course_request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'c_name' => 'required|string',
+            'c_price' => 'required|integer|gte:50000',
+            'c_img' => 'required|string',
+            'c_desc' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+            'gte'=> 'the :attribute field should be minimum 50000',
+            'string'=> 'the :attribute field should be string',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $user_token = token::where('token','=',$request->token)->first();
+        $job = course::create([ 
+        'u_id' => $user_token->tokenable_id,
+        'c_name' => $request->c_name,
+        'c_desc' => $request->c_desc,
+        'c_price' => $request->c_price,
+        'c_img' => $request->c_img,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done
+    public function add_media(add_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'c_id' => 'required|integer|exists:courses,c_id',
+            'm_name' => 'required|string',
+            'm_path' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = media::create([ 
+        'c_id' =>$request->c_id,
+        'm_name' => $request->m_name,
+        'm_path' => $request->m_path,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done 
+    public function add_cv(add_cv_request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email:rfc,dns',
+            'phone' => 'required|numeric|min:10',
+            'career_obj' => 'required|string',
+            'address' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'integer' => 'the :attribute field should be a number',
+            'min' => 'the :attribute field should be minimun 10 digits',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $user_token = token::where('token','=',$request->token)->first();
+        $job = cv::create([ 
+        'u_id' =>$user_token->tokenable_id,
+        'email' => $request->email,
+        'address' => $request->address,
+        'phone'=>$request->phone,
+        'career_obj'=>$request->career_obj,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done 
+    public function add_skills(add_skill_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            's_name' => 'required|string',
+            's_level' => 'required|string',
+            'years_of_exp' => 'required|integer',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = skills::create([ 
+        'cv_id' =>$request->cv_id,
+        's_name' => $request->s_name,
+        's_level' => $request->s_level,
+        'years_of_exp' => $request->years_of_exp,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done 
+    public function add_language(add_language_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            'l_id' => 'required|integer|exists:languages,l_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = cv_lang::create([ 
+        'cv_id' =>$request->cv_id,
+        'l_id' => $request->l_id,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done without testing
+    public function add_projects(add_projects_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            'p_name' => 'required|string',
+            'p_desc' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'responsibilities' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
+            'date' => 'the :attribute field should be date',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = projects::create([ 
+        'cv_id' =>$request->cv_id,
+        'p_name' => $request->p_name,
+        'p_desc' => $request->p_desc,
+        'start_date' =>$request ->start_date,
+        'end_date' =>$request ->end_date,
+        'responsibilities' =>$request ->responsibilities,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+//done without testing
+    public function add_exp(add_exp_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            'position' => 'required|string',
+            'company' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'responsibilities' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
+            'date' => 'the :attribute field should be date',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = experience::create([ 
+        'cv_id' =>$request->cv_id,
+        'position' => $request->position,
+        'company' => $request->company,
+        'start_date' =>$request ->start_date,
+        'end_date' =>$request ->end_date,
+        'responsibilities' =>$request ->responsibilities,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done without testing
+    public function add_training_courses(add_training_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            'course_name' => 'required|string',
+            'training_center' => 'required|string',
+            'completion_date' => 'required|date',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
+            'date' => 'the :attribute field should be date',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = training_courses::create([ 
+        'cv_id' =>$request->cv_id,
+        'course_name' => $request->course_name,
+        'training_center' => $request->training_center,
+        'completion_date' =>$request ->completion_date,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    //done without testing
+    public function add_education(add_education_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|integer|exists:cv,cv_id',
+            'degree' => 'required|string',
+            'uni' => 'required|string',
+            'field_of_study' => 'required|string',
+            'grad_year' => 'required|integer',
+            'gba' => 'required|float',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'integer'=> 'the :attribute field should be integer',
+            'float'=> 'the :attribute field should be float',
+            'exists'=> 'the :attribute field should be existed',
+            'date' => 'the :attribute field should be date',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job = education::create([ 
+        'cv_id' =>$request->cv_id,
+        'degree' => $request->degree,
+        'uni' => $request->uni,
+        'grad_year' =>$request ->grad_year,
+        'field_of_study' =>$request ->field_of_study,
+        'gba' =>$request ->gba,
+        ]);
+        return response([
+            'message'=> 'added successfully'
+        ],200);  
+    }
+    }
+    
+    
+
+
+
+
+    
+
+
 
     
 

@@ -18,4 +18,8 @@ class projects extends Model
         'end_date',
         'responsibilities',
     ];
+    protected $casts = [
+        'start_date' => 'date:d/m/Y', // Change your format
+        'end_date' => 'date:d/m/Y',
+    ];
 }
