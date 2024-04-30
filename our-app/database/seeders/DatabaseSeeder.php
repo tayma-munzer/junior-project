@@ -288,6 +288,16 @@ class DatabaseSeeder extends Seeder
             'a_price'=>'25000',
             'added_duration'=>'ربع ساعة',
         ]);
+        DB::table('languages')->insert([
+            'language'=>'english',
+        ]);
+        DB::table('languages')->insert([
+            'language'=>'لغة عربية',
+        ]);
+        DB::table('languages')->insert([
+            'language'=>'french',
+        ]);
+        
 
 
     }
