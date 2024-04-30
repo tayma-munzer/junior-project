@@ -20,7 +20,11 @@ use App\Http\Requests\add_training_request;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
+use App\Http\Requests\edit_cv_request;
+use App\Http\Requests\edit_job_request;
+use App\Http\Requests\edit_media_request;
 use App\Http\Requests\edit_profile_request;
+use App\Http\Requests\edit_service_request;
 use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Models\alt_services;
@@ -354,7 +358,7 @@ class authenticationController extends Controller
     }
     //done 
     public function add_cv(add_cv_request $request){
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(),[
             'token' => 'required',
             'email' => 'required|email:rfc,dns',
             'phone' => 'required|numeric|min:10',
@@ -434,7 +438,7 @@ class authenticationController extends Controller
         ],200);  
     }
     }
-    //done without testing
+    //done
     public function add_projects(add_projects_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|integer|exists:cv,cv_id',
@@ -457,8 +461,8 @@ class authenticationController extends Controller
         'cv_id' =>$request->cv_id,
         'p_name' => $request->p_name,
         'p_desc' => $request->p_desc,
-        'start_date' =>$request ->start_date,
-        'end_date' =>$request ->end_date,
+        'start_date' =>date('Y-m-d' , strtotime($request ->start_date)),
+        'end_date' =>date('Y-m-d' , strtotime($request ->end_date)),
         'responsibilities' =>$request ->responsibilities,
         ]);
         return response([
@@ -466,7 +470,7 @@ class authenticationController extends Controller
         ],200);  
     }
     }
-//done without testing
+//done
     public function add_exp(add_exp_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|integer|exists:cv,cv_id',
@@ -489,8 +493,8 @@ class authenticationController extends Controller
         'cv_id' =>$request->cv_id,
         'position' => $request->position,
         'company' => $request->company,
-        'start_date' =>$request ->start_date,
-        'end_date' =>$request ->end_date,
+        'start_date' =>date('Y-m-d' , strtotime($request ->start_date)),
+        'end_date' =>date('Y-m-d' , strtotime($request ->end_date)),
         'responsibilities' =>$request ->responsibilities,
         ]);
         return response([
@@ -519,14 +523,14 @@ class authenticationController extends Controller
         'cv_id' =>$request->cv_id,
         'course_name' => $request->course_name,
         'training_center' => $request->training_center,
-        'completion_date' =>$request ->completion_date,
+        'completion_date' =>date('Y-m-d' , strtotime($request ->completion_date)),
         ]);
         return response([
             'message'=> 'added successfully'
         ],200);  
     }
     }
-    //done without testing
+    //done 
     public function add_education(add_education_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|integer|exists:cv,cv_id',
@@ -534,12 +538,11 @@ class authenticationController extends Controller
             'uni' => 'required|string',
             'field_of_study' => 'required|string',
             'grad_year' => 'required|integer',
-            'gba' => 'required|float',
+            'gba' => 'required|numeric|lte:4|gte:0',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
             'integer'=> 'the :attribute field should be integer',
-            'float'=> 'the :attribute field should be float',
             'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
@@ -560,6 +563,194 @@ class authenticationController extends Controller
         ],200);  
     }
     }
+    //done
+    public function edit_job(edit_job_request $request){
+        $validator = Validator::make($request->all(), [
+            'j_id' => 'required|exists:jobs,j_id',
+            'j_sal' => 'required|integer',
+            'j_name'=> 'required|string',
+            'j_desc'=> 'required|string',
+            'j_req' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'integer' => 'The :attribute field must be integer.',
+            'string' => 'The :attribute field must be string.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=job::where('j_id','=',$request->j_id)->update([
+            'j_sal'=>$request->j_sal,
+            'j_name'=>$request->j_name,
+            'j_desc'=>$request->j_desc,
+            'j_req'=>$request->j_req,        
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function edit_media(edit_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'm_id' => 'required|exists:media,m_id',
+            'm_name' => 'required|string',
+            'm_path'=> 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'string' => 'The :attribute field must be string.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=media::where('m_id','=',$request->m_id)->update([
+            'm_name'=>$request->m_name,
+            'm_path'=>$request->m_path,      
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function edit_service(edit_service_request $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|exists:services,s_id',
+            's_name' => 'required|string',
+            's_desc'=> 'required|string',
+            's_price'=> 'required|integer',
+            's_duration'=> 'required|string',
+            's_img'=> 'required|string',
+            's_video'=> 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'string' => 'The :attribute field must be string.',
+            'integer' => 'The :attribute field must be integer.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=services::where('s_id','=',$request->s_id)->update([
+            's_name'=>$request->s_name,
+            's_desc'=>$request->s_desc, 
+            's_price'=>$request->s_price,
+            's_duration'=>$request->s_duration,
+            's_img'=>$request->s_img,
+            's_video'=>$request->s_video,   
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function edit_cv(edit_cv_request $request){
+        $validator = Validator::make($request->all(), [
+            'cv_id' => 'required|exists:cv,cv_id',
+            'career_obj' => 'required|string',
+            'phone'=> 'required|numeric',
+            'address'=> 'required|string',
+            'email'=> 'required|email:rfc,dns',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'string' => 'The :attribute field must be string.',
+            'integer' => 'The :attribute field must be integer.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=cv::where('cv_id','=',$request->cv_id)->update([
+            'career_obj'=>$request->career_obj,
+            'phone'=>$request->phone, 
+            'address'=>$request->address,
+            'email'=>$request->email,  
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function delete_job(edit_job_request $request){
+        $validator = Validator::make($request->all(), [
+            'j_id' => 'required|exists:jobs,j_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=job::where('j_id','=',$request->j_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function delete_service(edit_service_request $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|exists:services,s_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=services::where('s_id','=',$request->s_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
+        }
+    } 
+    }
+
     
     
 

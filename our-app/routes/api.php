@@ -32,5 +32,11 @@ Route::post('/add_projects',[authenticationController::class,'add_projects']);
 Route::post('/add_exp',[authenticationController::class,'add_exp']);
 Route::post('/add_training_courses',[authenticationController::class,'add_training_courses']);
 Route::post('/add_education',[authenticationController::class,'add_education']);
+Route::post('/edit_job',[authenticationController::class,'edit_job']);
+Route::post('/edit_media',[authenticationController::class,'edit_media']);
+Route::post('/edit_service',[authenticationController::class,'edit_service']);
+Route::post('/edit_cv',[authenticationController::class,'edit_cv']);
+Route::post('/delete_job',[authenticationController::class,'delete_job']);
+Route::post('/delete_service',[authenticationController::class,'delete_service']);
 
 

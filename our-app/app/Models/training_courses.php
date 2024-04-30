@@ -13,7 +13,7 @@ class training_courses extends Model
     protected $fillable = [
         'cv_id',
         'course_name',
-        'training_ center',
+        'training_center',
         'completion_date',
     ];
 }

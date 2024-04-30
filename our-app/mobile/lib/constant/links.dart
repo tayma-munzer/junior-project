@@ -16,4 +16,20 @@ const add_service_discount = URL + "add_discount"; // اضافة تخفيض عل
 const edit_service_discount =
     URL + "edit_discount"; // تعديل التخفيض على سعر الخدمة
 const delete_discount = URL + "delete_discount"; // حذف تخفيض على سعر الخدمة
-const edit_profile = URL + "edit_profile"; //تعديل المعلومات الشخصية للمستخدم 
+const edit_profile = URL + "edit_profile"; //تعديل المعلومات الشخصية للمستخدم
+const add_course = URL + "add_course"; //اضافة كورس
+const add_media = URL + "add_media"; // اضافة فيديو لكورس محدد
+const add_cv = URL + "add_cv"; // اضافة معلومات اساسية للسيرة الذاتية
+const add_skills = URL + "add_skills"; // اضافة مهارة للسيرة الذاتية
+const add_language = URL + "add_language"; //اضافة لغة للسيرة الذاتية
+const add_projects = URL + "add_projects"; // اذافة مشروع للسيرة الذاتية
+const add_exp = URL + "add_exp"; //اضافة خبرة للسيرة الذاتية
+const add_training_courses =
+    URL + "add_training_courses"; // اضافة دورات تدريبية للسيرة الذاتية
+const add_education = URL + "add_education"; //اضافة تعلم للسيرة الذاتية
+const edit_job = URL + "edit_job"; //تعديل تفاصيل فرصة عمل
+const edit_media = URL + "edit_media"; // تعديل تفاصيل فيديو تابع لكورس
+const edit_service = URL + "edit_service"; // تعديل تفاصيل خدمة
+const edit_cv = URL + "edit_cv"; // تعديل تفاصيل السيرة الذاتية
+const delete_job = URL + "delete_job"; // حذف فرصة عمل
+const delete_service = URL + "delete_service"; // حذف خدمة
