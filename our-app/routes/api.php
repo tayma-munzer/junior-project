@@ -38,5 +38,10 @@ Route::post('/edit_service',[authenticationController::class,'edit_service']);
 Route::post('/edit_cv',[authenticationController::class,'edit_cv']);
 Route::post('/delete_job',[authenticationController::class,'delete_job']);
 Route::post('/delete_service',[authenticationController::class,'delete_service']);
-
+Route::post('/delete_media',[authenticationController::class,'delete_media']);
+Route::get('/get_all_jobs',[gets::class,'get_all_jobs']);
+Route::post('/get_job',[authenticationController::class,'get_job']);
+Route::post('/get_media',[authenticationController::class,'get_media']);
+Route::post('/get_all_media',[authenticationController::class,'get_all_media']);
+Route::post('/get_service',[authenticationController::class,'get_service']);
 

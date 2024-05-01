@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\user_id;
 use App\Models\common_questions;
+use App\Models\job;
 use App\Models\languages;
 
 class gets extends Controller
@@ -57,6 +58,11 @@ class gets extends Controller
     static function sec_service_type_id(string $secondry_type){
         $type = DB::table('secondry_type')->where('sec_type','=',$secondry_type)->first();
         return $type->st_id;
+    }
+
+    function get_all_jobs(){
+        $jobs = job::all();
+        return $jobs;
     }
 
 
