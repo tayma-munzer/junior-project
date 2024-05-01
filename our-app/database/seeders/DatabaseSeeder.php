@@ -297,7 +297,156 @@ class DatabaseSeeder extends Seeder
         DB::table('languages')->insert([
             'language'=>'french',
         ]);
-        
+        DB::table('courses')->insert([
+            'c_name'=>'1 اسم كورس ',
+            'c_desc'=> ' 1 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '1',
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>' 2 اسم كورس ',
+            'c_desc'=> 'وصف كورس 2',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '2',
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'اسم كورس 3',
+            'c_desc'=> 'وصف كورس 2',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '2',
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'اسم كورس 4',
+            'c_desc'=> 'وصف كورس 4',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '1',
+        ]);
+        DB::table('jobs')->insert([
+            'j_name'=>'اسم الوظيفة 1',
+            'j_desc'=>'وصف الوظيفة 1',
+            'j_sal'=>'2000000',
+            'j_req'=>'متطليات الوظيفة 1',
+            'u_id'=>'1'
+        ]);
+        DB::table('jobs')->insert([
+            'j_name'=>'اسم الوظيفة 2',
+            'j_desc'=>'وصف الوظيفة 2',
+            'j_sal'=>'3000000',
+            'j_req'=>'متطليات الوظيفة 2',
+            'u_id'=>'1'
+        ]);
+        DB::table('jobs')->insert([
+            'j_name'=>'اسم الوظيفة 3',
+            'j_desc'=>'وصف الوظيفة 3',
+            'j_sal'=>'1500000',
+            'j_req'=>'متطليات الوظيفة 3',
+            'u_id'=>'2'
+        ]);
+        DB::table('jobs')->insert([
+            'j_name'=>'اسم الوظيفة 4',
+            'j_desc'=>'وصف الوظيفة 4',
+            'j_sal'=>'3500000',
+            'j_req'=>'متطليات الوظيفة 4',
+            'u_id'=>'1'
+        ]);
+        DB::table('jobs')->insert([
+            'j_name'=>'اسم الوظيفة 5',
+            'j_desc'=>'وصف الوظيفة 5',
+            'j_sal'=>'4500000',
+            'j_req'=>'متطليات الوظيفة 5',
+            'u_id'=>'2'
+        ]);
+        DB::table('cv')->insert([
+            'career_obj'=>'هددف وظيفي محدد',
+            'phone'=>'0912345678',
+            'address'=>'دمشق الميدان',
+            'email'=>'tayma2@gmail.com',
+            'u_id'=>'1',
+        ]);
+        DB::table('skills')->insert([
+            'cv_id'=>'1',
+            's_name'=>'مهارة 1',
+            's_level'=>'متوسط',
+            'years_of_exp'=>'1'
+        ]);
+        DB::table('skills')->insert([
+            'cv_id'=>'1',
+            's_name'=>'مهارة 2',
+            's_level'=>'ممتاز',
+            'years_of_exp'=>'3'
+        ]);
+        DB::table('training_courses')->insert([
+            'cv_id'=>'1',
+            'completion_date'=>'2024-4-1',
+            'course_name'=>'كورس 1 ',
+            'training_center'=>'مركز تدريب 1'
+        ]);
+        DB::table('training_courses')->insert([
+            'cv_id'=>'1',
+            'completion_date'=>'2024-5-1',
+            'course_name'=>'كورس 2 ',
+            'training_center'=>'مركز تدريب 11'
+        ]);
+        DB::table('experiences')->insert([
+            'cv_id'=>'1',
+            'position'=>'مسمى وظيفي 1',
+            'company'=>'شركة 1',
+            'start_date'=>'2024-1-1',
+            'end_date'=>'2024-5-5',
+            'responsibilities'=>'مسؤوليات كزا و كزا'
+        ]);
+        DB::table('experiences')->insert([
+            'cv_id'=>'1',
+            'position'=>'موقع وظيفي 2',
+            'company'=>'شركة 1',
+            'start_date'=>'2023-1-1',
+            'end_date'=>'2024-1-1',
+            'responsibilities'=>'مسؤولية وحدة كزا '
+        ]);
+        DB::table('projects')->insert([
+            'cv_id'=>'1',
+            'p_name'=>'اسم مشروع 1',
+            'p_desc'=>'وصف مشورع 1',
+            'start_date'=>'2023-1-1',
+            'end_date'=>'2024-1-1',
+            'responsibilities'=>'مسؤولية وحدة كزا '            
+        ]);
+        DB::table('projects')->insert([
+            'cv_id'=>'1',
+            'p_name'=>'اسم المشروع 2',
+            'p_desc'=>'وصف المشروع 2',
+            'start_date'=>'2023-1-1',
+            'end_date'=>'2024-1-1',
+            'responsibilities'=>'مسؤولية  مشورع 2 '            
+        ]);
+        DB::table('cv_langs')->insert([
+            'cv_id'=>'1',
+            'l_id'=>'2'
+        ]);
+        DB::table('cv_langs')->insert([
+            'cv_id'=>'1',
+            'l_id'=>'3'
+        ]);
+        DB::table('education')->insert([
+            'cv_id'=>'1',
+            'grad_year'=>'2021',
+            'degree'=>'باكالورويس',
+            'uni'=>'العربية الدولية',
+            'field_of_study'=>'معلوماتية',
+            'gba'=>'3.2'
+        ]);
+        DB::table('education')->insert([
+            'cv_id'=>'1',
+            'grad_year'=>'2023',
+            'degree'=>'ماجستير',
+            'uni'=>'دمشق',
+            'field_of_study'=>'شي بالمعلوماتية',
+            'gba'=>'3.2'
+        ]);
 
 
     }
