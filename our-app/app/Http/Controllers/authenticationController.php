@@ -334,10 +334,13 @@ class authenticationController extends Controller
     }
     //done
     public function add_media(add_media_request $request){
-        $validator = Validator::make($request->all(), [
+        //$data = json_decode($request->media, true);
+        $validator = Validator::make($request->media, [
+            'media' => [ 
             'c_id' => 'required|integer|exists:courses,c_id',
             'm_name' => 'required|string',
             'm_path' => 'required|string',
+            ]
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -346,11 +349,14 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $job = media::create([ 
-        'c_id' =>$request->c_id,
-        'm_name' => $request->m_name,
-        'm_path' => $request->m_path,
+            $data = $request->media;
+            foreach ($data as $d){ 
+                $job = media::create([ 
+                'c_id' => $d["c_id"],
+                'm_name' => $d['m_name'],
+                'm_path' => $d['m_path'],
         ]);
+    }
         return response([
             'message'=> 'added successfully'
         ],200);  
