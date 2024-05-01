@@ -42,6 +42,8 @@ use App\Models\training_courses;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isEmpty;
+
 class authenticationController extends Controller
 {
     //done
@@ -122,11 +124,11 @@ class authenticationController extends Controller
     }
     // done 
     public function addalt_service(addalt_serviceRequest $request){
-        $validator = Validator::make($request->all(), [
-            's_id' => 'required|exists:services,s_id',
+        $validator = Validator::make($request->input('alt_service'), [
+            'alt_service'=> [ 
             'a_name' => 'required|string',
             'a_price' => 'required|gte:5000',
-            'added_duration'=>'required|string'
+            'added_duration'=>'required|string' ]
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'gte:5000'=> 'the :attribute field should be minimum 5000',
@@ -136,13 +138,16 @@ class authenticationController extends Controller
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
-        }else{
-        $alt_service = alt_services::create([ 
-        's_id' => $request->s_id,
-        'a_name' => $request->a_name,
-        'a_price' => $request->a_price,
-        'added_duration' => $request->added_duration,
-        ]);
+        }else{$data = $request->alt_service;
+            $s_id = $request->s_id;
+            foreach ($data as $d){ 
+                $alt_service = alt_services::create([ 
+                    's_id' => $s_id,
+                    'a_name' => $d['a_name'],
+                    'a_price' => $d['a_price'],
+                    'added_duration' => $d['added_duration'],
+                ]);
+            }
         return response([
             'message'=> 'added successfully'
         ],200); 
@@ -334,10 +339,13 @@ class authenticationController extends Controller
     }
     //done
     public function add_media(add_media_request $request){
-        $validator = Validator::make($request->all(), [
+        //$data = json_decode($request->media, true);
+        $validator = Validator::make($request->media, [
+            'media' => [ 
             'c_id' => 'required|integer|exists:courses,c_id',
             'm_name' => 'required|string',
             'm_path' => 'required|string',
+            ]
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -346,11 +354,15 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $job = media::create([ 
-        'c_id' =>$request->c_id,
-        'm_name' => $request->m_name,
-        'm_path' => $request->m_path,
+            $data = $request->media;
+            $c_id = $request->c_id;
+            foreach ($data as $d){ 
+                $job = media::create([ 
+                'c_id' => $c_id,
+                'm_name' => $d['m_name'],
+                'm_path' => $d['m_path'],
         ]);
+    }
         return response([
             'message'=> 'added successfully'
         ],200);  
@@ -750,6 +762,93 @@ class authenticationController extends Controller
         }
     } 
     }
+    //done
+    public function delete_media(edit_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'm_id' => 'required|exists:media,m_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=media::where('m_id','=',$request->m_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
+        }
+    } 
+    }
+    //done
+    public function get_job(edit_job_request $request){
+        $validator = Validator::make($request->all(), [
+            'j_id' => 'required|exists:jobs,j_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $job =job::where('j_id','=',$request->j_id);
+        return $job->get(); }
+    } 
+    //done
+    public function get_media(edit_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'm_id' => 'required|exists:media,m_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $media =media::where('m_id','=',$request->m_id);
+        return $media->get(); }
+    } 
+    //done
+    public function get_all_media(edit_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'c_id' => 'required|exists:media,c_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $media =media::where('c_id','=',$request->c_id);
+        return $media->get(); }
+    } 
+    //done
+    public function get_service(edit_service_request $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|exists:services,s_id',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $service =services::where('s_id','=',$request->s_id);
+        return $service->get(); }
+    } 
+    
+
+
 
     
     
