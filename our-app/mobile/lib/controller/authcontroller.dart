@@ -23,4 +23,23 @@ class AuthCont {
     var res = await http.post(Uri.parse(url), body: {"t_id": t_id});
     return res;
   }
+
+  static Future<http.Response> addService(
+      String name,
+      double price,
+      String mainCategory,
+      String subCategory,
+      String description,
+      String duration) async {
+    var url = add_service;
+    var res = await http.post(Uri.parse(url), body: {
+      "name": name,
+      "price": price.toString(),
+      "mainCategory": mainCategory,
+      "subCategory": subCategory,
+      "description": description,
+      "duration": duration
+    });
+    return res;
+  }
 }

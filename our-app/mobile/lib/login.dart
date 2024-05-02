@@ -132,7 +132,6 @@ class _LoginState extends State<Login> {
       children: <Widget>[
         Text(
           label,
-          // Add your desired text style
         ),
         SizedBox(height: 5),
         TextField(
