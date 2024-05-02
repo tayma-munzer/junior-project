@@ -44,4 +44,20 @@ Route::post('/get_job',[authenticationController::class,'get_job']);//added
 Route::post('/get_media',[authenticationController::class,'get_media']);//added
 Route::post('/get_all_media',[authenticationController::class,'get_all_media']);//added
 Route::post('/get_service',[authenticationController::class,'get_service']);//added
+Route::post('/get_all_cv',[authenticationController::class,'get_all_cv']);
+Route::post('/delete_all_cv',[authenticationController::class,'delete_all_cv']);
+Route::post('/get_cv_projects',[authenticationController::class,'get_projects']);
+Route::post('/get_cv_languages',[authenticationController::class,'get_languages']);
+Route::post('/get_cv_skills',[authenticationController::class,'get_skills']);
+Route::post('/get_all_alt_services',[authenticationController::class,'get_all_alt_services']);
+Route::post('/delete_project',[authenticationController::class,'delete_project']);
+Route::post('/delete_cv_language',[authenticationController::class,'delete_cv_language']);
+Route::post('/delete_skill',[authenticationController::class,'delete_skill']);
+Route::post('/delete_alt_service',[authenticationController::class,'delete_alt_service']);
+Route::post('/edit_experience',[authenticationController::class,'edit_experience']);
+Route::post('/edit_projects',[authenticationController::class,'edit_projects']);
+Route::post('/edit_language',[authenticationController::class,'edit_language']);
+Route::post('/edit_skills',[authenticationController::class,'edit_skills']);
+Route::post('/edit_alt_service',[authenticationController::class,'edit_alt_service']);
+
 
