@@ -1,22 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:mobile/colors.dart';
+import 'package:mobile/homepage.dart';
+import 'package:mobile/add.dart';
+import 'package:mobile/search.dart';
+import 'package:mobile/personalaccount.dart';
 
-class BottomBar extends StatelessWidget {
+class BottomBar extends StatefulWidget {
+  @override
+  _BottomBarState createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  Color _homeIconColor = Colors.white;
+  Color _addIconColor = Colors.white;
+  Color _searchIconColor = Colors.white;
+  Color _accountIconColor = Colors.white;
+
+  void _updateIconColor(String icon) {
+    setState(() {
+      if (icon == 'home') {
+        _homeIconColor = Colors.white;
+        _addIconColor = Colors.white;
+        _searchIconColor = Colors.white;
+        _accountIconColor = Colors.white;
+        _homeIconColor = Colors.black;
+      } else if (icon == 'add') {
+        _homeIconColor = Colors.white;
+        _addIconColor = Colors.black;
+        _searchIconColor = Colors.white;
+        _accountIconColor = Colors.white;
+      } else if (icon == 'search') {
+        _homeIconColor = Colors.white;
+        _addIconColor = Colors.white;
+        _searchIconColor = Colors.black;
+        _accountIconColor = Colors.white;
+      } else if (icon == 'account') {
+        _homeIconColor = Colors.white;
+        _addIconColor = Colors.white;
+        _searchIconColor = Colors.white;
+        _accountIconColor = Colors.black;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      height: 47.0,
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      color: AppColors.appColor,
-      animationDuration: Duration(milliseconds: 300),
-      items: const [
-        Icon(Icons.home),
-        Icon(Icons.add),
-        Icon(Icons.search),
-        Icon(Icons.person),
-        Icon(Icons.category)
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(0.0, -1.0),
+            blurRadius: 4.0,
+          ),
+        ],
+      ),
+      child: BottomAppBar(
+        color: Colors.blue,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.home, color: _homeIconColor),
+              onPressed: () {
+                _updateIconColor('home');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainHomePage()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.add, color: _addIconColor),
+              onPressed: () {
+                _updateIconColor('add');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddPage()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.search, color: _searchIconColor),
+              onPressed: () {
+                _updateIconColor('search');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchPage()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.account_circle, color: _accountIconColor),
+              onPressed: () {
+                _updateIconColor('account');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PersonalAccount()));
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
