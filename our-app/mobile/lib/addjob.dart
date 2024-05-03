@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class AddjobPage extends StatefulWidget {
   const AddjobPage({Key? key}) : super(key: key);

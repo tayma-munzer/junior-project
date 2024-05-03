@@ -25,15 +25,23 @@ class AuthCont {
   }
 
   static Future<http.Response> addService(
-      name, price, mainCategory, subCategory, description, duration) async {
+      String name,
+      String price,
+      String subCategory,
+      String description,
+      String duration,
+      String img_path) async {
     var url = add_service;
     var res = await http.post(Uri.parse(url), body: {
-      "name": name,
-      "price": price,
-      "mainCategory": mainCategory,
-      "subCategory": subCategory,
-      "description": description,
-      "duration": duration
+      'service_name': name,
+      'service_price': price,
+      //'mainCategory': mainCategory,
+      'service_sec_type': subCategory,
+      'service_desc': description,
+      'service_duration': duration,
+      'service_img': img_path,
+      'token':
+          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
     });
     return res;
   }

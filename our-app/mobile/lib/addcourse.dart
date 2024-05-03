@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'; // Add this import
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:io';
@@ -59,7 +59,7 @@ class _AddCourseState extends State<AddCourse> {
           File('path/to/images/folder/${image.path.split('/').last}');
       await newImage.writeAsBytes(await image.readAsBytes());
     }
-    // Can add saving videos logic here as well
+//هون بنخط اللوجيك تيع الفيديو
   }
 
   @override
@@ -214,7 +214,7 @@ class _AddCourseState extends State<AddCourse> {
                           if (!kIsWeb) {
                             _getVideoFromGallery();
                           } else {
-                            // Handle non-supported platform (e.g., show an error message)
+                            //الايرورز
                           }
                         },
                         style: ButtonStyle(

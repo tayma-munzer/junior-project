@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addcourse.dart';
+import 'package:mobile/addjob.dart';
+import 'package:mobile/addservice.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
@@ -39,7 +42,10 @@ class _AddPageState extends State<AddPage> {
               SizedBox(height: 10),
               ElevatedButton.icon(
                 onPressed: () {
-                  // Add Course Function
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddService()),
+                  );
                 },
                 icon: Icon(Icons.arrow_back_ios),
                 label: Text('اضف خدمة '),
@@ -59,7 +65,10 @@ class _AddPageState extends State<AddPage> {
               SizedBox(height: 10),
               ElevatedButton.icon(
                 onPressed: () {
-                  // Add Course Function
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddCourse()),
+                  );
                 },
                 icon: Icon(Icons.arrow_back_ios),
                 label: Text('اضف كورس'),
@@ -78,7 +87,10 @@ class _AddPageState extends State<AddPage> {
               SizedBox(height: 10),
               ElevatedButton.icon(
                 onPressed: () {
-                  // Add Course Function
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddjobPage()),
+                  );
                 },
                 icon: Icon(Icons.arrow_back_ios),
                 label: Text('اضف فرصة عمل'),
