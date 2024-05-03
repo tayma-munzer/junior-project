@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget {
         ),
         IconButton(
           onPressed: () {
-            Navigator.pop(context); // Go back to the previous page
+            Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_forward),
         ),

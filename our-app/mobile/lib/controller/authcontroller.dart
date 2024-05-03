@@ -25,16 +25,11 @@ class AuthCont {
   }
 
   static Future<http.Response> addService(
-      String name,
-      double price,
-      String mainCategory,
-      String subCategory,
-      String description,
-      String duration) async {
+      name, price, mainCategory, subCategory, description, duration) async {
     var url = add_service;
     var res = await http.post(Uri.parse(url), body: {
       "name": name,
-      "price": price.toString(),
+      "price": price,
       "mainCategory": mainCategory,
       "subCategory": subCategory,
       "description": description,

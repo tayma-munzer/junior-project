@@ -6,6 +6,7 @@ import 'package:mobile/rules.dart';
 import 'package:mobile/services_types.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/whoarewe.dart';
+import 'package:mobile/addjob.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -159,7 +160,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                   onTap: () {
-                    // Handle Option 3 tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddjobPage()),
+                    );
                   },
                 ),
               ],

@@ -1,5 +1,3 @@
-// Place the necessary input parameters between the sync and return statement
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -62,7 +60,7 @@ class _AddServiceState extends State<AddService> {
 
   Future<void> _saveImagesToFolder() async {
     for (XFile image in images) {
-      String newPath = 'path/to/image/folder/' + image.path.split('/').last;
+      String newPath = 'path/to/images/folder/' + image.path.split('/').last;
       File(image.path).copy(newPath);
     }
   }
