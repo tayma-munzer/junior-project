@@ -102,7 +102,8 @@ class authenticationController extends Controller
             'service_price' => 'required|gte:50000',
             'service_desc' => 'required|string',
             'service_duration' => 'required|string',
-            'service_sec_type' => 'required|exists:secondry_type,sec_type',
+            'service_sec_type' => 'required',
+            'service_img',
             'token'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -124,7 +125,7 @@ class authenticationController extends Controller
         's_duration' => $request->service_duration,
         'u_id'=> $user_token->tokenable_id ,
         'st_id'=>gets::sec_service_type_id($request->service_sec_type),
-        's_img' => $request->img_path,
+        's_img' => $request->service_img,
         'status' => 'pinding',
         'discount' => 0,
         ]);

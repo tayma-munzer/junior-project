@@ -21,6 +21,7 @@ class addserviceRequest extends FormRequest
      */
     public function rules(): array
     {
+        echo "hfhfh";
         return [
             
             'service_name',
