@@ -6,14 +6,14 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MainHomePage extends StatefulWidget {
+  const MainHomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainHomePage> createState() => _MainHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainHomePageState extends State<MainHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

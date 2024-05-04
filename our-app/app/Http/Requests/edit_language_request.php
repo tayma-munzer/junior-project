@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class addserviceRequest extends FormRequest
+class edit_language_request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,17 +21,9 @@ class addserviceRequest extends FormRequest
      */
     public function rules(): array
     {
-        echo "hfhfh";
         return [
-            
-            'service_name',
-            'service_price',
-            'service_desc',
-            'service_duration',
-            'service_sec_type',
-            'token',
-            'img_path',
-
+            'l_id',
+            'cvl_id',
             //
         ];
     }

@@ -39,3 +39,27 @@ const get_job = URL + "get_job"; //بجيب فرصة عمل معينة
 const get_media = URL + "get_media"; // بجيب فيديو معين
 const get_all_media = URL + "get_all_media"; // بجيب كل الفيديويهات لكورس محدد
 const get_service = URL + "get_service"; // بجيب خدمة معينة
+const get_all_cv =
+    URL + "get_all_cv"; //بجيب السيرة الذاتية كاملة مع كلشي تابع الها
+const delete_all_cv =
+    URL + "delete_all_cv"; //بيحذف السيرة الذاتية كاملة مع كلشي تابع الها
+const get_cv_projects =
+    URL + "get_cv_projects"; // بجيب المشاريع يلي بقلب السيرة الذاتية
+const get_cv_languages =
+    URL + "get_cv_languages"; //بجيب اللغات يلي بقلب السيرة الذاتية
+const get_cv_skills =
+    URL + "get_cv_skills"; // بجيب المهارات يلي بقلب السيرة الذاتية
+const get_all_alt_services =
+    URL + "get_all_alt_services"; // بجيب كل الخدمات الملحقة التابعة لخدمة ميعنة
+const delete_project = URL + "delete_project"; //حذف مشروع من سيرة ذاتية
+const delete_cv_language = URL + "delete_cv_language"; // حذف لغة من سيرة ذاتية
+const delete_skill = URL + "delete_skill"; // حذف مهارة من سيرة ذاتية
+const delete_alt_service =
+    URL + "delete_alt_service"; // حذف خدمة ملحقة لخدمة معينة
+const edit_experience =
+    URL + "edit_experience"; // تعديل خبرة معينة بالسيرة الذاتية
+const edit_projects = URL + "edit_projects"; //تعديل مشروع بالسيرة الذاتية
+const edit_language = URL + "edit_language"; //تعديل لغة بالسيرة الذاتية
+const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة الذاتية
+const edit_alt_service =
+    URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية

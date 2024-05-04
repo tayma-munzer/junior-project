@@ -4,7 +4,6 @@ import 'package:mobile/add.dart';
 import 'package:mobile/search.dart';
 import 'package:mobile/personalaccount.dart';
 import 'package:mobile/services_types.dart';
-import 'package:mobile/colors.dart';
 
 class BottomBar extends StatefulWidget {
   @override
@@ -16,7 +15,6 @@ class _BottomBarState extends State<BottomBar> {
   Color _addIconColor = Colors.white;
   Color _searchIconColor = Colors.white;
   Color _accountIconColor = Colors.white;
-  Color _CategoriesIconColor = Colors.white;
 
   void _updateIconColor(String icon) {
     setState(() {
@@ -54,7 +52,7 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.appbarColor,
+        color: Colors.blue,
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
@@ -64,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
         ],
       ),
       child: BottomAppBar(
-        color: AppColors.appbarColor,
+        color: Colors.blue,
         shape: CircularNotchedRectangle(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -74,7 +72,7 @@ class _BottomBarState extends State<BottomBar> {
               onPressed: () {
                 _updateIconColor('home');
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                    MaterialPageRoute(builder: (context) => MainHomePage()));
               },
             ),
             IconButton(
@@ -102,9 +100,9 @@ class _BottomBarState extends State<BottomBar> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.category_rounded, color: _CategoriesIconColor),
+              icon: Icon(Icons.category_rounded, color: _accountIconColor),
               onPressed: () {
-                _updateIconColor('account');
+                _updateIconColor('categories');
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => services_types()));
               },
