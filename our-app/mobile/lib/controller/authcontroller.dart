@@ -45,4 +45,22 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> addJob(
+    String j_name,
+    String j_desc,
+    String j_sal,
+    String j_req,
+  ) async {
+    var url = add_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'j_name': j_name,
+      'j_desc': j_desc,
+      'j_sal': j_sal,
+      'j_req': j_req,
+      'token':
+          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+    });
+    return res;
+  }
 }

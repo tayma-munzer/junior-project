@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class AddjobPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _AddjobPageState extends State<AddjobPage> {
 
   String j_name = '';
   String j_desc = '';
-  int j_sal = 0;
+  String j_sal = '';
   String j_req = '';
 
   @override
@@ -86,7 +87,7 @@ class _AddjobPageState extends State<AddjobPage> {
                         !RegExp(r'^[0-9]*$').hasMatch(value)) {
                       return 'يرجى ادخال رقم صحيح للراتب';
                     }
-                    j_sal = int.parse(value);
+                    j_sal = value;
                     return null;
                   },
                 ),
@@ -115,7 +116,17 @@ class _AddjobPageState extends State<AddjobPage> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      //هون يفترض حط ال api
+                      //هون يفترض حط ** استدعاء ** ال api
+                      AuthCont.addJob(j_name, j_desc, j_sal, j_req)
+                          .then((value) {
+                        if (value.statusCode == 200) {
+                          print('job added successfully');
+                        } else {
+                          // Error response
+                          print(
+                              'Failed to add job. Error: ${value.body}'); //${value.body}
+                        }
+                      });
                     }
                   },
                   child: Container(
