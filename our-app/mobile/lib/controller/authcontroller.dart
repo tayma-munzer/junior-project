@@ -113,4 +113,64 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> add_exp(
+    String position,
+    String company,
+    String start_date,
+    String end_date,
+    String responsibilities,
+  ) async {
+    var url = add_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'position': position,
+      'company': company,
+      'start_date': start_date,
+      'end_date': end_date,
+      'responsibilities': responsibilities,
+      'token':
+          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+    });
+    return res;
+  }
+
+  static Future<http.Response> add_projects(
+    String p_name,
+    String p_desc,
+    String start_date,
+    String end_date,
+    String responsibilities,
+  ) async {
+    var url = add_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'p_name': p_name,
+      'p_desc': p_desc,
+      'start_date': start_date,
+      'end_date': end_date,
+      'responsibilities': responsibilities,
+      'token':
+          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+    });
+    return res;
+  }
+
+  static Future<http.Response> add_education(
+    String degree,
+    String uni,
+    String grad_year,
+    String field_of_study,
+    String GPA,
+  ) async {
+    var url = add_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'degree': degree,
+      'uni': uni,
+      'grad_year': grad_year,
+      'field_of_study': field_of_study,
+      'GPA': GPA,
+      'token':
+          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+    });
+    return res;
+  }
 }

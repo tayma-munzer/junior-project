@@ -43,7 +43,7 @@ class _AddCVMainState extends State<AddCVMain> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('اضف معلومات اساسية للسيرة الذاتية',
+                Text(':اضف معلومات اساسية للسيرة الذاتية',
                     textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
                 Text('الهدف الوظيفي '),
@@ -103,7 +103,7 @@ class _AddCVMainState extends State<AddCVMain> {
                   decoration: InputDecoration(hintText: 'ادخل رقم هاتفك'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'الرجاء إدخال رقم هاتف';
+                      return 'يرجى إدخال رقم هاتف';
                     }
                     if (value.length < 10) {
                       return 'الرجاء إدخال رقم هاتف يتكون من 10 أرقام على الأقل';
@@ -111,6 +111,7 @@ class _AddCVMainState extends State<AddCVMain> {
                     if (!RegExp(r'^09\d{8}$').hasMatch(value)) {
                       return 'الرجاء إدخال رقم هاتف صالح يبدأ بـ 09 ويتكون من 10 أرقام';
                     }
+                    phone = value;
                     return null;
                   },
                 ),

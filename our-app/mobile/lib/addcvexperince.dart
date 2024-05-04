@@ -3,24 +3,29 @@ import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/addcvprojects.dart';
 
-class AddCVTrainingCourse extends StatefulWidget {
-  const AddCVTrainingCourse({Key? key}) : super(key: key);
+class AddCVExperience extends StatefulWidget {
+  const AddCVExperience({Key? key}) : super(key: key);
 
   @override
-  State<AddCVTrainingCourse> createState() => _AddCVTrainingCourseState();
+  State<AddCVExperience> createState() => _AddCVExperienceState();
 }
 
-class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
-  TextEditingController CVCourseNameController = TextEditingController();
-  TextEditingController CVTrainingCenterController = TextEditingController();
-  TextEditingController CVCompletionDateController = TextEditingController();
+class _AddCVExperienceState extends State<AddCVExperience> {
+  TextEditingController CVPositionController = TextEditingController();
+  TextEditingController CVCompanyController = TextEditingController();
+  TextEditingController CVStartDateController = TextEditingController();
+  TextEditingController CVEndDateController = TextEditingController();
+  TextEditingController CVResponsibilitiesController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String course_name = '';
-  String training_center = '';
-  String completion_date = '';
+  String position = '';
+  String company = '';
+  String start_date = '';
+  String end_date = '';
+  String responsibilities = '';
 
   @override
   Widget build(BuildContext context) {
@@ -40,50 +45,79 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(':قسم الدورات التدريبية', textAlign: TextAlign.right),
+                Text(': قسم الخبرة', textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
-                Text(' اسم الدورة '),
+                Text(' اسم الشركة او مكان العمل '),
                 TextFormField(
-                  controller: CVCourseNameController,
+                  controller: CVCompanyController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل اسم الدورة'),
+                  decoration:
+                      InputDecoration(hintText: 'ادخل اسم الشركة او العمل'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم الدورة';
+                      return 'يرجى ادخال اسم الشركة او مكان العمل';
                     }
-                    course_name = value;
+                    company = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('اسم المركز التدريبي'),
+                Text('االمسمى الوظيفي'),
                 TextFormField(
-                  controller: CVTrainingCenterController,
+                  controller: CVPositionController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration:
-                      InputDecoration(hintText: 'ادخل اسم المركز التدريبي'),
+                  decoration: InputDecoration(hintText: 'ادخل المسمى الوظيفي'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم المركز التدريبي ';
+                      return 'يرجى ادخال المسمى الوظيفي  ';
                     }
-                    training_center = value;
+                    position = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' تاريخ انتهاء الدورة '),
+                Text(' تاريخ البدء في العمل '),
                 TextFormField(
-                  controller: CVCompletionDateController,
+                  controller: CVStartDateController,
                   textAlign: TextAlign.right,
                   decoration:
-                      InputDecoration(hintText: 'ادخل تاريخ انتهاء الدورة'),
+                      InputDecoration(hintText: 'ادخل تاريخ البدء في العمل'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخل تاريخ انتهاء الدورة  ';
+                      return ' يرجى ادخال تاريخ البدء في العمل  ';
                     }
-                    completion_date = value;
+                    start_date = value;
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Text(' تاريخ انهاء العمل '),
+                TextFormField(
+                  controller: CVEndDateController,
+                  textAlign: TextAlign.right,
+                  decoration:
+                      InputDecoration(hintText: 'ادخل تاريخ انهاء العمل'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return ' يرجى ادخال تاريخ انهاء العمل  ';
+                    }
+                    end_date = value;
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Text('المسؤوليات في العمل '),
+                TextFormField(
+                  controller: CVResponsibilitiesController,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(hintText: 'المسؤوليات في العمل '),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return ' يرجى ادخال المسؤوليات التي تم تحملها في العمل   ';
+                    }
+                    responsibilities = value;
                     return null;
                   },
                 ),
@@ -95,16 +129,16 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_training_courses(
-                              course_name, training_center, completion_date)
+                      AuthCont.add_exp(position, company, start_date, end_date,
+                              responsibilities)
                           .then((value) {
                         if (value.statusCode == 200) {
                           print(
-                              'training course added to the CV sucessfully successfully');
+                              ' experince added to the CV sucessfully successfully');
                         } else {
                           // Error response
                           print(
-                              'Failed to add the training course to the CV. Error: ${value.body}');
+                              'Failed to add the  experince to the CV. Error: ${value.body}');
                         }
                       });
                     }
@@ -134,7 +168,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) => addCVProjects()),
                           );
                         },
                         child: Text(' تخطي'),
@@ -150,7 +184,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) => addCVProjects()),
                           );
                         },
                         child: Text(' التالي'),

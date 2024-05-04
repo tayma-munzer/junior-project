@@ -4,23 +4,28 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
-class AddCVTrainingCourse extends StatefulWidget {
-  const AddCVTrainingCourse({Key? key}) : super(key: key);
+class addCVEduction extends StatefulWidget {
+  const addCVEduction({Key? key}) : super(key: key);
 
   @override
-  State<AddCVTrainingCourse> createState() => _AddCVTrainingCourseState();
+  State<addCVEduction> createState() => _addCVEductionState();
 }
 
-class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
-  TextEditingController CVCourseNameController = TextEditingController();
-  TextEditingController CVTrainingCenterController = TextEditingController();
-  TextEditingController CVCompletionDateController = TextEditingController();
+class _addCVEductionState extends State<addCVEduction> {
+  TextEditingController CVEducationDegreeController = TextEditingController();
+  TextEditingController CVEductionUniController = TextEditingController();
+  TextEditingController CVEducationGradYearController = TextEditingController();
+  TextEditingController CVeducationFieldOfStudyController =
+      TextEditingController();
+  TextEditingController CVEducationGPAController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String course_name = '';
-  String training_center = '';
-  String completion_date = '';
+  String degree = '';
+  String uni = '';
+  String grad_year = '';
+  String field_of_study = '';
+  String GPA = '';
 
   @override
   Widget build(BuildContext context) {
@@ -40,50 +45,82 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(':قسم الدورات التدريبية', textAlign: TextAlign.right),
+                Text(' قسم التعلم::', textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
-                Text(' اسم الدورة '),
+                Text(' اسم الجامعة  '),
                 TextFormField(
-                  controller: CVCourseNameController,
+                  controller: CVEductionUniController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل اسم الدورة'),
+                  decoration: InputDecoration(hintText: 'ادخل اسم الجامعة  '),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم الدورة';
+                      return 'يرجى ادخال اسم الجامعة';
                     }
-                    course_name = value;
+                    uni = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('اسم المركز التدريبي'),
+                Text(' اختصاص الدراسة '),
                 TextFormField(
-                  controller: CVTrainingCenterController,
+                  controller: CVeducationFieldOfStudyController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration:
-                      InputDecoration(hintText: 'ادخل اسم المركز التدريبي'),
+                  decoration: InputDecoration(hintText: 'ادخل اختصاصك الدراسي'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم المركز التدريبي ';
+                      return 'يرجى ادخال التخصص الدراسي   ';
                     }
-                    training_center = value;
+                    field_of_study = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' تاريخ انتهاء الدورة '),
+                Text('سنة التخرج'),
                 TextFormField(
-                  controller: CVCompletionDateController,
+                  controller: CVEducationGradYearController,
                   textAlign: TextAlign.right,
-                  decoration:
-                      InputDecoration(hintText: 'ادخل تاريخ انتهاء الدورة'),
+                  decoration: InputDecoration(hintText: 'ادخل سنة تخرجك '),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخل تاريخ انتهاء الدورة  ';
+                      return ' يرجى ادخال سنة التخرج ';
                     }
-                    completion_date = value;
+                    if (!RegExp(r"^\d*\.?\d+$").hasMatch(value)) {
+                      return 'الرجاء إدخال رقم موجب';
+                    }
+                    grad_year = value;
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Text('درجة الشهادة'),
+                TextFormField(
+                  controller: CVEducationDegreeController,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(hintText: 'ادخل درجة الشهادة'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'الرجاء ادخال  درجة الشهادة';
+                    }
+                    degree = value;
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Text('معدل التخرج'),
+                TextFormField(
+                  controller: CVEducationGPAController,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(hintText: 'ادخل معدل تخرجك'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل معدل تخرجك';
+                    }
+                    if (!RegExp(r"^\d*\.?\d+$").hasMatch(value)) {
+                      return 'الرجاء إدخال رقم موجب عشري';
+                    }
+                    GPA = value;
                     return null;
                   },
                 ),
@@ -95,16 +132,16 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_training_courses(
-                              course_name, training_center, completion_date)
+                      AuthCont.add_education(
+                              degree, uni, grad_year, field_of_study, GPA)
                           .then((value) {
                         if (value.statusCode == 200) {
                           print(
-                              'training course added to the CV sucessfully successfully');
+                              ' education added to the CV sucessfully successfully');
                         } else {
                           // Error response
                           print(
-                              'Failed to add the training course to the CV. Error: ${value.body}');
+                              'Failed to add the education to the CV. Error: ${value.body}');
                         }
                       });
                     }
@@ -134,7 +171,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) => addCVEduction()),
                           );
                         },
                         child: Text(' تخطي'),
@@ -150,7 +187,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) => addCVEduction()),
                           );
                         },
                         child: Text(' التالي'),

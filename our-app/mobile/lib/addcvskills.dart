@@ -41,7 +41,7 @@ class _AddCVSkillsState extends State<AddCVSkills> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('    قسم المهارات:', textAlign: TextAlign.right),
+                Text(': قسم المهارات', textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
                 Text(' اسم المهارة '),
                 TextFormField(
@@ -79,10 +79,11 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(hintText: 'ادخل عدد سنين الخبرة'),
                   validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        !RegExp('-?\d+(.\d+)?').hasMatch(value)) {
-                      return '  ادخل عدد صحيح لسنوات الخبرة';
+                    if (value == null || value.isEmpty) {
+                      return ' يرجى ادخال عدد سنين الخبرة  ';
+                    }
+                    if (!RegExp(r'^\d+$').hasMatch(value)) {
+                      return 'الرجاء إدخال رقم صحيح موجب';
                     }
                     years_of_exp = value;
                     return null;
