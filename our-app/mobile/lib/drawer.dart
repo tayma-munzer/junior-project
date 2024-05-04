@@ -7,6 +7,7 @@ import 'package:mobile/services_types.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
+import 'package:mobile/addcvmaininfo.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -163,6 +164,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AddjobPage()),
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('cv'),
+                      SizedBox(width: 10),
+                      Icon(Icons.work),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddCVMain()),
                     );
                   },
                 ),
