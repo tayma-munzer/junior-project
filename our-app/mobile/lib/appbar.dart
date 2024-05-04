@@ -5,7 +5,7 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.appColor,
+      backgroundColor: AppColors.appbarColor,
       actions: [
         IconButton(
           onPressed: () {},

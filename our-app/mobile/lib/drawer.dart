@@ -5,11 +5,11 @@ import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/rules.dart';
-import 'package:mobile/services_types.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
+import 'package:mobile/colors.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -33,10 +33,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 225, 181),
+              color: AppColors.appbarColor,
             ),
             child: Text(
-              ' ',
+              " ",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
