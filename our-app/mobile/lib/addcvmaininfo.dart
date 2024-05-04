@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addcvskills.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class AddCVMain extends StatefulWidget {
@@ -120,7 +122,21 @@ class _AddCVMainState extends State<AddCVMain> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      //هون يفترض حط ال api
+                      AuthCont.add_cv(career_obj, phone, address, email)
+                          .then((value) {
+                        if (value.statusCode == 200) {
+                          print('main information of CV added successfully');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCVSkills()),
+                          );
+                        } else {
+                          // Error response
+                          print(
+                              'Failed to add the main information of the CV. Error: ${value.body}');
+                        }
+                      });
                     }
                   },
                   child: Container(

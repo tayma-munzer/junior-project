@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/addcourse.dart';
+import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/rules.dart';
