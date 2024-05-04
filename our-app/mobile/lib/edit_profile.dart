@@ -14,6 +14,29 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
+  // Define arrays for profile information and image URL
+  List<String> labels = [
+    "الاسم",
+    "الكنية",
+    "البريد الالكتروني",
+    "كلمة المرور",
+    "اسم المستخدم",
+    "العمر",
+    "التوصيف",
+    "ذكر/انثى",
+  ];
+  List<String> placeholders = [
+    "سارة",
+    " عماد",
+    "sarah@gmail.com",
+    "sarah123",
+    "سارةة",
+    "22",
+    "طالبة جامعية",
+    "انثى",
+  ];
+  String networkImageUrl =
+      "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +64,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               //create space between the text and picture
               SizedBox(
-                height: 15,
+                height: 20,
               ),
               Center(
                 child: Stack(
                   children: [
                     Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
                           border: Border.all(
                             width: 4,
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -64,18 +87,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg"),
-                          )),
-                    ),
+                            image: NetworkImage(networkImageUrl),
+                          ),
+                        )),
                     InkWell(
                       onTap: () {
-                        // Add your button's onTap logic here
                         FocusScope.of(context).unfocus();
                       },
                       child: Container(
-                        height: 40,
-                        width: 40,
+                        height: 50,
+                        width: 50,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -94,18 +115,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               SizedBox(
-                height: 35,
+                height: 40,
               ),
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: Column(
-                  children: [
-                    buildTextField("الاسم", "سارة عماد", false),
-                    buildTextField(
-                        "البريد الالكتروني", "sarah@gmail.com", false),
-                    buildTextField("كلمة المرور", "****", true),
-                    buildTextField("اسم المستخدم", "سارةة", false),
-                  ],
+                  children: List.generate(labels.length, (index) {
+                    return buildTextField(
+                        labels[index], placeholders[index], index == 3);
+                  }),
                 ),
               ),
               SizedBox(
@@ -117,7 +135,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFFE0B1),
+                      backgroundColor: AppColors.appColor,
                       padding: EdgeInsets.symmetric(horizontal: 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -135,7 +153,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFFE0B1),
+                      backgroundColor: AppColors.appColor,
                       padding: EdgeInsets.symmetric(horizontal: 60),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -151,7 +169,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ],
-              )
+              ),
+              SizedBox(
+                height: 38,
+              ),
             ],
           ),
         ),
@@ -165,16 +186,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
     String placeholder,
     bool isPasswordTextField,
   ) {
+    bool showCurrentPassword = false;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
-      child: TextField(
-        obscureText: isPasswordTextField && !showPassword,
+      child: TextFormField(
+        obscureText: isPasswordTextField ? !showCurrentPassword : false,
         decoration: InputDecoration(
           suffixIcon: isPasswordTextField
               ? IconButton(
                   onPressed: () {
                     setState(() {
-                      showPassword = !showPassword;
+                      showCurrentPassword = !showCurrentPassword;
                     });
                   },
                   icon: Icon(
@@ -193,21 +216,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
             color: Color.fromARGB(255, 54, 54, 54),
           ),
         ),
+        validator: (value) {
+          // تمت إضافة وظيفة التحقق من الحقل النصي
+          if (value == null || value.isEmpty) {
+            return 'الرجاء إدخال $labelText';
+          }
+          return null;
+        },
       ),
-    );
-  }
-
-  ListTile _buildListTileWithIcon(String title, IconData icon) {
-    return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text(title),
-          SizedBox(width: 10),
-          Icon(icon),
-        ],
-      ),
-      onTap: () {},
     );
   }
 }

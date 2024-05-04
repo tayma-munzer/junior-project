@@ -5,6 +5,7 @@ import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/signup.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,9 +15,28 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   String userEmail = '';
   String userPassword = '';
+  @override
+  void initState() {
+    super.initState();
+    checkToken();
+  }
+
+  void checkToken() async {
+    final String? token = await secureStorage.read(key: 'token');
+    if (token != null) {
+      print(token); // Print the token value
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FirstPage()),
+      );
+    } else {
+      print("no info");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +90,11 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       AuthCont.loginAuth(userEmail, userPassword).then((value) {
                         if (value.statusCode == 200) {
+                          final Map<String, dynamic> responseMap =
+                              json.decode(value.body);
+                          final String token = responseMap['token'];
+                          secureStorage.write(key: 'token', value: token);
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -98,8 +123,27 @@ class _LoginState extends State<Login> {
                             }
                           }
                         } else if (value.statusCode == 422) {
-                          // wrong email or password
-                          print("check your email or password");
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('هناك خطأ'),
+                                content: Text(
+                                    'تأكد من البريد الالكتروني او كلمة المرور'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                      Navigator.pop(
+                                          context); // Navigate back to previous page
+                                    },
+                                    child: Text('تم'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         } else {
                           // هون اي ايرور غير طبيعي متل انو مافي اتصال بالباك اند
                         }
@@ -142,8 +186,11 @@ class _LoginState extends State<Login> {
           onChanged: (value) {
             if (label == 'البريد الالكتروني') {
               userEmail = value;
+              emailController.text = value; // Update the emailController value
             } else if (label == 'كلمة المرور') {
               userPassword = value;
+              passwordController.text =
+                  value; // Update the passwordController value
             }
           },
           decoration: InputDecoration(

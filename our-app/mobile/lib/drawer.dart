@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:mobile/addcourse.dart';
+import 'package:mobile/addservice.dart';
+import 'package:mobile/colors.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/rules.dart';
-import 'package:mobile/services_types.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/whoarewe.dart';
 
@@ -28,7 +29,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 225, 181),
+              color: AppColors.appbarColor,
             ),
             child: Text(
               ' ',
@@ -128,7 +129,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => services_types()),
+                      MaterialPageRoute(builder: (context) => AddService()),
                     );
                   },
                 ),
@@ -142,7 +143,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                   onTap: () {
-                    // Handle Option 2 tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddCourse()),
+                    );
                   },
                 ),
                 ListTile(
