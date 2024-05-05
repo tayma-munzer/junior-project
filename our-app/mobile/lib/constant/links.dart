@@ -63,3 +63,4 @@ const edit_language = URL + "edit_language"; //تعديل لغة بالسيرة 
 const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة الذاتية
 const edit_alt_service =
     URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية
+const get_all_languages = URL + "getlanguages"; // بجيب كل اللغات 
