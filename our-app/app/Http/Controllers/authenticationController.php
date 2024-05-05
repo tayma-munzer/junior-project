@@ -201,7 +201,8 @@ class authenticationController extends Controller
         'j_req' => $request->j_req,
         ]);
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'j_id' =>$job->id
         ],200);  
     }
     }
