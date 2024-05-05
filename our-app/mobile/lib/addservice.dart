@@ -8,10 +8,10 @@ import 'package:mobile/drawer.dart';
 import 'package:mobile/bottombar.dart';
 import 'dart:async';
 import 'package:mobile/constant/links.dart';
+import 'package:mobile/services_types.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
-import 'package:file/file.dart';
 import 'dart:typed_data';
 
 class AddService extends StatefulWidget {
@@ -19,28 +19,6 @@ class AddService extends StatefulWidget {
 
   @override
   State<AddService> createState() => _AddServiceState();
-  // static Future<http.Response> addService(
-  //   String name,
-  //   String price,
-  //   String mainCategory,
-  //   String subCategory,
-  //   String description,
-  //   String duration,
-  // ) async {
-  //   return await http.post(
-  //     Uri.parse(add_service),
-  //     body: {
-  //       'service_name': name,
-  //       'service_price': price,
-  //       //'mainCategory': mainCategory,
-  //       'service_sec_type': '3',
-  //       'service_desc': description,
-  //       'service_duration': duration,
-  //       'token':
-  //           "80926987e44d7d7d3e7650e0d0f8eb023dee3b3139a7839753f758623bd9ced9",
-  //     },
-  //   );
-  // }
 }
 
 class _AddServiceState extends State<AddService> {
@@ -49,7 +27,12 @@ class _AddServiceState extends State<AddService> {
   String selectedDuration = '1 hour';
   final FocusNode _focusNode = FocusNode();
   final ImagePicker _picker = ImagePicker();
-  List<XFile> images = [];
+  XFile? image;
+  List<String> images = [];
+  File? _imageFile;
+  String? _savedImagePath;
+  String? base64Image;
+  String? image_name;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   List first_type = [];
@@ -106,40 +89,16 @@ class _AddServiceState extends State<AddService> {
 
   late Directory documentDirectory;
   Future<void> _getImageFromGallery() async {
-    //Directory documentDirectory = await getApplicationDocumentsDirectory();
-    List<XFile>? pickedImages = await _picker.pickMultiImage();
-    if (pickedImages != null) {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      _imageFile = File(image.path);
+      image_name = image.name;
+    }
+    if (_imageFile != null) {
+      final imageBytes = await _imageFile!.readAsBytes();
       setState(() {
-        images.addAll(pickedImages);
+        base64Image = base64Encode(imageBytes);
       });
-    }
-  }
-
-  Future<void> _saveImagesToFolder() async {
-    for (XFile image in images) {
-      String image_name = path.basename(image.path);
-      String image_path = path.join('lib/images');
-      print("path : " + image_path);
-      print("name : " + image.name);
-      print("start");
-      await image.saveTo((await getApplicationDocumentsDirectory()).path);
-      print("done");
-    }
-    String imagePath = "C:/Users/tayma_36c2fp3/Pictures/image2.jpg";
-
-    String imageName = path.basename(imagePath);
-    String destinationPath = path.join('lib/images', imageName);
-
-    print("Copying $imageName to $destinationPath");
-
-    try {
-      //Uint8List bytes = await imageFile.readAsBytes();
-      //await File(path).writeAsBytes(bytes);
-      print("$imageName copied successfully!");
-      // await imageFile.copy(destinationPath);
-      // print("$imageName copied successfully!");
-    } catch (e) {
-      print("Error copying $imageName: $e");
     }
   }
 
@@ -289,15 +248,12 @@ class _AddServiceState extends State<AddService> {
                 Text('الصور', textAlign: TextAlign.right),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: images.map((image) {
-                      _saveImagesToFolder();
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.network(image.path, height: 100),
-                      );
-                    }).toList(),
-                  ),
+                  child: Container(
+                      height: 250,
+                      width: 250,
+                      child: base64Image != null
+                          ? Image.memory(base64Decode(base64Image!))
+                          : Text('no image selected')),
                 ),
                 SizedBox(height: 10),
                 Center(
@@ -319,42 +275,35 @@ class _AddServiceState extends State<AddService> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
+                            print(service_name);
+                            print(service_price);
+                            print(service_sec_type);
+                            print(service_desc);
+                            print(selectedDuration);
+                            print(base64Image);
+                            print(image_name);
                             AuthCont.addService(
                                     service_name,
                                     service_price,
                                     service_sec_type,
                                     service_desc,
                                     selectedDuration,
-                                    'img_path')
+                                    base64Image!,
+                                    image_name!)
                                 .then((value) {
                               if (value.statusCode == 200) {
                                 print('Service added successfully');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => services_types()),
+                                );
                               } else {
                                 // Error response
                                 print(
                                     'Failed to add service. Error: ${value.body}'); //${value.body}
                               }
                             });
-                            //await _saveImagesToFolder();
-                            // http.Response response =
-                            //     await AddService.addService(
-                            //   // Add input parameters here
-                            //   'name',
-                            //   '700000',
-                            //   'mainCategory',
-                            //   'subCategory',
-                            //   'description',
-                            //   'duration',
-                            // ).then((value) {
-                            // if (value.statusCode == 200) {
-                            //   // Successful response
-                            //   print('Service added successfully');
-                            // } else {
-                            //   // Error response
-                            //   print(
-                            //       'Failed to add service. Error: ${value.body}');
-                            // }
-                            // });
                           }
                         },
                         style: ButtonStyle(

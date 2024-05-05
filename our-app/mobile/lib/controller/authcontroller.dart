@@ -30,7 +30,8 @@ class AuthCont {
       String subCategory,
       String description,
       String duration,
-      String img_path) async {
+      String img_path,
+      String img_name) async {
     var url = add_service;
     var res = await http.post(Uri.parse(url), body: {
       'service_name': name,
@@ -40,6 +41,7 @@ class AuthCont {
       'service_desc': description,
       'service_duration': duration,
       'service_img': img_path,
+      'img_name': img_name,
       'token':
           "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
     });

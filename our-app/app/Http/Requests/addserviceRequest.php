@@ -31,6 +31,7 @@ class addserviceRequest extends FormRequest
             'service_sec_type',
             'token',
             'img_path',
+            'img_name'
 
             //
         ];
