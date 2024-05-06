@@ -52,6 +52,7 @@ use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -77,7 +78,7 @@ class authenticationController extends Controller
             ],422);
         }
         else
-        $token = $user->createToken('apitoken')->plainTextToken;
+        $token = $user->createToken('token')->plainTextToken;
         return response([
             'message'=> 'logged in',
             'token'=>$token,
@@ -192,7 +193,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token =PersonalAccessToken::findToken($request->token);
         $job = job::create([ 
         'u_id' => $user_token->tokenable_id,
         'j_name' => $request->j_name,
@@ -303,7 +304,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $user_token = token::where('token','=',$request->token)->first();
+            $user_token = PersonalAccessToken::findToken($request->token);
             $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
                 ['age'=>$request->age,
                 'u_desc'=>$request->u_desc,
@@ -345,7 +346,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $course = course::create([ 
         'u_id' => $user_token->tokenable_id,
         'c_name' => $request->c_name,
@@ -407,7 +408,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $cv = cv::create([ 
         'u_id' =>$user_token->tokenable_id,
         'email' => $request->email,

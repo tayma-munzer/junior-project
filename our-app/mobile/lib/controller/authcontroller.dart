@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/controller/authManager.dart';
@@ -35,6 +36,7 @@ class AuthCont {
       String img_path,
       String img_name) async {
     var url = add_service;
+    final token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {
       'service_name': name,
       'service_price': price,
@@ -44,7 +46,7 @@ class AuthCont {
       'service_duration': duration,
       'service_img': img_path,
       'img_name': img_name,
-      'token': AuthManager.getToken(),
+      'token': token,
     });
     return res;
   }
@@ -55,13 +57,14 @@ class AuthCont {
     String j_sal,
     String j_req,
   ) async {
+    final token = await AuthManager.getToken();
     var url = add_job;
     var res = await http.post(Uri.parse(url), body: {
       'j_name': j_name,
       'j_desc': j_desc,
       'j_sal': j_sal,
       'j_req': j_req,
-      'token': AuthManager.getToken(),
+      'token': token
     });
     return res;
   }
@@ -73,12 +76,13 @@ class AuthCont {
     String email,
   ) async {
     var url = add_main_cv;
+    final token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {
       'career_obj': career_obj,
       'phone': phone,
       'address': address,
       'email': email,
-      'token': AuthManager.getToken(),
+      'token': token,
     });
     return res;
   }
