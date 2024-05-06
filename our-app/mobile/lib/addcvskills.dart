@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
@@ -6,7 +7,8 @@ import 'package:mobile/drawer.dart';
 import 'package:mobile/addcvtrainingcourse.dart';
 
 class AddCVSkills extends StatefulWidget {
-  const AddCVSkills({Key? key}) : super(key: key);
+  final int cv_id;
+  const AddCVSkills(this.cv_id, {Key? key}) : super(key: key);
 
   @override
   State<AddCVSkills> createState() => _AddCVSkillsState();
@@ -22,6 +24,7 @@ class _AddCVSkillsState extends State<AddCVSkills> {
   String s_name = '';
   String s_level = '';
   String years_of_exp = '';
+  List<dynamic> skills = [];
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,18 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     return null;
                   },
                 ),
+                // Container(
+                //   child: ListView.builder(
+                //       itemCount: skills.length,
+                //       itemBuilder: (context, index) {
+                //         final skill = skills[index];
+                //         return ListTile(
+                //           title: Text(skill['s_name']),
+                //           subtitle: Text(skill['s_level']),
+                //           trailing: Text(skill['years_of_exp']),
+                //         );
+                //       }),
+                // ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   style: ButtonStyle(
@@ -97,17 +112,13 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_skills(s_name, s_level, years_of_exp)
-                          .then((value) {
-                        if (value.statusCode == 200) {
-                          print(
-                              'skill added to the CV sucessfully successfully');
-                        } else {
-                          // Error response
-                          print(
-                              'Failed to add the skill to the CV. Error: ${value.body}');
-                        }
-                      });
+                      Map<String, dynamic> skill = {
+                        's_name': s_name,
+                        's_level': s_level,
+                        'years_of_exp': years_of_exp
+                      };
+                      skills.add(skill);
+                      print('skill added to list');
                     }
                   },
                   child: Container(
@@ -135,7 +146,8 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) =>
+                                    AddCVTrainingCourse(widget.cv_id)),
                           );
                         },
                         child: Text('تخطي '),
@@ -148,17 +160,56 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
-                          );
+                          AuthCont.add_skills(widget.cv_id.toString(), skills)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  'skill added to the CV sucessfully successfully');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddCVTrainingCourse(widget.cv_id)),
+                              );
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the skill to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
                         child: Text('التالي '),
                       ),
                     ),
                   ],
                 ),
+
+                // Expanded(
+                //   child: ListView.builder(
+                //       itemCount: skills.length,
+                //       itemBuilder: (context, index) {
+                //         final skill = skills[index];
+                //         return ListTile(
+                //           title: Text(skill['s_name']),
+                //           subtitle: Text(skill['s_level']),
+                //           trailing: Text(skill['years_of_exp']),
+                //         );
+                //       }),
+                // )
+                // Column(
+                //   children: [
+                //     ListView.builder(
+                //         itemCount: skills.length,
+                //         itemBuilder: (context, index) {
+                //           final skill = skills[index];
+                //           return ListTile(
+                //             title: Text(skill['s_name']),
+                //             subtitle: Text(skill['s_level']),
+                //             trailing: Text(skill['years_of_exp']),
+                //           );
+                //         }),
+                //   ],
+                // )
               ],
             ),
           ),

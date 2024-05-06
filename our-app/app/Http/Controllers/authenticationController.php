@@ -416,17 +416,20 @@ class authenticationController extends Controller
         'career_obj'=>$request->career_obj,
         ]);
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'cv_id'=>$cv->id,
         ],200);  
     }
     }
     //done 
     public function add_skills(add_skill_request $request){
-        $validator = Validator::make($request->skills, [
-            'skills'=>[ 
-            's_name' => 'required|string',
-            's_level' => 'required|string',
-            'years_of_exp' => 'required|integer',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required',
+            'skills' => 'required|array',
+            'skills.*.s_name' => 'required|string',
+            'skills.*.s_level' => 'required|string',
+            'skills.*.years_of_exp' => 'required|integer'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -437,9 +440,9 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->skills;
-            foreach ($data as $d){ 
+            $cv_id= $requestData ['cv_id'];
+            $skills = $requestData['skills'];
+            foreach ($skills as $d){ 
                 $skill = skills::create([ 
                 'cv_id' =>$cv_id,
                 's_name' => $d['s_name'],
@@ -449,8 +452,7 @@ class authenticationController extends Controller
             }
         return response([
             'message'=> 'added successfully'
-        ],200);  
-    }
+        ],200);  }
     }
     //done 
     public function add_language(add_language_request $request){
@@ -481,13 +483,15 @@ class authenticationController extends Controller
     }
     //done
     public function add_projects(add_projects_request $request){
-        $validator = Validator::make($request->projects, [
-            'projects'=>[
-            'p_name' => 'required|string',
-            'p_desc' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'responsibilities' => 'required|string',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required|integer',
+            'projects'=>'required|array',
+            'projetcs.*.p_name' => 'required|string',
+            'projetcs.*.p_desc' => 'required|string',
+            'projetcs.*.start_date' => 'required|date',
+            'projetcs.*.end_date' => 'required|date',
+            'projetcs.*.responsibilities' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -498,8 +502,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->projects;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['projects'];
             foreach ($data as $d){ 
         $project = projects::create([ 
         'cv_id' =>$cv_id,
@@ -516,13 +520,15 @@ class authenticationController extends Controller
     }
 //done
     public function add_exp(add_exp_request $request){
-        $validator = Validator::make($request->experiences, [
-            'experiences'=>[
-            'position' => 'required|string',
-            'company' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'responsibilities' => 'required|string']
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required|integer',
+            'experiences'=>'required|array',
+            'experiences.*.position' => 'required|string',
+            'experiences.*.company' => 'required|string',
+            'experiences.*.start_date' => 'required|date',
+            'experiences.*.end_date' => 'required|date',
+            'experiences.*.responsibilities' => 'required|string'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -533,8 +539,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->experiences;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['experiences'];
             foreach ($data as $d){ 
                 $exp = experience::create([ 
                 'cv_id' =>$cv_id,
@@ -552,11 +558,13 @@ class authenticationController extends Controller
     }
     //done
     public function add_training_courses(add_training_request $request){
-        $validator = Validator::make($request->training_courses, [
-            'training_courses'=>[
-            'course_name' => 'required|string',
-            'training_center' => 'required|string',
-            'completion_date' => 'required|date',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required',
+            'training_courses'=>'required|array',
+            'training_courses.*.course_name' => 'required|string',
+            'training_courses.*.training_center' => 'required|string',
+            'training_courses.*.completion_date' => 'required|date',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -567,8 +575,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->training_courses;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['training_courses'];
             foreach ($data as $d){ 
                 $course = training_courses::create([ 
                 'cv_id' =>$cv_id,
@@ -583,13 +591,15 @@ class authenticationController extends Controller
     }
     //done 
     public function add_education(add_education_request $request){
-        $validator = Validator::make($request->education, [
-            "education"=>[
-            'degree' => 'required|string',
-            'uni' => 'required|string',
-            'field_of_study' => 'required|string',
-            'grad_year' => 'required|integer',
-            'gba' => 'required|numeric|lte:100|gte:0',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            "cv_id"=>'required|integer',
+            'education'=>'required|array',
+            'education.*.degree' => 'required|string',
+            'education.*.uni' => 'required|string',
+            'education.*.field_of_study' => 'required|string',
+            'education.*.grad_year' => 'required|integer',
+            'education.*.gba' => 'required|numeric|lte:100|gte:0'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -601,8 +611,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->education;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['education'];
             foreach ($data as $d){ 
                 $education = education::create([ 
                 'cv_id' =>$cv_id,

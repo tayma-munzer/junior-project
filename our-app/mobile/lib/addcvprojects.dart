@@ -6,7 +6,8 @@ import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class addCVProjects extends StatefulWidget {
-  const addCVProjects({Key? key}) : super(key: key);
+  final int cv_id;
+  const addCVProjects(this.cv_id, {Key? key}) : super(key: key);
 
   @override
   State<addCVProjects> createState() => _addCVProjectsState();
@@ -26,7 +27,7 @@ class _addCVProjectsState extends State<addCVProjects> {
   String start_date = '';
   String end_date = '';
   String responsibilities = '';
-
+  List<dynamic> projects = [];
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -129,18 +130,15 @@ class _addCVProjectsState extends State<addCVProjects> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_projects(p_name, p_desc, start_date,
-                              end_date, responsibilities)
-                          .then((value) {
-                        if (value.statusCode == 200) {
-                          print(
-                              ' project added to the CV sucessfully successfully');
-                        } else {
-                          // Error response
-                          print(
-                              'Failed to add the project to the CV. Error: ${value.body}');
-                        }
-                      });
+                      Map<String, dynamic> project = {
+                        'p_name': p_name,
+                        'p_desc': p_desc,
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'responsibilities': responsibilities
+                      };
+                      projects.add(project);
+                      print('project added to the list');
                     }
                   },
                   child: Container(
@@ -166,10 +164,11 @@ class _addCVProjectsState extends State<addCVProjects> {
                         ),
                         onPressed: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => addCVEduction()),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    addCVEduction(widget.cv_id),
+                              ));
                         },
                         child: Text(' تخطي'),
                       ),
@@ -181,11 +180,24 @@ class _addCVProjectsState extends State<addCVProjects> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => addCVEduction()),
-                          );
+                          AuthCont.add_projects(
+                                  widget.cv_id.toString(), projects)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  ' project added to the CV sucessfully successfully');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        addCVEduction(widget.cv_id)),
+                              );
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the project to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
                         child: Text(' التالي'),
                       ),

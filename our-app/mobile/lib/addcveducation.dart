@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addcvexperince.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class addCVEduction extends StatefulWidget {
-  const addCVEduction({Key? key}) : super(key: key);
+  final int cv_id;
+  const addCVEduction(this.cv_id, {Key? key}) : super(key: key);
 
   @override
   State<addCVEduction> createState() => _addCVEductionState();
@@ -26,6 +28,7 @@ class _addCVEductionState extends State<addCVEduction> {
   String grad_year = '';
   String field_of_study = '';
   String GPA = '';
+  List<dynamic> educations = [];
 
   @override
   Widget build(BuildContext context) {
@@ -132,18 +135,18 @@ class _addCVEductionState extends State<addCVEduction> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_education(
-                              degree, uni, grad_year, field_of_study, GPA)
-                          .then((value) {
-                        if (value.statusCode == 200) {
-                          print(
-                              ' education added to the CV sucessfully successfully');
-                        } else {
-                          // Error response
-                          print(
-                              'Failed to add the education to the CV. Error: ${value.body}');
-                        }
-                      });
+                      Map<String, dynamic> education = {
+                        'degree': degree,
+                        'uni': uni,
+                        'grad_year': grad_year,
+                        'field_of_study': field_of_study,
+                        'gba': GPA
+                      };
+                      educations.add(education);
+                      print(education);
+                      print('object');
+                      print(educations);
+                      print('education added to the list');
                     }
                   },
                   child: Container(
@@ -171,7 +174,8 @@ class _addCVEductionState extends State<addCVEduction> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => addCVEduction()),
+                                builder: (context) =>
+                                    AddCVExperience(widget.cv_id)),
                           );
                         },
                         child: Text(' تخطي'),
@@ -184,11 +188,26 @@ class _addCVEductionState extends State<addCVEduction> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => addCVEduction()),
-                          );
+                          if (_formKey.currentState!.validate()) {
+                            AuthCont.add_education(
+                                    widget.cv_id.toString(), educations)
+                                .then((value) {
+                              if (value.statusCode == 200) {
+                                print(
+                                    ' education added to the CV sucessfully successfully');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddCVExperience(widget.cv_id),
+                                    ));
+                              } else {
+                                // Error response
+                                print(
+                                    'Failed to add the education to the CV. Error: ${value.body}');
+                              }
+                            });
+                          }
                         },
                         child: Text(' التالي'),
                       ),
