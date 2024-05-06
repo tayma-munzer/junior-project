@@ -1,4 +1,4 @@
-const URL = "http://127.0.0.1:8000/api/";
+const URL = "http://10.0.2.2:8000/api/";
 
 const login = URL + "login"; // تسجيل الدخول لمستخدم لديه حساب
 const services_first_type =
@@ -63,3 +63,4 @@ const edit_language = URL + "edit_language"; //تعديل لغة بالسيرة 
 const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة الذاتية
 const edit_alt_service =
     URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية
+const get_all_languages = URL + "getlanguages"; // get بجيب كل اللغات , هاد نوعو 

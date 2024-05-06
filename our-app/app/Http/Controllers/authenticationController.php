@@ -116,7 +116,16 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            
         $user_token = token::where('token','=',$request->token)->first();
+        $img_data = $request ->service_img;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->img_name;
+        file_put_contents($fullpath,$decoded_img);
         $service = services::create([ 
         's_name' => $request->service_name,
         's_price' => $request->service_price,
@@ -125,7 +134,7 @@ class authenticationController extends Controller
         's_duration' => $request->service_duration,
         'u_id'=> $user_token->tokenable_id ,
         'st_id'=>gets::sec_service_type_id($request->service_sec_type),
-        's_img' => $request->service_img,
+        's_img' => $fullpath,
         'status' => 'pinding',
         'discount' => 0,
         ]);
@@ -192,7 +201,8 @@ class authenticationController extends Controller
         'j_req' => $request->j_req,
         ]);
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'j_id' =>$job->id
         ],200);  
     }
     }
@@ -830,8 +840,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $job =job::where('j_id','=',$request->j_id);
-        return $job->get(); }
+        $job =job::where('j_id','=',$request->j_id)->first();
+        return $job; }
     } 
     //done
     public function get_media(edit_media_request $request){
@@ -875,8 +885,11 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $service =services::where('s_id','=',$request->s_id);
-        return $service->get(); }
+        $service =services::where('s_id','=',$request->s_id)->first();
+        $image = file_get_contents($service->s_img);
+        $base64image = base64_encode($image);
+        $service->image = $base64image;
+        return $service; }
     } 
     //done
     public function get_all_cv (get_all_cv $request){
