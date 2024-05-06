@@ -168,8 +168,7 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    addCVLanguages(widget.cv_id)),
+                                builder: (context) => addCVLanguages()),
                           );
                         },
                         child: Text(' تخطي'),
@@ -192,8 +191,7 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          addCVLanguages(widget.cv_id)),
+                                      builder: (context) => addCVLanguages()),
                                 );
                               } else {
                                 // Error response
