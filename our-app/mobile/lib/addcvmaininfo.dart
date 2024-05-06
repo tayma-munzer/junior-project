@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/addcvskills.dart';
 import 'package:mobile/appbar.dart';
@@ -127,10 +129,11 @@ class _AddCVMainState extends State<AddCVMain> {
                           .then((value) {
                         if (value.statusCode == 200) {
                           print('main information of CV added successfully');
+                          int cv_id = json.decode(value.body)['cv_id'];
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVSkills()),
+                                builder: (context) => AddCVSkills(cv_id)),
                           );
                         } else {
                           // Error response

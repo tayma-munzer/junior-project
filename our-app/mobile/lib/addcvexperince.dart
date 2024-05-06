@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addcvlanguage.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
@@ -6,7 +7,8 @@ import 'package:mobile/drawer.dart';
 import 'package:mobile/addcvprojects.dart';
 
 class AddCVExperience extends StatefulWidget {
-  const AddCVExperience({Key? key}) : super(key: key);
+  final int cv_id;
+  const AddCVExperience(this.cv_id, {Key? key}) : super(key: key);
 
   @override
   State<AddCVExperience> createState() => _AddCVExperienceState();
@@ -26,6 +28,7 @@ class _AddCVExperienceState extends State<AddCVExperience> {
   String start_date = '';
   String end_date = '';
   String responsibilities = '';
+  List<dynamic> experiences = [];
 
   @override
   Widget build(BuildContext context) {
@@ -129,18 +132,15 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_exp(position, company, start_date, end_date,
-                              responsibilities)
-                          .then((value) {
-                        if (value.statusCode == 200) {
-                          print(
-                              ' experince added to the CV sucessfully successfully');
-                        } else {
-                          // Error response
-                          print(
-                              'Failed to add the  experince to the CV. Error: ${value.body}');
-                        }
-                      });
+                      Map<String, dynamic> exp = {
+                        'position': position,
+                        'company': company,
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'responsibilities': responsibilities
+                      };
+                      experiences.add(exp);
+                      print('experience added to the list ');
                     }
                   },
                   child: Container(
@@ -168,7 +168,8 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => addCVProjects()),
+                                builder: (context) =>
+                                    addCVLanguages(widget.cv_id)),
                           );
                         },
                         child: Text(' تخطي'),
@@ -181,11 +182,26 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => addCVProjects()),
-                          );
+                          if (_formKey.currentState!.validate()) {
+                            AuthCont.add_exp(
+                                    widget.cv_id.toString(), experiences)
+                                .then((value) {
+                              if (value.statusCode == 200) {
+                                print(
+                                    ' experince added to the CV sucessfully successfully');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          addCVLanguages(widget.cv_id)),
+                                );
+                              } else {
+                                // Error response
+                                print(
+                                    'Failed to add the  experince to the CV. Error: ${value.body}');
+                              }
+                            });
+                          }
                         },
                         child: Text(' التالي'),
                       ),

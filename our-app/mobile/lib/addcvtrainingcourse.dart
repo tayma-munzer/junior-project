@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addcvprojects.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class AddCVTrainingCourse extends StatefulWidget {
-  const AddCVTrainingCourse({Key? key}) : super(key: key);
+  final int cv_id;
+  const AddCVTrainingCourse(this.cv_id, {Key? key}) : super(key: key);
 
   @override
   State<AddCVTrainingCourse> createState() => _AddCVTrainingCourseState();
@@ -21,6 +23,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
   String course_name = '';
   String training_center = '';
   String completion_date = '';
+  List<dynamic> courses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -95,18 +98,13 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      AuthCont.add_training_courses(
-                              course_name, training_center, completion_date)
-                          .then((value) {
-                        if (value.statusCode == 200) {
-                          print(
-                              'training course added to the CV sucessfully successfully');
-                        } else {
-                          // Error response
-                          print(
-                              'Failed to add the training course to the CV. Error: ${value.body}');
-                        }
-                      });
+                      Map<String, dynamic> course = {
+                        'course_name': course_name,
+                        'training_center': training_center,
+                        'completion_date': completion_date
+                      };
+                      courses.add(course);
+                      print('course added to the list');
                     }
                   },
                   child: Container(
@@ -134,7 +132,8 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
+                                builder: (context) =>
+                                    addCVProjects(widget.cv_id)),
                           );
                         },
                         child: Text(' تخطي'),
@@ -147,11 +146,24 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddCVTrainingCourse()),
-                          );
+                          AuthCont.add_training_courses(
+                                  widget.cv_id.toString(), courses)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  'training course added to the CV sucessfully successfully');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        addCVProjects(widget.cv_id)),
+                              );
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the training course to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
                         child: Text(' التالي'),
                       ),
