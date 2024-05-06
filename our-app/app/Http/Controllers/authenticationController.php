@@ -840,8 +840,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $job =job::where('j_id','=',$request->j_id);
-        return $job->get(); }
+        $job =job::where('j_id','=',$request->j_id)->first();
+        return $job; }
     } 
     //done
     public function get_media(edit_media_request $request){
