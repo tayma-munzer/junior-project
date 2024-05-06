@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/controller/authManager.dart';
 
 class AuthCont {
   static Future<http.Response> loginAuth(email, pass) async {
@@ -42,8 +44,7 @@ class AuthCont {
       'service_duration': duration,
       'service_img': img_path,
       'img_name': img_name,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+      'token': AuthManager.getToken(),
     });
     return res;
   }
@@ -60,8 +61,7 @@ class AuthCont {
       'j_desc': j_desc,
       'j_sal': j_sal,
       'j_req': j_req,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+      'token': AuthManager.getToken(),
     });
     return res;
   }
@@ -72,107 +72,79 @@ class AuthCont {
     String address,
     String email,
   ) async {
-    var url = add_job;
+    var url = add_main_cv;
     var res = await http.post(Uri.parse(url), body: {
       'career_obj': career_obj,
       'phone': phone,
       'address': address,
       'email': email,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
+      'token': AuthManager.getToken(),
     });
     return res;
   }
 
   static Future<http.Response> add_skills(
-    String s_name,
-    String s_level,
-    String years_of_exp,
+    String cv_id,
+    List<dynamic> skills,
   ) async {
-    var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      's_name': s_name,
-      's_level': s_level,
-      'years_of_exp': years_of_exp,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
-    });
+    var url = add_cv_skills;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'skills': skills,
+        }));
     return res;
   }
 
   static Future<http.Response> add_training_courses(
-    String course_name,
-    String training_center,
-    String completion_date,
+    String cv_id,
+    List<dynamic> courses,
   ) async {
-    var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      'course_name': course_name,
-      'training_center': training_center,
-      'completion_date': completion_date,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
-    });
+    var url = add_cv_training_courses;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'training_courses': courses,
+        }));
     return res;
   }
 
   static Future<http.Response> add_exp(
-    String position,
-    String company,
-    String start_date,
-    String end_date,
-    String responsibilities,
+    String cv_id,
+    List<dynamic> exp,
   ) async {
-    var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      'position': position,
-      'company': company,
-      'start_date': start_date,
-      'end_date': end_date,
-      'responsibilities': responsibilities,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
-    });
+    var url = add_cv_exp;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'experiences': exp,
+        }));
     return res;
   }
 
   static Future<http.Response> add_projects(
-    String p_name,
-    String p_desc,
-    String start_date,
-    String end_date,
-    String responsibilities,
+    String cv_id,
+    List<dynamic> projects,
   ) async {
-    var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      'p_name': p_name,
-      'p_desc': p_desc,
-      'start_date': start_date,
-      'end_date': end_date,
-      'responsibilities': responsibilities,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
-    });
+    var url = add_cv_projects;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'projects': projects,
+        }));
     return res;
   }
 
   static Future<http.Response> add_education(
-    String degree,
-    String uni,
-    String grad_year,
-    String field_of_study,
-    String GPA,
+    String cv_id,
+    List<dynamic> edu,
   ) async {
-    var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      'degree': degree,
-      'uni': uni,
-      'grad_year': grad_year,
-      'field_of_study': field_of_study,
-      'GPA': GPA,
-      'token':
-          "f2ea3690b018ac64b27c3dbb016b5814523559b5fea9d29af6900e30a93efcf1",
-    });
+    var url = add_cv_education;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'education': edu,
+        }));
     return res;
   }
 }
