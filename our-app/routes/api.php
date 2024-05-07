@@ -59,5 +59,16 @@ Route::post('/edit_projects',[authenticationController::class,'edit_projects']);
 Route::post('/edit_language',[authenticationController::class,'edit_language']);//added
 Route::post('/edit_skills',[authenticationController::class,'edit_skills']);//added
 Route::post('/edit_alt_service',[authenticationController::class,'edit_alt_service']);//added
-
+//
+Route::post('/delete_exp',[authenticationController::class,'delete_exp'] );
+Route::post('/get_exp',[authenticationController::class,'get_exp'] );
+Route::post('/edit_course',[authenticationController::class,'edit_course'] );
+Route::post('/delete_course',[authenticationController::class,'delete_course'] );
+Route::post('/get_course',[authenticationController::class,'get_course'] );
+Route::post('/edit_training_courses',[authenticationController::class,'edit_training_courses'] );
+Route::post('/delete_training_courses',[authenticationController::class,'delete_training_courses'] );
+Route::post('/get_training_courses',[authenticationController::class,'get_training_courses'] );
+Route::post('/edit_education',[authenticationController::class,'edit_education'] );
+Route::post('/delete_education',[authenticationController::class,'delete_education'] );
+Route::post('/get_education',[authenticationController::class,'get_education'] );
 
