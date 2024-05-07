@@ -90,7 +90,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.pop(context); // Close the drawer
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePage(),
+                    ),
                   );
                 }),
                 buildAccountOptionRow2(context, "المساعدة", () {

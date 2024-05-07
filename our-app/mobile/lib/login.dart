@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/firstpage.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/signup.dart';
@@ -70,6 +71,10 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       AuthCont.loginAuth(userEmail, userPassword).then((value) {
                         if (value.statusCode == 200) {
+                          final Map<String, dynamic> responseMap =
+                              json.decode(value.body);
+                          AuthManager.saveToken(responseMap['token']);
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -98,8 +103,27 @@ class _LoginState extends State<Login> {
                             }
                           }
                         } else if (value.statusCode == 422) {
-                          // wrong email or password
-                          print("check your email or password");
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('هناك خطأ'),
+                                content: Text(
+                                    'تأكد من البريد الالكتروني او كلمة المرور'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                      Navigator.pop(
+                                          context); // Navigate back to previous page
+                                    },
+                                    child: Text('تم'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         } else {
                           // هون اي ايرور غير طبيعي متل انو مافي اتصال بالباك اند
                         }
@@ -141,8 +165,11 @@ class _LoginState extends State<Login> {
           onChanged: (value) {
             if (label == 'البريد الالكتروني') {
               userEmail = value;
+              emailController.text = value; // Update the emailController value
             } else if (label == 'كلمة المرور') {
               userPassword = value;
+              passwordController.text =
+                  value; // Update the passwordController value
             }
           },
           decoration: InputDecoration(

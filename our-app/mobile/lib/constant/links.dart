@@ -1,4 +1,4 @@
-const URL = "http://127.0.0.1:8000/api/";
+const URL = "http://10.0.2.2:8000/api/";
 
 const login = URL + "login"; // تسجيل الدخول لمستخدم لديه حساب
 const services_first_type =
@@ -19,14 +19,14 @@ const delete_discount = URL + "delete_discount"; // حذف تخفيض على س�
 const edit_profile = URL + "edit_profile"; //تعديل المعلومات الشخصية للمستخدم
 const add_course = URL + "add_course"; //اضافة كورس
 const add_media = URL + "add_media"; // اضافة فيديو لكورس محدد
-const add_cv = URL + "add_cv"; // اضافة معلومات اساسية للسيرة الذاتية
-const add_skills = URL + "add_skills"; // اضافة مهارة للسيرة الذاتية
-const add_language = URL + "add_language"; //اضافة لغة للسيرة الذاتية
-const add_projects = URL + "add_projects"; // اذافة مشروع للسيرة الذاتية
-const add_exp = URL + "add_exp"; //اضافة خبرة للسيرة الذاتية
-const add_training_courses =
+const add_main_cv = URL + "add_cv"; // اضافة معلومات اساسية للسيرة الذاتية
+const add_cv_skills = URL + "add_skills"; // اضافة مهارة للسيرة الذاتية
+const add_cv_language = URL + "add_language"; //اضافة لغة للسيرة الذاتية
+const add_cv_projects = URL + "add_projects"; // اذافة مشروع للسيرة الذاتية
+const add_cv_exp = URL + "add_exp"; //اضافة خبرة للسيرة الذاتية
+const add_cv_training_courses =
     URL + "add_training_courses"; // اضافة دورات تدريبية للسيرة الذاتية
-const add_education = URL + "add_education"; //اضافة تعلم للسيرة الذاتية
+const add_cv_education = URL + "add_education"; //اضافة تعلم للسيرة الذاتية
 const edit_job = URL + "edit_job"; //تعديل تفاصيل فرصة عمل
 const edit_media = URL + "edit_media"; // تعديل تفاصيل فيديو تابع لكورس
 const edit_service = URL + "edit_service"; // تعديل تفاصيل خدمة
@@ -63,3 +63,4 @@ const edit_language = URL + "edit_language"; //تعديل لغة بالسيرة 
 const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة الذاتية
 const edit_alt_service =
     URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية
+const get_all_languages = URL + "getlanguages"; // get بجيب كل اللغات , هاد نوعو 

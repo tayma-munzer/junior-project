@@ -242,7 +242,7 @@ class _AddCourseState extends State<AddCourse> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        child: Text('   اضف خدمة    '),
+                        child: Text('   اضف الكورس    '),
                       ),
                     ],
                   ),

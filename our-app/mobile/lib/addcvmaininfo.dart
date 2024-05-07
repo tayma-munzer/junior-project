@@ -1,28 +1,31 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:mobile/addcvskills.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
-class AddjobPage extends StatefulWidget {
-  const AddjobPage({Key? key}) : super(key: key);
+class AddCVMain extends StatefulWidget {
+  const AddCVMain({Key? key}) : super(key: key);
 
   @override
-  State<AddjobPage> createState() => _AddjobPageState();
+  State<AddCVMain> createState() => _AddCVMainState();
 }
 
-class _AddjobPageState extends State<AddjobPage> {
-  TextEditingController jobTitleController = TextEditingController();
-  TextEditingController jobDescriptionController = TextEditingController();
-  TextEditingController jobSalaryController = TextEditingController();
-  TextEditingController jobRequirementsController = TextEditingController();
+class _AddCVMainState extends State<AddCVMain> {
+  TextEditingController CVcareerObjController = TextEditingController();
+  TextEditingController CVPhoneController = TextEditingController();
+  TextEditingController CVAdressController = TextEditingController();
+  TextEditingController CVEmailController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String j_name = '';
-  String j_desc = '';
-  String j_sal = '';
-  String j_req = '';
+  String career_obj = '';
+  String phone = '';
+  String address = '';
+  String email = '';
 
   @override
   Widget build(BuildContext context) {
@@ -42,69 +45,75 @@ class _AddjobPageState extends State<AddjobPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Center(
-                  child: Image.asset('assets/job.png', width: 200),
-                ),
+                Text(':اضف معلومات اساسية للسيرة الذاتية',
+                    textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
-                Text('اسم الوظيفة'),
+                Text('الهدف الوظيفي '),
                 TextFormField(
-                  controller: jobTitleController,
+                  controller: CVcareerObjController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل اسم الوظيفة'),
+                  decoration: InputDecoration(hintText: 'ادخل الهدف الوظيفي'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم الوظيفة';
+                      return 'يرجى ادخال الهدف الوظيفي';
                     }
-                    j_name = value;
+                    career_obj = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('التوصيف الوظيفي'),
+                Text('العنوان '),
                 TextFormField(
-                  controller: jobDescriptionController,
+                  controller: CVAdressController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(hintText: 'ادخل التوصيف الوظيفي'),
+                  decoration: InputDecoration(hintText: 'ادخل  عنوانك'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال التوصيف الوظيفي';
+                      return 'يرجى ادخال عنوانك السكني ';
                     }
-                    j_desc = value;
+                    address = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('الراتب'),
+                Text('البريد الالكتروني'),
                 TextFormField(
-                  controller: jobSalaryController,
+                  controller: CVEmailController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل الراتب'),
+                  decoration:
+                      InputDecoration(hintText: 'ادخل بريدك الالكتروني'),
                   validator: (value) {
                     if (value == null ||
                         value.isEmpty ||
-                        !RegExp(r'^[0-9]*$').hasMatch(value)) {
-                      return 'يرجى ادخال رقم صحيح للراتب';
+                        !RegExp('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,}')
+                            .hasMatch(value)) {
+                      return 'ادخل الصيغة الصحيحة للبريد الالكتروني ';
                     }
-                    j_sal = value;
+                    email = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('المتطلبات الوظيفية'),
+                Text('رقم الهاتف'),
                 TextFormField(
-                  controller: jobRequirementsController,
+                  controller: CVPhoneController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration:
-                      InputDecoration(hintText: 'ادخل المتطلبات الوظيفية'),
+                  decoration: InputDecoration(hintText: 'ادخل رقم هاتفك'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال المتطلبات الوظيفية';
+                      return 'يرجى إدخال رقم هاتف';
                     }
-                    j_req = value;
+                    if (value.length < 10) {
+                      return 'الرجاء إدخال رقم هاتف يتكون من 10 أرقام على الأقل';
+                    }
+                    if (!RegExp(r'^09\d{8}$').hasMatch(value)) {
+                      return 'الرجاء إدخال رقم هاتف صالح يبدأ بـ 09 ويتكون من 10 أرقام';
+                    }
+                    phone = value;
                     return null;
                   },
                 ),
@@ -116,15 +125,20 @@ class _AddjobPageState extends State<AddjobPage> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      //هون يفترض حط ** استدعاء ** ال api
-                      AuthCont.addJob(j_name, j_desc, j_sal, j_req)
+                      AuthCont.add_cv(career_obj, phone, address, email)
                           .then((value) {
                         if (value.statusCode == 200) {
-                          print('job added successfully');
+                          print('main information of CV added successfully');
+                          int cv_id = json.decode(value.body)['cv_id'];
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCVSkills(cv_id)),
+                          );
                         } else {
                           // Error response
                           print(
-                              'Failed to add job. Error: ${value.body}'); //${value.body}
+                              'Failed to add the main information of the CV. Error: ${value.body}');
                         }
                       });
                     }
@@ -133,7 +147,7 @@ class _AddjobPageState extends State<AddjobPage> {
                     width: screenWidth - 50,
                     child: Center(
                       child: Text(
-                        'اضف وظيفة',
+                        'التالي ',
                         style: TextStyle(
                           color: Colors.white,
                         ),

@@ -23,6 +23,7 @@ class add_skill_request extends FormRequest
     {
         return [
             'cv_id',
+            'skills',
             's_name',
             's_level',
             'years_of_exp',

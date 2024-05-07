@@ -3,6 +3,7 @@ import 'package:mobile/homepage.dart';
 import 'package:mobile/add.dart';
 import 'package:mobile/search.dart';
 import 'package:mobile/personalaccount.dart';
+import 'package:mobile/services_types.dart';
 
 class BottomBar extends StatefulWidget {
   @override
@@ -34,6 +35,11 @@ class _BottomBarState extends State<BottomBar> {
         _searchIconColor = Colors.black;
         _accountIconColor = Colors.white;
       } else if (icon == 'account') {
+        _homeIconColor = Colors.white;
+        _addIconColor = Colors.white;
+        _searchIconColor = Colors.white;
+        _accountIconColor = Colors.black;
+      } else if (icon == 'categories') {
         _homeIconColor = Colors.white;
         _addIconColor = Colors.white;
         _searchIconColor = Colors.white;
@@ -91,6 +97,14 @@ class _BottomBarState extends State<BottomBar> {
                 _updateIconColor('account');
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => PersonalAccount()));
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.category_rounded, color: _accountIconColor),
+              onPressed: () {
+                _updateIconColor('categories');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => services_types()));
               },
             ),
           ],

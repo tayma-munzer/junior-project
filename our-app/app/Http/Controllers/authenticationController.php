@@ -55,6 +55,7 @@ use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -80,7 +81,7 @@ class authenticationController extends Controller
             ],422);
         }
         else
-        $token = $user->createToken('apitoken')->plainTextToken;
+        $token = $user->createToken('token')->plainTextToken;
         return response([
             'message'=> 'logged in',
             'token'=>$token,
@@ -119,7 +120,16 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            
         $user_token = token::where('token','=',$request->token)->first();
+        $img_data = $request ->service_img;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->img_name;
+        file_put_contents($fullpath,$decoded_img);
         $service = services::create([ 
         's_name' => $request->service_name,
         's_price' => $request->service_price,
@@ -128,7 +138,7 @@ class authenticationController extends Controller
         's_duration' => $request->service_duration,
         'u_id'=> $user_token->tokenable_id ,
         'st_id'=>gets::sec_service_type_id($request->service_sec_type),
-        's_img' => $request->service_img,
+        's_img' => $fullpath,
         'status' => 'pinding',
         'discount' => 0,
         ]);
@@ -186,7 +196,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token =PersonalAccessToken::findToken($request->token);
         $job = job::create([ 
         'u_id' => $user_token->tokenable_id,
         'j_name' => $request->j_name,
@@ -195,7 +205,8 @@ class authenticationController extends Controller
         'j_req' => $request->j_req,
         ]);
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'j_id' =>$job->id
         ],200);  
     }
     }
@@ -296,7 +307,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $user_token = token::where('token','=',$request->token)->first();
+            $user_token = PersonalAccessToken::findToken($request->token);
             $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
                 ['age'=>$request->age,
                 'u_desc'=>$request->u_desc,
@@ -341,7 +352,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $course = course::create([ 
         'u_id' => $user_token->tokenable_id,
         'c_name' => $request->c_name,
@@ -406,7 +417,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $cv = cv::create([ 
         'u_id' =>$user_token->tokenable_id,
         'email' => $request->email,
@@ -415,17 +426,20 @@ class authenticationController extends Controller
         'career_obj'=>$request->career_obj,
         ]);
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'cv_id'=>$cv->id,
         ],200);  
     }
     }
     //done 
     public function add_skills(add_skill_request $request){
-        $validator = Validator::make($request->skills, [
-            'skills'=>[ 
-            's_name' => 'required|string',
-            's_level' => 'required|string',
-            'years_of_exp' => 'required|integer',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required',
+            'skills' => 'required|array',
+            'skills.*.s_name' => 'required|string',
+            'skills.*.s_level' => 'required|string',
+            'skills.*.years_of_exp' => 'required|integer'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -436,9 +450,9 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->skills;
-            foreach ($data as $d){ 
+            $cv_id= $requestData ['cv_id'];
+            $skills = $requestData['skills'];
+            foreach ($skills as $d){ 
                 $skill = skills::create([ 
                 'cv_id' =>$cv_id,
                 's_name' => $d['s_name'],
@@ -448,8 +462,7 @@ class authenticationController extends Controller
             }
         return response([
             'message'=> 'added successfully'
-        ],200);  
-    }
+        ],200);  }
     }
     //done 
     public function add_language(add_language_request $request){
@@ -480,13 +493,15 @@ class authenticationController extends Controller
     }
     //done
     public function add_projects(add_projects_request $request){
-        $validator = Validator::make($request->projects, [
-            'projects'=>[
-            'p_name' => 'required|string',
-            'p_desc' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'responsibilities' => 'required|string',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required|integer',
+            'projects'=>'required|array',
+            'projetcs.*.p_name' => 'required|string',
+            'projetcs.*.p_desc' => 'required|string',
+            'projetcs.*.start_date' => 'required|date',
+            'projetcs.*.end_date' => 'required|date',
+            'projetcs.*.responsibilities' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -498,8 +513,8 @@ class authenticationController extends Controller
             return response($errors,402);
     
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->projects;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['projects'];
             foreach ($data as $d){ 
         $project = projects::create([ 
         'cv_id' =>$cv_id,
@@ -516,13 +531,15 @@ class authenticationController extends Controller
     }
 //done
     public function add_exp(add_exp_request $request){
-        $validator = Validator::make($request->experiences, [
-            'experiences'=>[
-            'position' => 'required|string',
-            'company' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'responsibilities' => 'required|string']
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required|integer',
+            'experiences'=>'required|array',
+            'experiences.*.position' => 'required|string',
+            'experiences.*.company' => 'required|string',
+            'experiences.*.start_date' => 'required|date',
+            'experiences.*.end_date' => 'required|date',
+            'experiences.*.responsibilities' => 'required|string'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -533,8 +550,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->experiences;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['experiences'];
             foreach ($data as $d){ 
                 $exp = experience::create([ 
                 'cv_id' =>$cv_id,
@@ -552,11 +569,13 @@ class authenticationController extends Controller
     }
     //done
     public function add_training_courses(add_training_request $request){
-        $validator = Validator::make($request->training_courses, [
-            'training_courses'=>[
-            'course_name' => 'required|string',
-            'training_center' => 'required|string',
-            'completion_date' => 'required|date',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required',
+            'training_courses'=>'required|array',
+            'training_courses.*.course_name' => 'required|string',
+            'training_courses.*.training_center' => 'required|string',
+            'training_courses.*.completion_date' => 'required|date',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -567,8 +586,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->training_courses;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['training_courses'];
             foreach ($data as $d){ 
                 $course = training_courses::create([ 
                 'cv_id' =>$cv_id,
@@ -583,13 +602,15 @@ class authenticationController extends Controller
     }
     //done 
     public function add_education(add_education_request $request){
-        $validator = Validator::make($request->education, [
-            "education"=>[
-            'degree' => 'required|string',
-            'uni' => 'required|string',
-            'field_of_study' => 'required|string',
-            'grad_year' => 'required|integer',
-            'gba' => 'required|numeric|lte:100|gte:0',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            "cv_id"=>'required|integer',
+            'education'=>'required|array',
+            'education.*.degree' => 'required|string',
+            'education.*.uni' => 'required|string',
+            'education.*.field_of_study' => 'required|string',
+            'education.*.grad_year' => 'required|integer',
+            'education.*.gba' => 'required|numeric|lte:100|gte:0'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -601,8 +622,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->education;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['education'];
             foreach ($data as $d){ 
                 $education = education::create([ 
                 'cv_id' =>$cv_id,
@@ -840,8 +861,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $job =job::where('j_id','=',$request->j_id);
-        return $job->get(); }
+        $job =job::where('j_id','=',$request->j_id)->first();
+        return $job; }
     } 
     //done
     public function get_media(edit_media_request $request){
@@ -885,8 +906,11 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $service =services::where('s_id','=',$request->s_id);
-        return $service->get(); }
+        $service =services::where('s_id','=',$request->s_id)->first();
+        $image = file_get_contents($service->s_img);
+        $base64image = base64_encode($image);
+        $service->image = $base64image;
+        return $service; }
     } 
     //done
     public function get_all_cv (get_all_cv $request){
