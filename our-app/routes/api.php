@@ -13,7 +13,7 @@ Route::get('/getservices',[gets::class,'services']);
 Route::get('/getfirst_type',[gets::class,'first_types']);//added
 Route::post('/getsec_type',[authenticationController::class,'sec_types']);//added
 Route::post('/addalt_service',[authenticationController::class,'addalt_service']); //added
-Route::get('/getlanguages',[gets::class,'languages']);
+Route::get('/getlanguages',[gets::class,'languages']);//added
 Route::get('/getroles/{u_id}',[gets::class,'user_role']);
 Route::post('/addjob',[authenticationController::class,'addjob']); //added
 Route::post('/addservice',[authenticationController::class,'addservice']); //added
