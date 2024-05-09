@@ -151,4 +151,17 @@ class AuthCont {
         }));
     return res;
   }
+
+  static Future<http.Response> add_languages(
+    String cv_id,
+    List<dynamic> lang,
+  ) async {
+    var url = add_cv_language;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'cv_id': cv_id,
+          'languages': lang,
+        }));
+    return res;
+  }
 }
