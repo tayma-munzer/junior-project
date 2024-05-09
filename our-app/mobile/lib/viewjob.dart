@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:mobile/addjob.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/appbar.dart';
