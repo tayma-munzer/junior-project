@@ -792,8 +792,10 @@ class authenticationController extends Controller
         }else{
         $effected_rows=job::where('j_id','=',$request->j_id)->delete();
         if ($effected_rows!=0){
+            $jobs =job::all();
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'jobs'=>$jobs
         ],200); }
         else {
             return response([

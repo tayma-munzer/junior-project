@@ -31,6 +31,17 @@ class _ViewJobsState extends State<ViewJobs> {
     });
   }
 
+  void deleteJob(int j_id) async {
+    var url = delete_job;
+    var res = await http.post(Uri.parse(url), body: {'j_id': j_id});
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      jobs = data.map((item) => item).toList();
+      print('object');
+      print(jobs);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +82,17 @@ class _ViewJobsState extends State<ViewJobs> {
                   ),
                   IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () {},
+                    onPressed: () async {
+                      var url = delete_job;
+                      var res = await http.post(Uri.parse(url),
+                          body: {'j_id': job['j_id'].toString()});
+                      if (res.statusCode == 200) {
+                        setState(() {
+                          jobs = json.decode(res.body)['jobs'];
+                        });
+                        print('deleted seccessfully');
+                      }
+                    },
                   ),
                 ],
               ),
