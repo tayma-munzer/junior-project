@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
@@ -122,10 +124,13 @@ class _AddjobPageState extends State<AddjobPage> {
                           .then((value) {
                         if (value.statusCode == 200) {
                           print('job added successfully');
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => viewjob()),
-                          // );
+                          int j_id = json.decode(value.body)['j_id'];
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    viewjob(json.decode(value.body)['j_id'])),
+                          );
                         } else {
                           // Error response
                           print(

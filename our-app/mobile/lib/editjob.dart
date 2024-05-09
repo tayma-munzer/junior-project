@@ -9,7 +9,7 @@ import 'package:mobile/drawer.dart';
 
 class EditJob extends StatefulWidget {
   final int j_id;
-  const EditJob({required this.j_id, Key? key}) : super(key: key);
+  const EditJob(this.j_id, {Key? key}) : super(key: key);
 
   @override
   State<EditJob> createState() => _EditJobState();
