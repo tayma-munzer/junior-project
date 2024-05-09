@@ -258,26 +258,23 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            AuthCont.add_exp(
-                                    widget.cv_id.toString(), experiences)
-                                .then((value) {
-                              if (value.statusCode == 200) {
-                                print(
-                                    ' experince added to the CV sucessfully successfully');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          addCVLanguages((widget.cv_id)),
-                                    ));
-                              } else {
-                                // Error response
-                                print(
-                                    'Failed to add the  experince to the CV. Error: ${value.body}');
-                              }
-                            });
-                          }
+                          AuthCont.add_exp(widget.cv_id.toString(), experiences)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  ' experince added to the CV sucessfully successfully');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        addCVLanguages((widget.cv_id)),
+                                  ));
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the  experince to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
                         child: Text(
                           'التالي ',

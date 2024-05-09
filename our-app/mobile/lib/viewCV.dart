@@ -10,8 +10,7 @@ import 'package:mobile/drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class viewcv extends StatefulWidget {
-  final int cv_id;
-  const viewcv(this.cv_id, {Key? key}) : super(key: key);
+  const viewcv({Key? key}) : super(key: key);
 
   @override
   State<viewcv> createState() => _viewcvState();
