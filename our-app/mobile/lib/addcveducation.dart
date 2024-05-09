@@ -261,26 +261,24 @@ class _addCVEductionState extends State<addCVEduction> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            AuthCont.add_education(
-                                    widget.cv_id.toString(), educations)
-                                .then((value) {
-                              if (value.statusCode == 200) {
-                                print(
-                                    ' education added to the CV sucessfully successfully');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddCVExperience(widget.cv_id),
-                                    ));
-                              } else {
-                                // Error response
-                                print(
-                                    'Failed to add the education to the CV. Error: ${value.body}');
-                              }
-                            });
-                          }
+                          AuthCont.add_education(
+                                  widget.cv_id.toString(), educations)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  ' education added to the CV sucessfully successfully');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddCVExperience(widget.cv_id),
+                                  ));
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the education to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
                         child: Text(
                           'التالي ',
