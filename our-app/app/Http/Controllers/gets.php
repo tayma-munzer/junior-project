@@ -65,9 +65,9 @@ class gets extends Controller
         return $jobs;
     }
 
-    static function courses_type_id(string  $secondry_type_courses){
-        $type = DB::table('secondary_type_courses')->where('stc_type','=',$secondry_type_courses)->first();
-        return $type->stc_id;
+    static function courses(string  $courses_type){
+        $type = DB::table('courses_type')->where('ct_type','=',$courses_type)->first();
+        return $type->ct_id;
     }
 
 
