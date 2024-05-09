@@ -45,10 +45,16 @@ class _AddCVMainState extends State<AddCVMain> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(':اضف معلومات اساسية للسيرة الذاتية',
-                    textAlign: TextAlign.right),
+                Text(
+                  ':اضف معلومات اساسية للسيرة الذاتية',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
                 SizedBox(height: 16.0),
-                Text('الهدف الوظيفي '),
+                Text(
+                  'الهدف الوظيفي ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVcareerObjController,
                   textAlign: TextAlign.right,
@@ -62,7 +68,10 @@ class _AddCVMainState extends State<AddCVMain> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('العنوان '),
+                Text(
+                  'العنوان ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVAdressController,
                   maxLines: null,
@@ -78,7 +87,10 @@ class _AddCVMainState extends State<AddCVMain> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('البريد الالكتروني'),
+                Text(
+                  'البريد الالكتروني',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEmailController,
                   textAlign: TextAlign.right,
@@ -96,7 +108,10 @@ class _AddCVMainState extends State<AddCVMain> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('رقم الهاتف'),
+                Text(
+                  'رقم الهاتف',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVPhoneController,
                   maxLines: null,
@@ -149,8 +164,9 @@ class _AddCVMainState extends State<AddCVMain> {
                       child: Text(
                         'التالي ',
                         style: TextStyle(
-                          color: Colors.white,
-                        ),
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                     ),
                   ),

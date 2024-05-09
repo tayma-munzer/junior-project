@@ -20,9 +20,6 @@ class _AddCVSkillsState extends State<AddCVSkills> {
   TextEditingController CVNumYearsController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String s_name = '';
-  String s_level = '';
-  String years_of_exp = '';
   List<Map<String, String>> skills = [];
 
   @override
@@ -44,7 +41,9 @@ class _AddCVSkillsState extends State<AddCVSkills> {
               children: [
                 Text(': قسم المهارات', textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
-                Text(' اسم المهارة '),
+                Text(' اسم المهارة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 TextFormField(
                   controller: CVSkillNameController,
                   textAlign: TextAlign.right,
@@ -53,12 +52,14 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     if (value == null || value.isEmpty) {
                       return 'يرجى ادخال اسم المهارة';
                     }
-                    s_name = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('مستوى الخبرة '),
+                // Skill Level
+                Text('مستوى الخبرة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 TextFormField(
                   controller: CVSkillLevelController,
                   maxLines: null,
@@ -69,12 +70,13 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     if (value == null || value.isEmpty) {
                       return 'يرجى ادخال مستوى الخدمة ';
                     }
-                    s_level = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('عدد سنين الخبرة '),
+                Text('عدد سنين الخبرة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 TextFormField(
                   controller: CVNumYearsController,
                   textAlign: TextAlign.right,
@@ -86,11 +88,11 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     if (!RegExp(r'^\d+$').hasMatch(value)) {
                       return 'الرجاء إدخال رقم صحيح موجب';
                     }
-                    years_of_exp = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
+                // Add Button
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -98,9 +100,9 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       Map<String, String> skill = {
-                        's_name': s_name,
-                        's_level': s_level,
-                        'years_of_exp': years_of_exp
+                        's_name': CVSkillNameController.text,
+                        's_level': CVSkillLevelController.text,
+                        'years_of_exp': CVNumYearsController.text
                       };
                       skills.add(skill);
                       print('skill added to list');
@@ -117,33 +119,54 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                       child: Text(
                         'اضف ',
                         style: TextStyle(
-                          color: Colors.white,
-                        ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     ),
                   ),
                 ),
                 SizedBox(height: 16.0),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: skills.length,
-                  itemBuilder: (context, index) {
-                    final skill = skills[index];
-                    return ListTile(
-                      title: Text(skill['s_name']!),
-                      subtitle: Text(skill['s_level']!),
-                      trailing: Text(skill['years_of_exp']!),
-                    );
-                  },
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: skills.length,
+                    itemBuilder: (context, index) {
+                      final skill = skills[index];
+                      return Container(
+                        color: index % 2 == 0
+                            ? const Color.fromARGB(255, 163, 214, 255)
+                            : Colors.white,
+                        child: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "اسم المهارة : ${skill['s_name']}",
+                              ),
+                              Text(
+                                " مستوى الخبرة : ${skill['s_level']}",
+                              ),
+                              Text(
+                                "  عدد سنين الخدمة : ${skill['years_of_exp']} ",
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
+
                 SizedBox(height: 16.0),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 209, 231, 255)),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -154,7 +177,13 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                             ),
                           );
                         },
-                        child: Text('تخطي '),
+                        child: Text(
+                          'تخطي ',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 7, 7, 7),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -182,7 +211,13 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                             }
                           });
                         },
-                        child: Text('التالي '),
+                        child: Text(
+                          'التالي ',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       ),
                     ),
                   ],

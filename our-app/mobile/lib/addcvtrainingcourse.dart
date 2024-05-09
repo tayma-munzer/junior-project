@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/addcvprojects.dart';
+import 'package:get/get.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/addcvprojects.dart';
 
 class AddCVTrainingCourse extends StatefulWidget {
   final int cv_id;
@@ -23,7 +24,7 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
   String course_name = '';
   String training_center = '';
   String completion_date = '';
-  List<dynamic> courses = [];
+  List<Map<String, String>> courses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +44,15 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(':قسم الدورات التدريبية', textAlign: TextAlign.right),
+                Text(
+                  ':قسم الدورات التدريبية',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
                 SizedBox(height: 16.0),
-                Text(' اسم الدورة '),
+                Text(' اسم الدورة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextFormField(
                   controller: CVCourseNameController,
                   textAlign: TextAlign.right,
@@ -59,7 +66,9 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('اسم المركز التدريبي'),
+                Text('اسم المركز التدريبي',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextFormField(
                   controller: CVTrainingCenterController,
                   maxLines: null,
@@ -76,7 +85,9 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' تاريخ انتهاء الدورة '),
+                Text(' تاريخ انتهاء الدورة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextFormField(
                   controller: CVCompletionDateController,
                   textAlign: TextAlign.right,
@@ -98,13 +109,18 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> course = {
+                      Map<String, String> course = {
                         'course_name': course_name,
                         'training_center': training_center,
                         'completion_date': completion_date
                       };
                       courses.add(course);
                       print('course added to the list');
+                      setState(() {
+                        CVCourseNameController.clear();
+                        CVTrainingCenterController.clear();
+                        CVCompletionDateController.clear();
+                      });
                     }
                   },
                   child: Container(
@@ -113,10 +129,46 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                       child: Text(
                         'اضف ',
                         style: TextStyle(
-                          color: Colors.white,
-                        ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                     ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index];
+                      return Container(
+                        color: index % 2 == 0
+                            ? const Color.fromARGB(255, 163, 214, 255)
+                            : Colors.white,
+                        child: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "اسم الدورة : ${course['course_name']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " اسم مركز التدريب  : ${course['training_center']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " تاريخ انهاء الدورة : ${course['completion_date']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -125,8 +177,8 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                     Expanded(
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 209, 231, 255)),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -136,7 +188,13 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                                     addCVProjects(widget.cv_id)),
                           );
                         },
-                        child: Text(' تخطي'),
+                        child: Text(
+                          ' تخطي',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 7, 7, 7),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -165,7 +223,13 @@ class _AddCVTrainingCourseState extends State<AddCVTrainingCourse> {
                             }
                           });
                         },
-                        child: Text(' التالي'),
+                        child: Text(
+                          ' التالي',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       ),
                     ),
                   ],
