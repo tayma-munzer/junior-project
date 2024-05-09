@@ -340,8 +340,7 @@ class authenticationController extends Controller
             'c_price' => 'required|integer|gte:50000',
             'c_img' => 'required|string',
             'c_desc' => 'required|string',
-            'c_duration'=>'required|integer',
-            'dec_media' =>'required|string',
+            'c_duration'=>'required|string',
             'pre_requisite' =>'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -361,7 +360,6 @@ class authenticationController extends Controller
         'c_price' => $request->c_price,
         'c_img' => $request->c_img,
         'c_duration'=>$request->c_duration,
-        'dec_media' =>$request->dec_media,
         'pre_requisite' =>$request->pre_requisite,
         ]);
         return response([
@@ -1335,8 +1333,7 @@ public function edit_course(edit_course_request $request){
         'c_desc'=>'required|string',
         'c_price'=>'required|integer|gte:50000',
         'c_img'=>'required|string',
-        'c_duration'=>'required|integer',
-        'dec_media' =>'required|string',
+        'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
     ],$messages = [
         'required' => 'The :attribute field is required.',
@@ -1354,7 +1351,6 @@ public function edit_course(edit_course_request $request){
         'c_price'=>$request->c_price,
         'c_img'=>$request->c_img ,
         'c_duration'=>$request->c_duration,
-        'dec_media' =>$request->dec_media,
         'pre_requisite' =>$request->pre_requisite,
         
     ]);
@@ -1398,6 +1394,7 @@ public function delete_course(edit_course_request $request){
 public function get_course(edit_course_request $request) {
     $validator = Validator::make($request->all(), [
         'c_id' =>'required|exists:course,c_id',
+        'u_id' =>'required|exists:course,u_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1407,7 +1404,11 @@ public function get_course(edit_course_request $request) {
         return response($errors,402);
     }else{
     $course=course::where('c_id','=',$request->c_id);
-    return $course->get(); }
+    return $course->get();
+    $course=course::where('u_id','=',$request->u_id);
+    return $course->get();
+
+    }
 }
 //
 public function edit_training_course(edit_training_request $request){

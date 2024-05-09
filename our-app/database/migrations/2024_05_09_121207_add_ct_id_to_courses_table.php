@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('secondary_type_courses', function (Blueprint $table) {
-            $table->increments('stc_id');
+        Schema::table('courses', function (Blueprint $table) {
             $table->integer('ct_id');
-            $table->string('stc_type');
         });
-    
     }
 
     /**
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('secondary_type_courses');
+        Schema::table('courses', function (Blueprint $table) {
+            //
+        });
     }
 };

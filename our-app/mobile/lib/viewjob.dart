@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/editjob.dart';
 
 class viewjob extends StatefulWidget {
   final int j_id;
@@ -65,7 +66,13 @@ class _viewjobState extends State<viewjob> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditJob(widget.j_id)),
+                    );
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue),
                     minimumSize: MaterialStateProperty.all(Size(300, 40)),

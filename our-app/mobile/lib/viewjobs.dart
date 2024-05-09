@@ -62,11 +62,11 @@ class _ViewJobsState extends State<ViewJobs> {
                   IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       // builder: (context) => EditJob(widget.j_id)),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditJob(job['j_id'])),
+                      );
                     },
                   ),
                   IconButton(
