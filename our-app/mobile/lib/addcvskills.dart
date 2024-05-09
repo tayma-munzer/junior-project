@@ -11,25 +11,23 @@ class AddCVSkills extends StatefulWidget {
   const AddCVSkills(this.cv_id, {Key? key}) : super(key: key);
 
   @override
-  State<AddCVSkills> createState() => _AddCVSkillsState();
+  _AddCVSkillsState createState() => _AddCVSkillsState();
 }
 
 class _AddCVSkillsState extends State<AddCVSkills> {
   TextEditingController CVSkillNameController = TextEditingController();
   TextEditingController CVSkillLevelController = TextEditingController();
   TextEditingController CVNumYearsController = TextEditingController();
-
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String s_name = '';
   String s_level = '';
   String years_of_exp = '';
-  List<dynamic> skills = [];
+  List<Map<String, String>> skills = [];
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(33.0),
@@ -66,7 +64,7 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(hintText: 'ادخل  مستوى خبرتك'),
+                  decoration: InputDecoration(hintText: 'ادخل مستوى خبرتك'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'يرجى ادخال مستوى الخدمة ';
@@ -83,7 +81,7 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   decoration: InputDecoration(hintText: 'ادخل عدد سنين الخبرة'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return ' يرجى ادخال عدد سنين الخبرة  ';
+                      return ' يرجى ادخال عدد سنين الخبرة ';
                     }
                     if (!RegExp(r'^\d+$').hasMatch(value)) {
                       return 'الرجاء إدخال رقم صحيح موجب';
@@ -92,33 +90,25 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     return null;
                   },
                 ),
-                // Container(
-                //   child: ListView.builder(
-                //       itemCount: skills.length,
-                //       itemBuilder: (context, index) {
-                //         final skill = skills[index];
-                //         return ListTile(
-                //           title: Text(skill['s_name']),
-                //           subtitle: Text(skill['s_level']),
-                //           trailing: Text(skill['years_of_exp']),
-                //         );
-                //       }),
-                // ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> skill = {
+                      Map<String, String> skill = {
                         's_name': s_name,
                         's_level': s_level,
                         'years_of_exp': years_of_exp
                       };
                       skills.add(skill);
                       print('skill added to list');
+                      setState(() {
+                        CVSkillNameController.clear();
+                        CVSkillLevelController.clear();
+                        CVNumYearsController.clear();
+                      });
                     }
                   },
                   child: Container(
@@ -134,20 +124,34 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                   ),
                 ),
                 SizedBox(height: 16.0),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: skills.length,
+                  itemBuilder: (context, index) {
+                    final skill = skills[index];
+                    return ListTile(
+                      title: Text(skill['s_name']!),
+                      subtitle: Text(skill['s_level']!),
+                      trailing: Text(skill['years_of_exp']!),
+                    );
+                  },
+                ),
+                SizedBox(height: 16.0),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
+                              MaterialStateProperty.all(Colors.grey),
                         ),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    AddCVTrainingCourse(widget.cv_id)),
+                              builder: (context) =>
+                                  AddCVTrainingCourse(widget.cv_id),
+                            ),
                           );
                         },
                         child: Text('تخطي '),
@@ -157,19 +161,19 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
+                              MaterialStateProperty.all(Colors.blue),
                         ),
                         onPressed: () {
                           AuthCont.add_skills(widget.cv_id.toString(), skills)
                               .then((value) {
                             if (value.statusCode == 200) {
-                              print(
-                                  'skill added to the CV sucessfully successfully');
+                              print('skill added to the CV successfully');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddCVTrainingCourse(widget.cv_id)),
+                                  builder: (context) =>
+                                      AddCVTrainingCourse(widget.cv_id),
+                                ),
                               );
                             } else {
                               // Error response
@@ -183,33 +187,6 @@ class _AddCVSkillsState extends State<AddCVSkills> {
                     ),
                   ],
                 ),
-
-                // Expanded(
-                //   child: ListView.builder(
-                //       itemCount: skills.length,
-                //       itemBuilder: (context, index) {
-                //         final skill = skills[index];
-                //         return ListTile(
-                //           title: Text(skill['s_name']),
-                //           subtitle: Text(skill['s_level']),
-                //           trailing: Text(skill['years_of_exp']),
-                //         );
-                //       }),
-                // )
-                // Column(
-                //   children: [
-                //     ListView.builder(
-                //         itemCount: skills.length,
-                //         itemBuilder: (context, index) {
-                //           final skill = skills[index];
-                //           return ListTile(
-                //             title: Text(skill['s_name']),
-                //             subtitle: Text(skill['s_level']),
-                //             trailing: Text(skill['years_of_exp']),
-                //           );
-                //         }),
-                //   ],
-                // )
               ],
             ),
           ),

@@ -30,7 +30,6 @@ class _viewjobState extends State<viewjob> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchjobdetails();
   }
@@ -43,15 +42,51 @@ class _viewjobState extends State<viewjob> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Job Name: ${jobdetails!['j_name']}'),
-          Text('Job Description: ${jobdetails!['j_desc']}'),
-          Text('Job Salary: ${jobdetails!['j_sal']} SAR'),
-          Text('Job Requirements: ${jobdetails!['j_req']}'),
-        ],
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Image.asset('assets/workingbag.png', width: 200),
+            SizedBox(height: 50),
+            Text('${jobdetails!['j_name']} : اسم الوظيفة',
+                style: TextStyle(fontSize: 20)),
+            SizedBox(height: 10),
+            Text(' ${jobdetails!['j_desc']} : التوصيف الوظيفة',
+                style: TextStyle(fontSize: 20)),
+            SizedBox(height: 10),
+            Text('${jobdetails!['j_sal']} :الراتب(بالليرة السورية)  ',
+                style: TextStyle(fontSize: 20)),
+            SizedBox(height: 10),
+            Text(' ${jobdetails!['j_req']} : متطلبات الوظيفة',
+                style: TextStyle(fontSize: 20)),
+            SizedBox(height: 20),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    minimumSize: MaterialStateProperty.all(Size(300, 40)),
+                  ),
+                  child: Text('Edit', style: TextStyle(color: Colors.white)),
+                ),
+                SizedBox(height: 5),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    minimumSize: MaterialStateProperty.all(Size(300, 40)),
+                  ),
+                  child: Text('Delete', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }

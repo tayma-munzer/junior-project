@@ -54,6 +54,7 @@ use App\Models\skills;
 use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -64,7 +65,7 @@ class authenticationController extends Controller
     //done
     public function login(loginRequest $request) {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required',//|email:rfc,dns
             'password' => 'required|min:5',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -401,7 +402,7 @@ class authenticationController extends Controller
     public function add_cv(add_cv_request $request){
         $validator = Validator::make($request->all(),[
             'token' => 'required',
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required',//|email:rfc,dns
             'phone' => 'required|numeric|min:10',
             'career_obj' => 'required|string',
             'address' => 'required|string',
@@ -464,9 +465,11 @@ class authenticationController extends Controller
     }
     //done 
     public function add_language(add_language_request $request){
-        $validator = Validator::make($request->languages, [
-            'languages'=>[ 
-            'l_id' => 'required|integer|exists:languages,l_id',]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'cv_id'=>'required',
+            'languages'=>'required|array',
+            'languages.*.l_id' => 'required|integer|exists:languages,l_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'integer'=> 'the :attribute field should be integer',
@@ -476,8 +479,8 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $cv_id=$request->cv_id;
-            $data=$request->languages;
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['languages'];
             foreach ($data as $d){ 
                 $cv_lang = cv_lang::create([ 
                 'cv_id' =>$cv_id,
@@ -912,7 +915,7 @@ class authenticationController extends Controller
     } 
     //done
     public function get_all_cv (get_all_cv $request){
-        $token = token::where('token','=',$request->token)->first();
+        $token = PersonalAccessToken::findToken($request->token);
         $user_id = $token->tokenable_id;
         $cv = cv::where('u_id','=',$user_id)->first();
         $cv_id = $cv->cv_id;
@@ -921,7 +924,7 @@ class authenticationController extends Controller
         $experience=experience::where('cv_id','=',$cv_id)->get();
         $project=projects::where('cv_id','=',$cv_id)->get();
         $education=education::where('cv_id','=',$cv_id)->get();
-        $languages=cv_lang::where('cv_id','=',$cv_id)->get();
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language')->where('cv_id','=',$cv_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
         return [
             'cv' => $cv,
             'skills' => $skills,

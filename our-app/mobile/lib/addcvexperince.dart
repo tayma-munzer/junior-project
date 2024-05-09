@@ -190,11 +190,11 @@ class _AddCVExperienceState extends State<AddCVExperience> {
                                 print(
                                     ' experince added to the CV sucessfully successfully');
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
+                                    context,
+                                    MaterialPageRoute(
                                       builder: (context) =>
-                                          addCVLanguages(widget.cv_id)),
-                                );
+                                          addCVLanguages((widget.cv_id)),
+                                    ));
                               } else {
                                 // Error response
                                 print(

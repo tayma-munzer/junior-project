@@ -10,6 +10,7 @@ import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
 import 'package:mobile/colors.dart';
+import 'package:mobile/viewjobs.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -181,7 +182,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddCVMain()),
+                      MaterialPageRoute(builder: (context) => ViewJobs()),
                     );
                   },
                 ),

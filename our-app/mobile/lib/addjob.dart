@@ -3,6 +3,7 @@ import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/viewjob.dart';
 
 class AddjobPage extends StatefulWidget {
   const AddjobPage({Key? key}) : super(key: key);
@@ -121,6 +122,10 @@ class _AddjobPageState extends State<AddjobPage> {
                           .then((value) {
                         if (value.statusCode == 200) {
                           print('job added successfully');
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => viewjob()),
+                          // );
                         } else {
                           // Error response
                           print(
