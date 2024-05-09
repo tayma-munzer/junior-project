@@ -182,7 +182,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ViewJobs()),
+                      MaterialPageRoute(builder: (context) => AddCVMain()),
                     );
                   },
                 ),

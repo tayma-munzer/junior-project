@@ -27,7 +27,7 @@ class _addCVProjectsState extends State<addCVProjects> {
   String start_date = '';
   String end_date = '';
   String responsibilities = '';
-  List<dynamic> projects = [];
+  List<Map<String, String>> projects = [];
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -46,9 +46,16 @@ class _addCVProjectsState extends State<addCVProjects> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(': قسم المشارع ', textAlign: TextAlign.right),
+                Text(
+                  ': قسم المشاريع ',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
                 SizedBox(height: 16.0),
-                Text(' عنوان المشروع '),
+                Text(
+                  ' عنوان المشروع ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVProjectNameController,
                   textAlign: TextAlign.right,
@@ -62,13 +69,16 @@ class _addCVProjectsState extends State<addCVProjects> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' وصف المشروع'),
+                Text(
+                  ' وصف المشروع',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVProjectDescController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(hintText: 'ادخل المسمى الوظيفي'),
+                  decoration: InputDecoration(hintText: 'ادخل وصف المشروع'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'يرجى ادخال وصف المشروع   ';
@@ -78,7 +88,10 @@ class _addCVProjectsState extends State<addCVProjects> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' تاريخ البدء في المشروع '),
+                Text(
+                  ' تاريخ البدء في المشروع ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVStartDateController,
                   textAlign: TextAlign.right,
@@ -93,7 +106,10 @@ class _addCVProjectsState extends State<addCVProjects> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' تاريخ انهاء المشروع '),
+                Text(
+                  ' تاريخ انهاء المشروع ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEndDateController,
                   textAlign: TextAlign.right,
@@ -108,7 +124,10 @@ class _addCVProjectsState extends State<addCVProjects> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('المسؤوليات في المشروع '),
+                Text(
+                  'المسؤوليات في المشروع ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVResponsibilitiesController,
                   textAlign: TextAlign.right,
@@ -130,7 +149,7 @@ class _addCVProjectsState extends State<addCVProjects> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> project = {
+                      Map<String, String> project = {
                         'p_name': p_name,
                         'p_desc': p_desc,
                         'start_date': start_date,
@@ -139,6 +158,13 @@ class _addCVProjectsState extends State<addCVProjects> {
                       };
                       projects.add(project);
                       print('project added to the list');
+                      setState(() {
+                        CVProjectNameController.clear();
+                        CVProjectDescController.clear();
+                        CVStartDateController.clear();
+                        CVEndDateController.clear();
+                        CVResponsibilitiesController.clear();
+                      });
                     }
                   },
                   child: Container(
@@ -148,9 +174,54 @@ class _addCVProjectsState extends State<addCVProjects> {
                         'اضف ',
                         style: TextStyle(
                           color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
                     ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: projects.length,
+                    itemBuilder: (context, index) {
+                      final project = projects[index];
+                      return Container(
+                        color: index % 2 == 0
+                            ? const Color.fromARGB(255, 163, 214, 255)
+                            : Colors.white,
+                        child: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "عنوان المشروع : ${project['p_name']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "وصف المشروع : ${project['p_desc']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " تاريخ البدء في المشروع : ${project['start_date']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " تاريخ انهاء المشروع : ${project['end_date']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "  المسؤوليات في المشروع : ${project['responsibilities']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -159,8 +230,8 @@ class _addCVProjectsState extends State<addCVProjects> {
                     Expanded(
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 209, 231, 255)),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -170,7 +241,13 @@ class _addCVProjectsState extends State<addCVProjects> {
                                     addCVEduction(widget.cv_id),
                               ));
                         },
-                        child: Text(' تخطي'),
+                        child: Text(
+                          ' تخطي',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 7, 7, 7),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -199,7 +276,13 @@ class _addCVProjectsState extends State<addCVProjects> {
                             }
                           });
                         },
-                        child: Text(' التالي'),
+                        child: Text(
+                          'التالي ',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       ),
                     ),
                   ],

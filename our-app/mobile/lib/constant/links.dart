@@ -63,4 +63,16 @@ const edit_language = URL + "edit_language"; //تعديل لغة بالسيرة 
 const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة الذاتية
 const edit_alt_service =
     URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية
-const get_all_languages = URL + "getlanguages"; // get بجيب كل اللغات , هاد نوعو 
+const get_all_languages = URL + "getlanguages"; // get بجيب كل اللغات , هاد نوعو
+//
+const edit_course = URL + "edit_course";
+const delete_course = URL + "delete_course";
+const get_course = URL + "get_course";
+const edit_training_courses = URL + "edit_training_courses";
+const delete_training_courses = URL + "delete_training_courses";
+const get_training_courses = URL + "get_training_courses";
+const edit_education = URL + "edit_education";
+const delete_education = URL + "delete_education";
+const get_education = URL + "get_education";
+const delete_exp = URL + "delete_exp";
+const get_exp = URL + "get_exp";
