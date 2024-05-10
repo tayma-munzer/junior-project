@@ -111,7 +111,7 @@ class _addCVLanguagesState extends State<addCVLanguages> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => viewcv(widget.cv_id),
+                          builder: (context) => viewcv(),
                         ));
                   },
                   child: Text(' تخطي'),
@@ -142,8 +142,7 @@ class _addCVLanguagesState extends State<addCVLanguages> {
                             ' language added to the CV sucessfully successfully');
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => viewcv(widget.cv_id)),
+                          MaterialPageRoute(builder: (context) => viewcv()),
                         );
                       } else {
                         // Error response

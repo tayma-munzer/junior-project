@@ -28,7 +28,7 @@ class _addCVEductionState extends State<addCVEduction> {
   String grad_year = '';
   String field_of_study = '';
   String GPA = '';
-  List<dynamic> educations = [];
+  List<Map<String, String>> educations = [];
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +48,16 @@ class _addCVEductionState extends State<addCVEduction> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(' قسم التعلم::', textAlign: TextAlign.right),
+                Text(
+                  ': قسم التعلم ',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
                 SizedBox(height: 16.0),
-                Text(' اسم الجامعة  '),
+                Text(
+                  ' اسم الجامعة  ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEductionUniController,
                   textAlign: TextAlign.right,
@@ -64,7 +71,10 @@ class _addCVEductionState extends State<addCVEduction> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text(' اختصاص الدراسة '),
+                Text(
+                  ' اختصاص الدراسة ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVeducationFieldOfStudyController,
                   maxLines: null,
@@ -80,7 +90,10 @@ class _addCVEductionState extends State<addCVEduction> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('سنة التخرج'),
+                Text(
+                  'سنة التخرج',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEducationGradYearController,
                   textAlign: TextAlign.right,
@@ -97,7 +110,10 @@ class _addCVEductionState extends State<addCVEduction> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('درجة الشهادة'),
+                Text(
+                  'درجة الشهادة',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEducationDegreeController,
                   textAlign: TextAlign.right,
@@ -111,7 +127,10 @@ class _addCVEductionState extends State<addCVEduction> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('معدل التخرج'),
+                Text(
+                  'معدل التخرج',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 TextFormField(
                   controller: CVEducationGPAController,
                   textAlign: TextAlign.right,
@@ -135,7 +154,7 @@ class _addCVEductionState extends State<addCVEduction> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> education = {
+                      Map<String, String> education = {
                         'degree': degree,
                         'uni': uni,
                         'grad_year': grad_year,
@@ -143,10 +162,14 @@ class _addCVEductionState extends State<addCVEduction> {
                         'gba': GPA
                       };
                       educations.add(education);
-                      print(education);
-                      print('object');
-                      print(educations);
                       print('education added to the list');
+                      setState(() {
+                        CVEducationDegreeController.clear();
+                        CVEductionUniController.clear();
+                        CVEducationGradYearController.clear();
+                        CVEducationGPAController.clear();
+                        CVeducationFieldOfStudyController.clear();
+                      });
                     }
                   },
                   child: Container(
@@ -155,10 +178,54 @@ class _addCVEductionState extends State<addCVEduction> {
                       child: Text(
                         'اضف ',
                         style: TextStyle(
-                          color: Colors.white,
-                        ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: educations.length,
+                    itemBuilder: (context, index) {
+                      final project = educations[index];
+                      return Container(
+                        color: index % 2 == 0
+                            ? const Color.fromARGB(255, 163, 214, 255)
+                            : Colors.white,
+                        child: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                " اسم الجامعة : ${project['uni']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " اختصاص الدراسة : ${project['field_of_study']}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                " سنة التخرج : ${project['grad_year']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "  درجة الشهادة : ${project['degree']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "   المعدل التراكمي  : ${project['gba']} ",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -167,8 +234,8 @@ class _addCVEductionState extends State<addCVEduction> {
                     Expanded(
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 209, 231, 255)),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -178,7 +245,13 @@ class _addCVEductionState extends State<addCVEduction> {
                                     AddCVExperience(widget.cv_id)),
                           );
                         },
-                        child: Text(' تخطي'),
+                        child: Text(
+                          'تخطي ',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 7, 7, 7),
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
@@ -188,28 +261,32 @@ class _addCVEductionState extends State<addCVEduction> {
                               MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            AuthCont.add_education(
-                                    widget.cv_id.toString(), educations)
-                                .then((value) {
-                              if (value.statusCode == 200) {
-                                print(
-                                    ' education added to the CV sucessfully successfully');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddCVExperience(widget.cv_id),
-                                    ));
-                              } else {
-                                // Error response
-                                print(
-                                    'Failed to add the education to the CV. Error: ${value.body}');
-                              }
-                            });
-                          }
+                          AuthCont.add_education(
+                                  widget.cv_id.toString(), educations)
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print(
+                                  ' education added to the CV sucessfully successfully');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddCVExperience(widget.cv_id),
+                                  ));
+                            } else {
+                              // Error response
+                              print(
+                                  'Failed to add the education to the CV. Error: ${value.body}');
+                            }
+                          });
                         },
-                        child: Text(' التالي'),
+                        child: Text(
+                          'التالي ',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       ),
                     ),
                   ],

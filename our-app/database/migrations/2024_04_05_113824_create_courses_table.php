@@ -20,8 +20,6 @@ return new class extends Migration
             $table->integer('c_price');
             $table->mediumText('c_img');
             $table->integer('u_id');
-            $table->string('c_duration');
-            $table->string('pre_requisite');
 
         
           

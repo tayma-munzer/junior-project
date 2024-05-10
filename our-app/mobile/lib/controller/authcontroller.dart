@@ -164,4 +164,17 @@ class AuthCont {
         }));
     return res;
   }
+
+  static Future<http.Response> editJob(String j_id, String j_sal, String j_name,
+      String j_desc, String j_req) async {
+    var url = edit_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'j_id': j_id,
+      'j_sal': j_sal,
+      'j_name': j_name,
+      'j_desc': j_desc,
+      'j_req': j_req,
+    });
+    return res;
+  }
 }
