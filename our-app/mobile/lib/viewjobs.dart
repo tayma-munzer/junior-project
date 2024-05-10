@@ -5,6 +5,7 @@ import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editjob.dart';
 import 'package:mobile/viewjob.dart';
@@ -21,31 +22,44 @@ List<dynamic> jobs = [];
 
 class _ViewJobsState extends State<ViewJobs> {
   void fetchJobs() async {
-    var url = get_all_jobs;
-    var res = await http.get(Uri.parse(url));
+    var url = get_user_jobs;
+    String? token = await AuthManager.getToken();
+    var res = await http.post(Uri.parse(url), body: {'token': token});
     List<dynamic> data = json.decode(res.body);
     setState(() {
       jobs = data.map((item) => item).toList();
       print('object');
       print(jobs);
+    });
+  }
+
+  String? user;
+  String? job;
+  String? service;
+
+  Future<void> fetchRoles() async {
+    String? userRole = await AuthManager.isUser();
+    String? jobRole = await AuthManager.isjobOwner();
+    String? serviceRole = await AuthManager.isserviceOwner();
+    setState(() {
+      this.user = userRole;
+      this.job = jobRole;
+      this.service = serviceRole;
     });
   }
 
   void deleteJob(int j_id) async {
     var url = delete_job;
     var res = await http.post(Uri.parse(url), body: {'j_id': j_id});
-    List<dynamic> data = json.decode(res.body);
-    setState(() {
-      jobs = data.map((item) => item).toList();
-      print('object');
-      print(jobs);
-    });
+    //List<dynamic> data = json.decode(res.body);
+    fetchJobs();
   }
 
   @override
   void initState() {
     super.initState();
     fetchJobs();
+    fetchRoles();
   }
 
   @override
@@ -87,9 +101,7 @@ class _ViewJobsState extends State<ViewJobs> {
                       var res = await http.post(Uri.parse(url),
                           body: {'j_id': job['j_id'].toString()});
                       if (res.statusCode == 200) {
-                        setState(() {
-                          jobs = json.decode(res.body)['jobs'];
-                        });
+                        fetchJobs();
                         print('deleted seccessfully');
                       }
                     },

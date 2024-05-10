@@ -30,7 +30,7 @@ class _editcvState extends State<editcv> {
     Map<String, dynamic> data = json.decode(res.body);
     mainInfo = data['cv'];
     emailController.text = mainInfo['email'] ?? '';
-    phoneController.text = mainInfo['phone'] ?? '';
+    phoneController.text = mainInfo['phone'].toString() ?? '';
     addressController.text = mainInfo['address'] ?? '';
     careerObjController.text = mainInfo['career_obj'] ?? '';
     setState(() {});
