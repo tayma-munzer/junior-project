@@ -30,7 +30,7 @@ class get_course_details extends FormRequest
             'c_duration',
             'pre_requisite',
             'm_id',
-            'm-path',
+            'm_path',
             
             //
         ];
