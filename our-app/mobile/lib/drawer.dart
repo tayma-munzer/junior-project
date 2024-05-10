@@ -133,38 +133,42 @@ class _CustomDrawerState extends State<CustomDrawer> {
               );
             },
           ),
-          ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('فرص العامل الخاصة بي'),
-                SizedBox(width: 10),
-                Icon(Icons.rule),
-              ],
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ViewJobs()),
-              );
-            },
-          ),
-          ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('عرض حميع فرص العمل'),
-                SizedBox(width: 10),
-                Icon(Icons.rule),
-              ],
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => viewallJobs()),
-              );
-            },
-          ),
+          job == 'true'
+              ? ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('فرص العامل الخاصة بي'),
+                      SizedBox(width: 10),
+                      Icon(Icons.rule),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ViewJobs()),
+                    );
+                  },
+                )
+              : Container(),
+          user == 'true'
+              ? ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('عرض حميع فرص العمل'),
+                      SizedBox(width: 10),
+                      Icon(Icons.rule),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => viewallJobs()),
+                    );
+                  },
+                )
+              : Container(),
           ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.end,

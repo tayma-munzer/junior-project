@@ -12,6 +12,7 @@ use App\Http\Controllers\user_id;
 use App\Models\common_questions;
 use App\Models\job;
 use App\Models\languages;
+use App\Models\media;
 
 class gets extends Controller
 {
@@ -70,5 +71,10 @@ class gets extends Controller
         return $type->ct_id;
     }
 
+    function get_all_media(){
+        $media = media::all();
+        return $media;
+    }
 
+    
 }

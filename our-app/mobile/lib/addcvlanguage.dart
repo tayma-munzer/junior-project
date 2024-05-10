@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
-import 'package:mobile/buy.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/constant/links.dart';
