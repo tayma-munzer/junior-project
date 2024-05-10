@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -17,19 +18,17 @@ class viewcv extends StatefulWidget {
 
 class _viewcvState extends State<viewcv> {
   Map<String, dynamic> mainInfo = {};
-  List<String> skills = [];
+  List skills = [];
 
   void fetch() async {
     String? token = await AuthManager.getToken();
     var url = get_all_cv;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-
     mainInfo = data['cv'];
-
-    if (data['skills'] != null && data['skills'] is List) {
-      skills = List<String>.from(data['skills']);
-    }
+    // if (data['skills'] != null && data['skills'] is List) {
+    skills = data['skills'];
+    // }
 
     setState(() {});
   }
@@ -105,7 +104,9 @@ class _viewcvState extends State<viewcv> {
                   if (skills.isEmpty)
                     Text('No skills to be displayed')
                   else
-                    for (String skill in skills) Text(skill),
+                    for (var skill in skills)
+                      Text(
+                          '${skill['s_name']}  : اسم المهارة\n ${skill['years_of_exp']} :عدد سنين الخبرة  \n${skill['s_level']} : مستوى المهارة   '),
                 ],
               ),
               ElevatedButton(
