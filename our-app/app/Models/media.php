@@ -12,6 +12,7 @@ class media extends Model
     public $timestamps = false;
     protected $fillable = [
         'c_id',
+        'm_id',
         'm_name',
         'm_path',
     ];
