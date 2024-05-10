@@ -19,10 +19,16 @@ class course extends Model
         'c_duration',
         'pre_requisite',
         'ct_id',
+        'm_id',
     ];
 
     public function courses_type(){
         return 
         $this->belongsTo(courses_type::class,'ct_id','c_id');
+    }
+
+    public function course_media(){
+        return 
+        $this->belongsTo(media::class,'m_id','c_id');
     }
 }
