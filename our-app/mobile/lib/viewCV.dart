@@ -17,19 +17,20 @@ class viewcv extends StatefulWidget {
 
 class _viewcvState extends State<viewcv> {
   Map<String, dynamic> mainInfo = {};
+  List<String> skills = [];
 
   void fetch() async {
     String? token = await AuthManager.getToken();
     var url = get_all_cv;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-    List skills = data['skills'];
+
     mainInfo = data['cv'];
-    List training_courses = data['training_courses'];
-    List exp = data['experience'];
-    List projects = data['projects'];
-    List education = data['education'];
-    List languages = data['languages'];
+
+    if (data['skills'] != null && data['skills'] is List) {
+      skills = List<String>.from(data['skills']);
+    }
+
     setState(() {});
   }
 
@@ -87,10 +88,24 @@ class _viewcvState extends State<viewcv> {
                           ' ${mainInfo['career_obj']} : الهدف الوظيفي  ',
                           textAlign: TextAlign.right,
                         ),
-                        // Add more details as needed
                       ],
                     ),
                   ),
+                ],
+              ),
+              Text(
+                'Skills',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  if (skills.isEmpty)
+                    Text('No skills to be displayed')
+                  else
+                    for (String skill in skills) Text(skill),
                 ],
               ),
               ElevatedButton(
