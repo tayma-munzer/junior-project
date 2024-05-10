@@ -57,6 +57,7 @@ use App\Models\skills;
 use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
+use App\Models\courses_type;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -1577,10 +1578,9 @@ public function get_courses_type(get_courses_type_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $courses=course::all()->where('ct_id','=',$request->ct_id);
-        return response($courses,200);
+        $courses_type=courses_type::all()->where('ct_id','=',$request->ct_id);
+        return response($courses_type,200);
     }
-    
 }
 //
 public function get_course_detalis(get_course_details $request){
