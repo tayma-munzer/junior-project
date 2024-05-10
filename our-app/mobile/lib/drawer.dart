@@ -6,6 +6,7 @@ import 'package:mobile/addservice.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
+import 'package:mobile/viewCV.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
@@ -104,7 +105,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RulesPage()),
+                MaterialPageRoute(builder: (context) => viewcv()),
               );
             },
           ),
