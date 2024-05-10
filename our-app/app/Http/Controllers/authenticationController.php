@@ -36,6 +36,7 @@ use APP\Http\Requests\edit_training_request;
 use APP\Http\Requests\edit_education_request;
 use App\Http\Requests\get_all_alt_request;
 use App\Http\Requests\get_all_cv;
+use App\Http\Requests\get_by_token;
 use App\Http\Requests\get_langs_request;
 use App\Http\Requests\get_projects_request;
 use App\Http\Requests\get_skills_request;
@@ -1565,5 +1566,35 @@ public function get_education(edit_education_request $request) {
     $education=education::where('e_id','=',$request->e_id);
     return $education->get(); }
 }  
+public function check_job_owner(edit_education_request $request) {
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $education=education::where('e_id','=',$request->e_id);
+    return $education->get(); }
+} 
+
+public function get_user_jobs(get_by_token $request) {
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+        $jobs=job::where('u_id','=',$user_id);
+        return $jobs->get(); }
+} 
 
 }

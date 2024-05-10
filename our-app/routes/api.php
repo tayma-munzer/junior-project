@@ -71,4 +71,5 @@ Route::post('/get_training_courses',[authenticationController::class,'get_traini
 Route::post('/edit_education',[authenticationController::class,'edit_education'] );
 Route::post('/delete_education',[authenticationController::class,'delete_education'] );
 Route::post('/get_education',[authenticationController::class,'get_education'] );
+Route::post('/get_user_jobs',[authenticationController::class,'get_user_jobs'] );
 

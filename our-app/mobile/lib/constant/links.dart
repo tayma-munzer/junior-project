@@ -76,3 +76,4 @@ const delete_education = URL + "delete_education";
 const get_education = URL + "get_education";
 const delete_exp = URL + "delete_exp";
 const get_exp = URL + "get_exp";
+const get_user_jobs = URL + "get_user_jobs";

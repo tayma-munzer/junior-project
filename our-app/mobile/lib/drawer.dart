@@ -4,8 +4,11 @@ import 'package:mobile/addcveducation.dart';
 import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
 import 'package:mobile/contactus.dart';
+import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
+import 'package:mobile/viewCV.dart';
+import 'package:mobile/viewallJobs.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
@@ -24,6 +27,28 @@ class _CustomDrawerState extends State<CustomDrawer> {
     setState(() {
       _isAddExpanded = !_isAddExpanded;
     });
+  }
+
+  String? user;
+  String? job;
+  String? service;
+
+  Future<void> fetchRoles() async {
+    String? userRole = await AuthManager.isUser();
+    String? jobRole = await AuthManager.isjobOwner();
+    String? serviceRole = await AuthManager.isserviceOwner();
+    setState(() {
+      this.user = userRole;
+      this.job = jobRole;
+      this.service = serviceRole;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchRoles();
   }
 
   @override
@@ -112,6 +137,38 @@ class _CustomDrawerState extends State<CustomDrawer> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Text('فرص العامل الخاصة بي'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewJobs()),
+              );
+            },
+          ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('عرض حميع فرص العمل'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => viewallJobs()),
+              );
+            },
+          ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 Text('اضف'),
                 SizedBox(width: 10),
                 Icon(Icons.add),
@@ -122,70 +179,82 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (_isAddExpanded)
             Column(
               children: [
-                ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(' خدمة'),
-                      SizedBox(width: 10),
-                      Icon(Icons.business),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddService()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('كورس'),
-                      SizedBox(width: 10),
-                      Icon(Icons.book),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddCourse()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('عمل'),
-                      SizedBox(width: 10),
-                      Icon(Icons.work),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddjobPage()),
-                    );
-                  },
-                ),
-                ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('cv'),
-                      SizedBox(width: 10),
-                      Icon(Icons.work),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddCVMain()),
-                    );
-                  },
-                ),
+                service == 'true'
+                    ? ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(' خدمة'),
+                            SizedBox(width: 10),
+                            Icon(Icons.business),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddService()),
+                          );
+                        },
+                      )
+                    : SizedBox(),
+                service == 'true'
+                    ? ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('كورس'),
+                            SizedBox(width: 10),
+                            Icon(Icons.book),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCourse()),
+                          );
+                        },
+                      )
+                    : SizedBox(),
+                job == 'true'
+                    ? ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('عمل'),
+                            SizedBox(width: 10),
+                            Icon(Icons.work),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddjobPage()),
+                          );
+                        },
+                      )
+                    : SizedBox(),
+                user == 'true'
+                    ? ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('cv'),
+                            SizedBox(width: 10),
+                            Icon(Icons.work),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddCVMain()),
+                          );
+                        },
+                      )
+                    : SizedBox(),
               ],
             ),
         ],
