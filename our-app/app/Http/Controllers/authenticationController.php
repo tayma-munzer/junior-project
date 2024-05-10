@@ -83,9 +83,11 @@ class authenticationController extends Controller
         }
         else
         $token = $user->createToken('token')->plainTextToken;
+        $roles= DB::table('user_roles')->join('roles','roles.r_id','=','user_roles.r_id')->select('role')->where('u_id','=',$user->u_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
         return response([
             'message'=> 'logged in',
             'token'=>$token,
+            'roles'=>$roles,
         ],200);
     }
     }

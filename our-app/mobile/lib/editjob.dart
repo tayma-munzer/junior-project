@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/constant/links.dart';
 
@@ -146,5 +147,18 @@ class _EditJobState extends State<EditJob> {
 
   void _saveJobDetails() {
     print(jobdetails);
+    AuthCont.editJob(
+            jobdetails!['j_id'].toString(),
+            jobdetails!['j_sal'].toString(),
+            jobdetails!['j_name'],
+            jobdetails!['j_desc'],
+            jobdetails!['j_req'])
+        .then((value) {
+      if (value.statusCode == 200) {
+        print('edit successfully');
+      } else {
+        print('something went wrong');
+      }
+    });
   }
 }

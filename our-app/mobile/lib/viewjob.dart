@@ -7,6 +7,8 @@ import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editjob.dart';
+import 'package:mobile/firstpage.dart';
+import 'package:mobile/main.dart';
 
 class viewjob extends StatefulWidget {
   final int j_id;
@@ -81,7 +83,18 @@ class _viewjobState extends State<viewjob> {
                 ),
                 SizedBox(height: 5),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    var url = delete_job;
+                    var res = await http.post(Uri.parse(url),
+                        body: {'j_id': jobdetails!['j_id'].toString()});
+                    if (res.statusCode == 200) {
+                      print('deleted seccessfully');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FirstPage()),
+                      );
+                    }
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                     minimumSize: MaterialStateProperty.all(Size(300, 40)),
