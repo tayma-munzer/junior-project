@@ -71,7 +71,7 @@ Route::post('/get_training_courses',[authenticationController::class,'get_traini
 Route::post('/edit_education',[authenticationController::class,'edit_education'] );
 Route::post('/delete_education',[authenticationController::class,'delete_education'] );
 Route::post('/get_education',[authenticationController::class,'get_education'] );
-Route::post('/get_user_jobs',[authenticationController::class,'get_user_jobs'] );
-Route::get('/get_courses_type',[authenticationController::class,'get_courses_type'] );
-Route::post('/get_course_details',[authenticationController::class,'get_course_details'] );
-Route::post('/get_course_media',[authenticationController::class,'get_course_media'] );
+Route::get('/get_courses_type',[gets::class,'get_course_type'] );
+Route::post('/get_courses_for_type',[authenticationController::class,'get_courses_for_type'] );
+Route::get('/get_course_details',[gets::class,'get_course_details'] );
+Route::post('/get_course_for_user',[authenticationController::class,'get_course_for_user'] );

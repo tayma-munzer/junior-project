@@ -9,7 +9,10 @@ use App\Models\sec_type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\user_id;
+use App\Http\Requests\get_course_details;
 use App\Models\common_questions;
+use App\Models\course_details;
+use App\Models\courses_type;
 use App\Models\job;
 use App\Models\languages;
 use App\Models\media;
@@ -71,10 +74,11 @@ class gets extends Controller
         return $type->ct_id;
     }
 
-    function get_all_media(){
-        $media = media::all();
-        return $media;
+    static function get_course_types () {
+        return courses_type::all();
     }
-
+    static function get_course_detils(){
+        return course_details::all();
+    }
     
 }
