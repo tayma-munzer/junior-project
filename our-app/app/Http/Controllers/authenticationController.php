@@ -44,6 +44,7 @@ use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Http\Requests\get_courses_type_request;
 use App\Http\Requests\get_course_for_user;
+use App\Http\Requests\get_skill;
 use App\Models\alt_services;
 use App\Models\course;
 use App\Models\cv;
@@ -1476,7 +1477,7 @@ public function delete_training_course(edit_training_request $request){
 //
 public function get_training_course(edit_training_request $request) {
     $validator = Validator::make($request->all(), [
-        't_id' =>'required|exists:training,t_id',
+        't_id' =>'required',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1627,6 +1628,26 @@ public function get_course_for_user(get_course_for_user $request){
     $course=course::where('u_id','=',$request->u_id);
     return $course->get(); }
 }
+
+
+
+
+
+
+public function get_skill(get_skills_request $request){
+    $validator = Validator::make($request->all(), [
+        's_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=skills::where('s_id','=',$request->s_id)->first();
+    return $skill; }
+}  
 
 
 }

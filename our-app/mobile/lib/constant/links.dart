@@ -69,7 +69,7 @@ const delete_course = URL + "delete_course";
 const get_course = URL + "get_course";
 const edit_training_courses = URL + "edit_training_courses";
 const delete_training_courses = URL + "delete_training_courses";
-const get_training_courses = URL + "get_training_courses";
+const get_training_course = URL + "get_training_course";
 const edit_education = URL + "edit_education";
 const delete_education = URL + "delete_education";
 const get_education = URL + "get_education";
@@ -81,4 +81,6 @@ const get_course_details = URL + 'get_course_details'; //بيرجع تفاصيل
 const get_courses_for_type =
     URL + 'get_courses_for_type'; // بيرجع الكورسات لنوع معين
 const get_course_for_user =
-    URL + 'get_course_for_user';// بيرجع كورسات حسب اليوزر 
+    URL + 'get_course_for_user'; // بيرجع كورسات حسب اليوزر
+
+const get_skill = URL + "get_skill";//بجيب المهارة عن طريق ال s_id

@@ -8,6 +8,8 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editcv.dart';
+import 'package:mobile/editskill.dart';
+import 'package:mobile/edittrainingcourse.dart';
 
 class viewcv extends StatefulWidget {
   const viewcv({Key? key}) : super(key: key);
@@ -22,6 +24,8 @@ class _viewcvState extends State {
   List training_courses = [];
   List experience = [];
   List projects = [];
+  List education = [];
+  List languages = [];
 
   void fetch() async {
     String? token = await AuthManager.getToken();
@@ -29,21 +33,22 @@ class _viewcvState extends State {
     var url = get_all_cv;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-    List skills = data['skills'];
-    Map<String, dynamic> main_info = data['cv'];
-    List training_courses = data['training_courses'];
-    List experience = data['experience'];
-    List projects = data['projects'];
-    List education = data['education'];
-    List languages = data['languages'];
-    print(main_info);
-    print(skills);
-    print(training_courses);
-    print(experience);
-    print(projects);
-    print(education);
-    print(languages);
-    setState(() {});
+    setState(() {
+      mainInfo = data['cv'];
+      skills = data['skills'];
+      training_courses = data['training_courses'];
+      experience = data['experience'];
+      projects = data['projects'];
+      education = data['education'];
+      languages = data['languages'];
+      print(mainInfo);
+      print(skills);
+      print(training_courses);
+      print(experience);
+      print(projects);
+      print(education);
+      print(languages);
+    });
   }
 
   @override
@@ -153,11 +158,12 @@ class _viewcvState extends State {
                               padding: EdgeInsets.only(right: 200.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          editskill(skills[i]['s_id'])),
+                                );
                               },
                             ),
                             Column(
@@ -203,14 +209,15 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 200.0),
+                              padding: EdgeInsets.only(right: 100.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => edittrainingcourse(
+                                          training_courses[i]['t_id'])),
+                                );
                               },
                             ),
                             Column(
@@ -256,7 +263,7 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 200.0),
+                              padding: EdgeInsets.only(right: 80.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
                                 // Navigator.push(
@@ -270,7 +277,7 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  ' اسم الشركة او مكان العمل : ${experience[i]['company']} \n   المسمى الوظيفي : ${experience[i]['position']} \n  تاريخ البدء في العمل :${experience[i]['start_date']} \n تاريخ انهاءالعمل :${experience[i]['end_name']} \n  المسؤوليات في العمل: ${experience[i]['responsibilities']} ',
+                                  ' اسم الشركة او مكان العمل : ${experience[i]['company']} \n   المسمى الوظيفي : ${experience[i]['position']} \n  تاريخ البدء في العمل :${experience[i]['start_date']} \n تاريخ انهاءالعمل :${experience[i]['end_date']} \n  المسؤوليات في العمل: ${experience[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
                                   ),
@@ -309,7 +316,7 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 200.0),
+                              padding: EdgeInsets.only(right: 80.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
                                 // Navigator.push(
@@ -323,7 +330,7 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  '   عنوان المشروع : ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_name']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
+                                  '   عنوان المشروع : ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_date']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
                                   ),

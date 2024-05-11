@@ -75,3 +75,6 @@ Route::get('/get_courses_type',[gets::class,'get_course_type'] );
 Route::post('/get_courses_for_type',[authenticationController::class,'get_courses_for_type'] );
 Route::get('/get_course_details',[gets::class,'get_course_details'] );
 Route::post('/get_course_for_user',[authenticationController::class,'get_course_for_user'] );
+
+
+Route::post('/get_skill',[authenticationController::class,'get_skill'] );
