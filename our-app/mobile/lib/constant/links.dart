@@ -64,7 +64,6 @@ const edit_skills = URL + "edit_skills"; //تعديل مهارة بالسيرة 
 const edit_alt_service =
     URL + "edit_alt_service"; // تعديل خدمة ملحقة بالسيرة الذاتية
 const get_all_languages = URL + "getlanguages"; // get بجيب كل اللغات , هاد نوعو
-//
 const edit_course = URL + "edit_course";
 const delete_course = URL + "delete_course";
 const get_course = URL + "get_course";
@@ -77,6 +76,9 @@ const get_education = URL + "get_education";
 const delete_exp = URL + "delete_exp";
 const get_exp = URL + "get_exp";
 const get_user_jobs = URL + "get_user_jobs";
-const get_courses_type = URL + "get_courses_type";
-const get_course_details = URL + 'get_course_details';
-const get_course_media = URL + 'get_course_media';
+const get_courses_type = URL + "get_courses_type"; //بيرجع انواع الكورسات
+const get_course_details = URL + 'get_course_details'; //بيرجع تفاصيل الكورس
+const get_courses_for_type =
+    URL + 'get_courses_for_type'; // بيرجع الكورسات لنوع معين
+const get_course_for_user =
+    URL + 'get_course_for_user';// بيرجع كورسات حسب اليوزر 

@@ -5,27 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class course extends Model
+class course_details extends Model
 {
     use HasFactory;
-    protected $table = 'courses';
+    protected $table = 'course_detils';
     public $timestamps = false;
     protected $fillable = [
+        'c_id',
         'c_name',
         'c_desc',
         'c_price',
         'c_img',
-        'u_id',
         'c_duration',
         'pre_requisite',
-        'ct_id',
-        'm_id',
     ];
-
-    public function courses_type(){
-        return 
-        $this->belongsTo(courses_type::class,'ct_id','c_id');
-    }
-
-   
 }

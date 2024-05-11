@@ -43,8 +43,7 @@ use App\Http\Requests\get_skills_request;
 use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Http\Requests\get_courses_type_request;
-use App\Http\Requests\get_course_details;
-use App\Http\Requests\get_course_media;
+use App\Http\Requests\get_course_for_user;
 use App\Models\alt_services;
 use App\Models\course;
 use App\Models\cv;
@@ -1432,7 +1431,7 @@ public function edit_training_course(edit_training_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows=course::where('cv_id','=',$request->cv_id)->update([
+    $effected_rows=course::where('t_id','=',$request->t_id)->update([
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
         'completion_date'=>$request->completion_date
@@ -1452,7 +1451,7 @@ public function edit_training_course(edit_training_request $request){
 //
 public function delete_training_course(edit_training_request $request){
     $validator = Validator::make($request->all(), [
-        'cv_id' =>'required|exists:training,cv_id',
+        't_id' =>'required|exists:training,t_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1462,7 +1461,7 @@ public function delete_training_course(edit_training_request $request){
         return response($errors,402);
     }
     else{
-        $effected_rows=training_courses::where('cv_id','=',$request->cv_id)->delete();
+        $effected_rows=training_courses::where('t_id','=',$request->t_id)->delete();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully'
@@ -1508,7 +1507,7 @@ public function get_training_course(edit_training_request $request) {
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows=course::where('cv_id','=',$request->cv_id)->update([
+    $effected_rows=course::where('e_id','=',$request->e_id)->update([
         'degree'=>$request->degree,
         'uni'=>$request-> uni,
         'field_of_study'=>$request->field_of_study,
@@ -1530,7 +1529,7 @@ public function get_training_course(edit_training_request $request) {
 //
 public function delete_education(edit_education_request $request){
     $validator = Validator::make($request->all(), [
-        'cv_id' =>'required|exists:education,cv_id',
+        'e_id' =>'required|exists:education,e_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1540,7 +1539,7 @@ public function delete_education(edit_education_request $request){
         return response($errors,402);
     }
     else{
-        $effected_rows=education::where('cv_id','=',$request->e_id)->delete();
+        $effected_rows=education::where('e_id','=',$request->e_id)->delete();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully'
@@ -1598,7 +1597,7 @@ public function get_user_jobs(get_by_token $request) {
         return $jobs->get(); }
     }
 //
-public function get_courses_type(get_courses_type_request $request){
+public function get_courses_for_type(get_courses_type_request $request){
     $validator = Validator::make($request->all(), [
         'ct_id' => 'required|integer',
     ], $messages = [
@@ -1609,41 +1608,24 @@ public function get_courses_type(get_courses_type_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $courses_type=courses_type::all()->where('ct_id','=',$request->ct_id);
-        return response($courses_type,200);
+        $course=course::all()->where('ct_id','=',$request->ct_id);
+        return response($course,200);
     }
 }
 //
-public function get_course_detalis(get_course_details $request){
+public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
-        'c_id' => 'required|integer',
+        'u_id' =>'required|exists:course,u_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
-        'integer' => 'the :attribute field should be a number',
+        'exists'=> 'the :attribute field should be exist',
     ]);
     if ($validator->fails()){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $courses=course::all()->where('c_id','=',$request->c_id);
-        return response($courses,200);
-    }
-    return to_route('get_course_media');
-}
-public function get_course_media(get_course_media $request){
-    $validator = Validator::make($request->all(), [
-        'm_id' => 'required|integer',
-    ], $messages = [
-        'required' => 'The :attribute field is required.',
-        'integer' => 'the :attribute field should be a number',
-    ]);
-    if ($validator->fails()){
-        $errors = $validator->errors();
-        return response($errors,402);
-    }else{
-        $courses=course::all()->where('m_id','=',$request->m_id);
-        return response($courses,200);
-    }
+    $course=course::where('u_id','=',$request->u_id);
+    return $course->get(); }
 }
 
 

@@ -23,8 +23,8 @@ class get_courses_type_request extends FormRequest
     {
         return [
             'ct_id',
-            'ct_type',
             'ct_icon',
+            'ct_path',
             //
         ];
     }
