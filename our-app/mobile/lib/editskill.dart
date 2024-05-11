@@ -15,19 +15,25 @@ class editskill extends StatefulWidget {
 }
 
 class _editskillState extends State<editskill> {
+  Map<String, dynamic> skillDetails = {};
+  TextEditingController nameController = TextEditingController();
+  TextEditingController yearsController = TextEditingController();
+  TextEditingController levelController = TextEditingController();
+
   void fetch() async {
     var url = get_skill;
     var res =
         await http.post(Uri.parse(url), body: {'s_id': widget.s_id.toString()});
     Map<String, dynamic> data = json.decode(res.body);
-    print(data);
-    print(data['s_level']);
+    skillDetails = data;
+    nameController.text = skillDetails['s_name'] ?? '';
+    levelController.text = skillDetails['s_level'] ?? '';
+    yearsController.text = skillDetails['years_of_exp'].toString() ?? '';
     setState(() {});
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetch();
   }
@@ -40,10 +46,78 @@ class _editskillState extends State<editskill> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Container(
-          //قواعد و شروط التطبيق
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Text(
+                'مهارات',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(height: 10),
+              buildTextField('اسم المهارة', nameController, (value) {
+                if (value.isEmpty) {
+                  return 'Invalid email';
+                }
+                return null;
+              }),
+              buildTextField('مستوى المهارة', levelController, (value) {
+                if (value.isEmpty) {
+                  return 'Invalid phone number';
+                }
+                return null;
+              }),
+              buildTextField('عدد سنين الخبرة', yearsController, (value) {
+                if (value.isEmpty) {
+                  return 'Address cannot be empty';
+                }
+                return null;
+              }),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (nameController.text.isNotEmpty &&
+                      levelController.text.isNotEmpty &&
+                      yearsController.text.isNotEmpty) {
+                    saveValues();
+                  } else {}
+                },
+                child: Text('Save'),
+              ),
+            ],
           ),
+        ),
+      ),
       bottomNavigationBar: BottomBar(),
     );
+  }
+
+  Widget buildTextField(String label, TextEditingController controller,
+      String? Function(String) validator) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  void saveValues() {
+    String name = nameController.text;
+    String level = levelController.text;
+    String yearsofexp = yearsController.text;
+
+    print('name: $name');
+    print('level: $level');
+    print('yearsofexp: $yearsofexp');
+    print('Skill id: ${skillDetails['s_id']}');
   }
 }
