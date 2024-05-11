@@ -1292,7 +1292,6 @@ class authenticationController extends Controller
         $projects =projects::where('cv_id','=',$request->cv_id);
         return $projects->get(); }
     } 
-//////////g
 //
 public function delete_exp(edit_exp_request $request){
     $validator = Validator::make($request->all(), [
@@ -1432,7 +1431,7 @@ public function edit_training_course(edit_training_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows=course::where('t_id','=',$request->t_id)->update([
+    $effected_rows=training_courses::where('t_id','=',$request->t_id)->update([
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
         'completion_date'=>$request->completion_date
@@ -1508,7 +1507,7 @@ public function get_training_course(edit_training_request $request) {
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows=course::where('e_id','=',$request->e_id)->update([
+    $effected_rows=education::where('e_id','=',$request->e_id)->update([
         'degree'=>$request->degree,
         'uni'=>$request-> uni,
         'field_of_study'=>$request->field_of_study,

@@ -11,6 +11,7 @@ class training_courses extends Model
     protected $table = 'training_courses';
     public $timestamps = false;
     protected $fillable = [
+        't_id',
         'cv_id',
         'course_name',
         'training_center',
