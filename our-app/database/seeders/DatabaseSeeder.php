@@ -448,6 +448,17 @@ class DatabaseSeeder extends Seeder
             'gba'=>'3.2'
         ]);
 
+        DB::table('courses_types')->insert([
+            'ct_id'=>'1',
+            'ct_type'=>'laravel',
+            'ct_icon'=>'laptop'
+        ]);
+        DB::table('courses_types')->insert([
+            'ct_id'=>'2',
+            'ct_type'=>'database',
+            'ct_icon'=>'database'
+        ]);
+
 
     }
 }
