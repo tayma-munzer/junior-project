@@ -112,10 +112,10 @@ class _viewcvState extends State<viewcv> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => editcv()),
+                    MaterialPageRoute(builder: (context) => EditCv()),
                   );
                 },
-                child: Text('Next Edit'),
+                child: Text(' Edit'),
               ),
             ],
           ),
