@@ -79,3 +79,4 @@ const get_exp = URL + "get_exp";
 const get_courses_type = URL + "get_courses_type";
 const get_course_details = URL + 'get_course_details';
 const get_courses_for_type = URL + 'get_courses_for_type';
+const get_course_for_user = URL + 'get_course_for_user';
