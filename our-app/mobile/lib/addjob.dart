@@ -125,12 +125,12 @@ class _AddjobPageState extends State<AddjobPage> {
                         if (value.statusCode == 200) {
                           print('job added successfully');
                           int j_id = json.decode(value.body)['j_id'];
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) =>
-                          //          // viewjob(json.decode(value.body)['j_id'])),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    viewjob(json.decode(value.body)['j_id'])),
+                          );
                         } else {
                           // Error response
                           print(
