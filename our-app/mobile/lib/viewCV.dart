@@ -13,23 +13,36 @@ class viewcv extends StatefulWidget {
   const viewcv({Key? key}) : super(key: key);
 
   @override
-  State<viewcv> createState() => _viewcvState();
+  State createState() => _viewcvState();
 }
 
-class _viewcvState extends State<viewcv> {
-  Map<String, dynamic> mainInfo = {};
+class _viewcvState extends State {
+  Map mainInfo = {};
   List skills = [];
+  List training_courses = [];
+  List experience = [];
+  List projects = [];
 
   void fetch() async {
     String? token = await AuthManager.getToken();
+    print('object');
     var url = get_all_cv;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-    mainInfo = data['cv'];
-    // if (data['skills'] != null && data['skills'] is List) {
-    skills = data['skills'];
-    // }
-
+    List skills = data['skills'];
+    Map<String, dynamic> main_info = data['cv'];
+    List training_courses = data['training_courses'];
+    List experience = data['experience'];
+    List projects = data['projects'];
+    List education = data['education'];
+    List languages = data['languages'];
+    print(main_info);
+    print(skills);
+    print(training_courses);
+    print(experience);
+    print(projects);
+    print(education);
+    print(languages);
     setState(() {});
   }
 
@@ -51,6 +64,7 @@ class _viewcvState extends State<viewcv> {
         child: Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -60,31 +74,46 @@ class _viewcvState extends State<viewcv> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(
-                          width: 20,
                           height: 30,
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 8.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditCv()),
+                                );
+                              },
+                            ),
+                            Text(
+                              ' المعلومات الاساسية',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        ),
                         Text(
-                          'Main Info',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                          'بريد الكتروني : ${mainInfo['email']}',
                           textAlign: TextAlign.right,
                         ),
                         Text(
-                          '${mainInfo['email']} :بريد الكتروني ',
+                          'رقم الهاتف : ${mainInfo['phone']}',
                           textAlign: TextAlign.right,
                         ),
                         Text(
-                          ' ${mainInfo['phone']} : رقم الهاتف  ',
+                          'العنوان : ${mainInfo['address']}',
                           textAlign: TextAlign.right,
                         ),
                         Text(
-                          ' ${mainInfo['address']} : العنوان  ',
-                          textAlign: TextAlign.right,
-                        ),
-                        Text(
-                          ' ${mainInfo['career_obj']} : الهدف الوظيفي  ',
+                          'الهدف الوظيفي : ${mainInfo['career_obj']}',
                           textAlign: TextAlign.right,
                         ),
                       ],
@@ -92,8 +121,11 @@ class _viewcvState extends State<viewcv> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 20,
+              ),
               Text(
-                'Skills',
+                'المهارات',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -101,22 +133,208 @@ class _viewcvState extends State<viewcv> {
               ),
               Column(
                 children: [
+                  SizedBox(
+                    height: 10,
+                  ),
                   if (skills.isEmpty)
                     Text('No skills to be displayed')
                   else
-                    for (var skill in skills)
-                      Text(
-                          '${skill['s_name']}  : اسم المهارة\n ${skill['years_of_exp']} :عدد سنين الخبرة  \n${skill['s_level']} : مستوى المهارة   '),
+                    for (int i = 0; i < skills.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 200.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => EditSkill()),
+                                // );
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ' اسم المهارة : ${skills[i]['s_name']} \n عدد سنين الخبرة : ${skills[i]['years_of_exp']} \n مستوى المهارة :${skills[i]['s_level']}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditCv()),
-                  );
-                },
-                child: Text(' Edit'),
+              Text(
+                'الدورات التدريبية ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (training_courses.isEmpty)
+                    Text('No courses to be displayed')
+                  else
+                    for (int i = 0; i < training_courses.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 200.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => EditSkill()),
+                                // );
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ' اسم الدورة : ${training_courses[i]['course_name']} \n اسم مركز التدريب: ${training_courses[i]['training_center']} \n  تاريخ انهاء الدورة :${training_courses[i]['completion_date']}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+              Text(
+                ' الخبرة ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (experience.isEmpty)
+                    Text('No exp to be displayed')
+                  else
+                    for (int i = 0; i < experience.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 200.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => EditSkill()),
+                                // );
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  ' اسم الشركة او مكان العمل : ${experience[i]['company']} \n   المسمى الوظيفي : ${experience[i]['position']} \n  تاريخ البدء في العمل :${experience[i]['start_date']} \n تاريخ انهاءالعمل :${experience[i]['end_name']} \n  المسؤوليات في العمل: ${experience[i]['responsibilities']} ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+              Text(
+                ' المشاريع ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (projects.isEmpty)
+                    Text('No projects to be displayed')
+                  else
+                    for (int i = 0; i < projects.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 200.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => EditSkill()),
+                                // );
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '   عنوان المشروع : ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_name']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
               ),
             ],
           ),
