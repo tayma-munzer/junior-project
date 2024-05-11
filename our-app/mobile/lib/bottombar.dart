@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/homepage.dart';
 import 'package:mobile/add.dart';
 import 'package:mobile/search.dart';
@@ -48,6 +49,28 @@ class _BottomBarState extends State<BottomBar> {
     });
   }
 
+  String? user;
+  String? job;
+  String? service;
+
+  Future<void> fetchRoles() async {
+    String? userRole = await AuthManager.isUser();
+    String? jobRole = await AuthManager.isjobOwner();
+    String? serviceRole = await AuthManager.isserviceOwner();
+    setState(() {
+      this.user = userRole;
+      this.job = jobRole;
+      this.service = serviceRole;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchRoles();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -75,14 +98,16 @@ class _BottomBarState extends State<BottomBar> {
                     MaterialPageRoute(builder: (context) => MainHomePage()));
               },
             ),
-            IconButton(
-              icon: Icon(Icons.add, color: _addIconColor),
-              onPressed: () {
-                _updateIconColor('add');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddPage()));
-              },
-            ),
+            job == 'true' || service == 'true'
+                ? IconButton(
+                    icon: Icon(Icons.add, color: _addIconColor),
+                    onPressed: () {
+                      _updateIconColor('add');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AddPage()));
+                    },
+                  )
+                : Container(),
             IconButton(
               icon: Icon(Icons.search, color: _searchIconColor),
               onPressed: () {
