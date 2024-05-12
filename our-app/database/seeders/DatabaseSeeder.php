@@ -298,46 +298,46 @@ class DatabaseSeeder extends Seeder
         DB::table('languages')->insert([
             'language'=>'french',
         ]);
-        // DB::table('courses')->insert([
-        //     'c_name'=>'1 اسم كورس ',
-        //     'c_desc'=> ' 1 وصف كورس',
-        //     'c_price'=>'100000',
-        //     'c_img'=>  'null.png',
-        //     'u_id'=>   '1',
-        //     'c_duration'=>'10',
-        //     'pre_requisite'=>'pr',
-        //     'ct_id'=>'1'
-        // ]);
-        // DB::table('courses')->insert([
-        //     'c_name'=>' 2 اسم كورس ',
-        //     'c_desc'=> 'وصف كورس 2',
-        //     'c_price'=>'100000',
-        //     'c_img'=>  'null.png',
-        //     'u_id'=>   '2',
-        //     'c_duration'=>'20',
-        //     'pre_requisite'=>'cs',
-        //     'ct_id'=>'2'
-        // ]);
-        // DB::table('courses')->insert([
-        //     'c_name'=>'اسم كورس 3',
-        //     'c_desc'=> 'وصف كورس 2',
-        //     'c_price'=>'100000',
-        //     'c_img'=>  'null.png',
-        //     'u_id'=>   '2',
-        //     'c_duration'=>'30',
-        //     'pre_requisite'=>'lc',
-        //     'ct_id'=>'3'
-        // ]);
-        // DB::table('courses')->insert([
-        //     'c_name'=>'اسم كورس 4',
-        //     'c_desc'=> 'وصف كورس 4',
-        //     'c_price'=>'100000',
-        //     'c_img'=>  'null.png',
-        //     'u_id'=>   '1',
-        //     'c_duration'=>'40',
-        //     'pre_requisite'=>'cl',
-        //     'ct_id'=>'4'
-        // ]);
+        DB::table('courses')->insert([
+            'c_name'=>'1 اسم كورس ',
+            'c_desc'=> ' 1 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'1'
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>' 2 اسم كورس ',
+            'c_desc'=> 'وصف كورس 2',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '2',
+            'c_duration'=>'20',
+            'pre_requisite'=>'cs',
+            'ct_id'=>'2'
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'اسم كورس 3',
+            'c_desc'=> 'وصف كورس 2',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '2',
+            'c_duration'=>'30',
+            'pre_requisite'=>'lc',
+            'ct_id'=>'3'
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'اسم كورس 4',
+            'c_desc'=> 'وصف كورس 4',
+            'c_price'=>'100000',
+            'c_img'=>  'null.png',
+            'u_id'=>   '1',
+            'c_duration'=>'40',
+            'pre_requisite'=>'cl',
+            'ct_id'=>'4'
+        ]);
         DB::table('jobs')->insert([
             'j_name'=>'اسم الوظيفة 1',
             'j_desc'=>'وصف الوظيفة 1',
