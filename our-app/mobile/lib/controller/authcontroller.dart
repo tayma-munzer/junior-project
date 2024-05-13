@@ -177,4 +177,16 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> editSkill(
+      String s_id, String s_name, String s_level, String years_of_exp) async {
+    var url = edit_skills;
+    var res = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+      's_name': s_name,
+      's_level': s_level,
+      'years_of_exp': years_of_exp,
+    });
+    return res;
+  }
 }

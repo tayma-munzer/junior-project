@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/constant/links.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:http/http.dart' as http;
 
@@ -119,5 +120,14 @@ class _editskillState extends State<editskill> {
     print('level: $level');
     print('yearsofexp: $yearsofexp');
     print('Skill id: ${skillDetails['s_id']}');
+
+    AuthCont.editSkill(skillDetails['s_id'].toString(), name, level, yearsofexp)
+        .then((value) {
+      if (value.statusCode == 200) {
+        print('edit successfully');
+      } else {
+        print('something went wrong');
+      }
+    });
   }
 }
