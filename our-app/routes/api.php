@@ -81,3 +81,4 @@ Route::post('/get_skill',[authenticationController::class,'get_skill'] );
 Route::post('/get_project',[authenticationController::class,'get_project'] );
 Route::post('/get_user_jobs',[authenticationController::class,'get_user_jobs'] );
 Route::post('/get_cv_lang',[authenticationController::class,'get_cv_lang'] );
+Route::post('/get_profile',[authenticationController::class,'get_profile'] );

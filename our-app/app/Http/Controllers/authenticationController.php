@@ -1677,6 +1677,21 @@ public function get_cv_lang(get_langs_request $request){
     return ['languages'=> $languages];
     }
 } 
+public function  get_profile(get_by_token $request){
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $personal_info=User::where('u_id','=',$token->tokenable_id);
+        return $personal_info->first(); }
+} 
 
 
 
