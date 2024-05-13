@@ -934,7 +934,7 @@ class authenticationController extends Controller
         $experience=experience::where('cv_id','=',$cv_id)->get();
         $project=projects::where('cv_id','=',$cv_id)->get();
         $education=education::where('cv_id','=',$cv_id)->get();
-        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language')->where('cv_id','=',$cv_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$cv_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
         return [
             'cv' => $cv,
             'skills' => $skills,
@@ -1662,6 +1662,22 @@ public function get_project(get_project_request $request){
     $skill=projects::where('p_id','=',$request->p_id)->first();
     return $skill; }
 } 
+public function get_cv_lang(get_langs_request $request){
+    $validator = Validator::make($request->all(), [
+        'cv_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$request->cv_id)->get();
+    return ['languages'=> $languages];
+    }
+} 
+
 
 
 }

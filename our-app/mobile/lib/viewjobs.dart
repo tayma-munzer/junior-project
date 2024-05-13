@@ -28,7 +28,6 @@ class _ViewJobsState extends State<ViewJobs> {
     List<dynamic> data = json.decode(res.body);
     setState(() {
       jobs = data.map((item) => item).toList();
-      print('object');
       print(jobs);
     });
   }

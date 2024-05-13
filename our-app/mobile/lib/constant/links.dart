@@ -85,3 +85,4 @@ const get_course_for_user =
 
 const get_skill = URL + "get_skill"; //بجيب المهارة عن طريق ال s_id
 const get_project = URL + "get_project";
+const get_cv_lang = URL + "get_cv_lang";

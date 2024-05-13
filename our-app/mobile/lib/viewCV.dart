@@ -396,13 +396,27 @@ class _viewcvState extends State {
                           children: [
                             IconButton(
                               padding: EdgeInsets.only(right: 250.0),
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_cv_language;
+                                var res = await http
+                                    .post(Uri.parse(url), body: {
+                                  'cvl_id': languages[i]['cvl_id'].toString()
+                                });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  var url = get_cv_lang;
+                                  var res = await http.post(Uri.parse(url),
+                                      body: {
+                                        'cv_id': mainInfo['cv_id'].toString()
+                                      });
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    languages = data['languages'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
                               },
                             ),
                             Column(
