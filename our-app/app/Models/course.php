@@ -26,6 +26,9 @@ class course extends Model
         return 
         $this->belongsTo(courses_type::class,'ct_id','c_id');
     }
-
+    public function media(){
+        return 
+        $this->belongsTo(media::class,'m_id','c_id');
+    }
    
 }

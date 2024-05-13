@@ -107,20 +107,36 @@ class _viewcvState extends State {
                           ],
                         ),
                         Text(
-                          'بريد الكتروني : ${mainInfo['email']}',
+                          ' ${mainInfo['email']}  : البريد الالكتروني',
                           textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                         Text(
-                          'رقم الهاتف : ${mainInfo['phone']}',
+                          ' ${mainInfo['phone']}: رقم الهاتف',
                           textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                         Text(
-                          'العنوان : ${mainInfo['address']}',
+                          ' ${mainInfo['address']} : العنوان ',
                           textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                         Text(
-                          'الهدف الوظيفي : ${mainInfo['career_obj']}',
+                          ' ${mainInfo['career_obj']} : الهدف الوظيفي',
                           textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                       ],
                     ),
@@ -174,6 +190,8 @@ class _viewcvState extends State {
                                   ' اسم المهارة : ${skills[i]['s_name']} \n عدد سنين الخبرة : ${skills[i]['years_of_exp']} \n مستوى المهارة :${skills[i]['s_level']}',
                                   style: TextStyle(
                                     color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
@@ -213,12 +231,12 @@ class _viewcvState extends State {
                               padding: EdgeInsets.only(right: 100.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => edittrainingcourse(
-                                          training_courses[i]['t_id'])),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => edittrainingcourse(
+                                //           training_courses[i]['t_id'])),
+                                // );
                               },
                             ),
                             Column(
@@ -228,6 +246,8 @@ class _viewcvState extends State {
                                   ' اسم الدورة : ${training_courses[i]['course_name']} \n اسم مركز التدريب: ${training_courses[i]['training_center']} \n  تاريخ انهاء الدورة :${training_courses[i]['completion_date']}',
                                   style: TextStyle(
                                     color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
@@ -281,6 +301,8 @@ class _viewcvState extends State {
                                   ' اسم الشركة او مكان العمل : ${experience[i]['company']} \n   المسمى الوظيفي : ${experience[i]['position']} \n  تاريخ البدء في العمل :${experience[i]['start_date']} \n تاريخ انهاءالعمل :${experience[i]['end_date']} \n  المسؤوليات في العمل: ${experience[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
@@ -335,6 +357,63 @@ class _viewcvState extends State {
                                   '   عنوان المشروع : ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_date']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+              Text(
+                ' اللغات ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (languages.isEmpty)
+                    Text('No languages to be displayed')
+                  else
+                    for (int i = 0; i < languages.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 250.0),
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => EditSkill()),
+                                // );
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '  ${languages[i]['language']} ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
