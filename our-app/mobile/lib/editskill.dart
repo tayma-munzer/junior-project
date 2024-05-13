@@ -61,19 +61,19 @@ class _editskillState extends State<editskill> {
               SizedBox(height: 10),
               buildTextField('اسم المهارة', nameController, (value) {
                 if (value.isEmpty) {
-                  return 'Invalid email';
+                  return 'skill name cant be empty';
                 }
                 return null;
               }),
               buildTextField('مستوى المهارة', levelController, (value) {
                 if (value.isEmpty) {
-                  return 'Invalid phone number';
+                  return 'skill level cant be empty';
                 }
                 return null;
               }),
               buildTextField('عدد سنين الخبرة', yearsController, (value) {
                 if (value.isEmpty) {
-                  return 'Address cannot be empty';
+                  return 'years of experince cant be empty';
                 }
                 return null;
               }),
