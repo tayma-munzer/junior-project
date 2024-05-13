@@ -83,4 +83,5 @@ const get_courses_for_type =
 const get_course_for_user =
     URL + 'get_course_for_user'; // بيرجع كورسات حسب اليوزر
 
-const get_skill = URL + "get_skill";//بجيب المهارة عن طريق ال s_id
+const get_skill = URL + "get_skill"; //بجيب المهارة عن طريق ال s_id
+const get_project = URL + "get_project";

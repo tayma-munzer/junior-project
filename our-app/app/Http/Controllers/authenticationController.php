@@ -44,6 +44,7 @@ use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Http\Requests\get_courses_type_request;
 use App\Http\Requests\get_course_for_user;
+use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
 use App\Models\alt_services;
 use App\Models\course;
@@ -1648,6 +1649,20 @@ public function get_skill(get_skills_request $request){
     $skill=skills::where('s_id','=',$request->s_id)->first();
     return $skill; }
 }  
+public function get_project(get_project_request $request){
+    $validator = Validator::make($request->all(), [
+        'p_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=projects::where('p_id','=',$request->p_id)->first();
+    return $skill; }
+} 
 
 
 }
