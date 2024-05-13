@@ -189,4 +189,23 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> editproject(
+      String p_id,
+      String p_name,
+      String p_desc,
+      String start_date,
+      String end_date,
+      String resbonsabilities) async {
+    var url = edit_skills;
+    var res = await http.post(Uri.parse(url), body: {
+      'p_id': p_id,
+      'p_name': p_name,
+      'p_desc': p_desc,
+      'start_date': start_date,
+      'end_date': end_date,
+      'resbonsabilities': resbonsabilities,
+    });
+    return res;
+  }
 }
