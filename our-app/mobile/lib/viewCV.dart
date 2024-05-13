@@ -7,6 +7,7 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editcv.dart';
+import 'package:mobile/editexp.dart';
 import 'package:mobile/editproject.dart';
 import 'package:mobile/editskill.dart';
 import 'package:mobile/edittrainingcourse.dart';
@@ -285,11 +286,12 @@ class _viewcvState extends State {
                               padding: EdgeInsets.only(right: 10.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          editexp(experience[i]['exp_id'])),
+                                );
                               },
                             ),
                             Column(

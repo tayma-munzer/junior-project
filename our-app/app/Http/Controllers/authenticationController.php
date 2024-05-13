@@ -1332,7 +1332,7 @@ public function get_exp(edit_exp_request $request) {
         return response($errors,402);
     }else{
     $experience=experience::where('exp_id','=',$request->exp_id);
-    return $experience->get(); }
+    return $experience->first(); }
 }
 //
 public function edit_course(edit_course_request $request){
