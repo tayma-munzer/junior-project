@@ -197,7 +197,7 @@ class AuthCont {
       String start_date,
       String end_date,
       String resbonsabilities) async {
-    var url = edit_skills;
+    var url = edit_projects;
     var res = await http.post(Uri.parse(url), body: {
       'p_id': p_id,
       'p_name': p_name,
@@ -205,6 +205,25 @@ class AuthCont {
       'start_date': start_date,
       'end_date': end_date,
       'resbonsabilities': resbonsabilities,
+    });
+    return res;
+  }
+
+  static Future<http.Response> editexp(
+      String exp_id,
+      String company,
+      String position,
+      String start_date,
+      String end_date,
+      String responsibilities) async {
+    var url = edit_experience;
+    var res = await http.post(Uri.parse(url), body: {
+      'exp_id': exp_id,
+      'company': company,
+      'position': position,
+      'start_date': start_date,
+      'end_date': end_date,
+      'responsibilities': responsibilities,
     });
     return res;
   }
