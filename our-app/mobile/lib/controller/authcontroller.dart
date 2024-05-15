@@ -208,4 +208,23 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> editexp(
+      String exp_id,
+      String company,
+      String position,
+      String start_date,
+      String end_date,
+      String responsibilities) async {
+    var url = edit_experience;
+    var res = await http.post(Uri.parse(url), body: {
+      'exp_id': exp_id,
+      'company': company,
+      'position': position,
+      'start_date': start_date,
+      'end_date': end_date,
+      'responsibilities': responsibilities,
+    });
+    return res;
+  }
 }

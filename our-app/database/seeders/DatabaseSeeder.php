@@ -306,7 +306,8 @@ class DatabaseSeeder extends Seeder
             'u_id'=>   '1',
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
-            'ct_id'=>'1'
+            'ct_id'=>'1',
+            'cd_id'=>'1'
         ]);
         DB::table('courses')->insert([
             'c_name'=>' 2 اسم كورس ',
@@ -316,7 +317,8 @@ class DatabaseSeeder extends Seeder
             'u_id'=>   '2',
             'c_duration'=>'20',
             'pre_requisite'=>'cs',
-            'ct_id'=>'2'
+            'ct_id'=>'2',
+            'cd_id'=>'2'
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 3',
@@ -326,7 +328,8 @@ class DatabaseSeeder extends Seeder
             'u_id'=>   '2',
             'c_duration'=>'30',
             'pre_requisite'=>'lc',
-            'ct_id'=>'3'
+            'ct_id'=>'3',
+            'cd_id'=>'3'
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 4',
@@ -336,7 +339,8 @@ class DatabaseSeeder extends Seeder
             'u_id'=>   '1',
             'c_duration'=>'40',
             'pre_requisite'=>'cl',
-            'ct_id'=>'4'
+            'ct_id'=>'4',
+            'cd_id'=>'4'
         ]);
         DB::table('jobs')->insert([
             'j_name'=>'اسم الوظيفة 1',
@@ -462,24 +466,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('courses_types')->insert([
-            'ct_id'=>'1',
             'ct_type'=>'laravel',
             'ct_icon'=>'laptop'
         ]);
         DB::table('courses_types')->insert([
-            'ct_id'=>'2',
             'ct_type'=>'database',
             'ct_icon'=>'database'
         ]);
         
         DB::table('media')->insert([
-            'm_id'=>'1',
             'm_name'=>'course1',
             'm_path'=>'laravel',
             'c_id'=>'1'
         ]);
         DB::table('media')->insert([
-            'm_id'=>'2',
             'm_name'=>'course2',
             'm_path'=>'database',
             'c_id'=>'2'
