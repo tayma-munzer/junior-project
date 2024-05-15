@@ -177,4 +177,54 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> editSkill(
+      String s_id, String s_name, String s_level, String years_of_exp) async {
+    var url = edit_skills;
+    var res = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+      's_name': s_name,
+      's_level': s_level,
+      'years_of_exp': years_of_exp,
+    });
+    return res;
+  }
+
+  static Future<http.Response> editproject(
+      String p_id,
+      String p_name,
+      String p_desc,
+      String start_date,
+      String end_date,
+      String resbonsabilities) async {
+    var url = edit_projects;
+    var res = await http.post(Uri.parse(url), body: {
+      'p_id': p_id,
+      'p_name': p_name,
+      'p_desc': p_desc,
+      'start_date': start_date,
+      'end_date': end_date,
+      'resbonsabilities': resbonsabilities,
+    });
+    return res;
+  }
+
+  static Future<http.Response> editexp(
+      String exp_id,
+      String company,
+      String position,
+      String start_date,
+      String end_date,
+      String responsibilities) async {
+    var url = edit_experience;
+    var res = await http.post(Uri.parse(url), body: {
+      'exp_id': exp_id,
+      'company': company,
+      'position': position,
+      'start_date': start_date,
+      'end_date': end_date,
+      'responsibilities': responsibilities,
+    });
+    return res;
+  }
 }

@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/colors.dart';
+import 'package:mobile/constant/links.dart';
+import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -13,6 +18,22 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  void fetch() async {
+    String? token = await AuthManager.getToken();
+    print('object');
+    var url = get_profile;
+    var res = await http.post(Uri.parse(url), body: {'token': token});
+    Map<String, dynamic> data = json.decode(res.body);
+    print(data);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetch();
+  }
+
   bool showPassword = false;
   // Define arrays for profile information and image URL
   List<String> labels = [

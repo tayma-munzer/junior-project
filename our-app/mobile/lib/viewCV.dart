@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,6 +7,8 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editcv.dart';
+import 'package:mobile/editexp.dart';
+import 'package:mobile/editproject.dart';
 import 'package:mobile/editskill.dart';
 import 'package:mobile/edittrainingcourse.dart';
 
@@ -171,7 +172,6 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 200.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
                                 Navigator.push(
@@ -283,14 +283,15 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 80.0),
+                              padding: EdgeInsets.only(right: 10.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          editexp(experience[i]['exp_id'])),
+                                );
                               },
                             ),
                             Column(
@@ -338,14 +339,15 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(right: 80.0),
+                              padding: EdgeInsets.only(right: 10.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          projectedit(projects[i]['p_id'])),
+                                );
                               },
                             ),
                             Column(
@@ -394,6 +396,75 @@ class _viewcvState extends State {
                           children: [
                             IconButton(
                               padding: EdgeInsets.only(right: 250.0),
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_cv_language;
+                                var res = await http
+                                    .post(Uri.parse(url), body: {
+                                  'cvl_id': languages[i]['cvl_id'].toString()
+                                });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  var url = get_cv_lang;
+                                  var res = await http.post(Uri.parse(url),
+                                      body: {
+                                        'cv_id': mainInfo['cv_id'].toString()
+                                      });
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    languages = data['languages'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '  ${languages[i]['language']} ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+              Text(
+                ' التعليم ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (education.isEmpty)
+                    Text('No education to be displayed')
+                  else
+                    for (int i = 0; i < education.length; i++)
+                      Container(
+                        color: i % 2 == 0
+                            ? const Color.fromARGB(255, 168, 216, 255)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10),
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.only(right: 60.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
                                 // Navigator.push(
@@ -407,7 +478,7 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  '  ${languages[i]['language']} ',
+                                  'اسم الجامعة : ${education[i]['uni']} \n    اختصاص الدراسة : ${education[i]['field_of_study']} \n  درجة الشهادة :${education[i]['degree']} \n  سنة التخرج :${education[i]['grad_year']} \n   المعدل التراكمي : ${education[i]['gba']} ',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
