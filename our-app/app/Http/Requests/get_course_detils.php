@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class edit_training_courses extends FormRequest
+class get_course_detils extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,11 +22,16 @@ class edit_training_courses extends FormRequest
     public function rules(): array
     {
         return [
-        't_id',
-        'cv_id',
-        'course_name',
-        'training_center',
-        'completion_date',
+            'cd_id',
+            'cd_id',
+            'cd_name',
+            'cd_desc',
+            'cd_price',
+            'cd_img',
+            'c_id',
+            'cd_duration',
+            'cd_pre_requisite',
+            //
         ];
     }
 }

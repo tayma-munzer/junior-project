@@ -77,7 +77,8 @@ const delete_exp = URL + "delete_exp";
 const get_exp = URL + "get_exp";
 const get_user_jobs = URL + "get_user_jobs";
 const get_course_types = URL + "get_course_types"; //بيرجع انواع الكورسات
-const get_course_details = URL + 'get_course_details'; //بيرجع تفاصيل الكورس
+const get_course_detils = URL +
+    'get_course_detils'; // بيرجع تفاصيل الكورس من جدول الكورسات حسب رقم الكورس
 const get_courses_for_type =
     URL + 'get_courses_for_type'; // بيرجع الكورسات لنوع معين
 const get_course_for_user =
