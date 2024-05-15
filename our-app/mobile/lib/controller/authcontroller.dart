@@ -197,14 +197,14 @@ class AuthCont {
       String start_date,
       String end_date,
       String resbonsabilities) async {
-    var url = edit_skills;
+    var url = edit_projects;
     var res = await http.post(Uri.parse(url), body: {
       'p_id': p_id,
       'p_name': p_name,
       'p_desc': p_desc,
       'start_date': start_date,
       'end_date': end_date,
-      'resbonsabilities': resbonsabilities,
+      'responsibilities': resbonsabilities,
     });
     return res;
   }

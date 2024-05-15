@@ -152,8 +152,10 @@ class _projecteditState extends State<projectedit> {
         .then((value) {
       if (value.statusCode == 200) {
         print('edit successfully');
-      } else {
+      } else if (value.statusCode == 402) {
         print('something went wrong');
+      } else {
+        print('object');
       }
     });
   }
