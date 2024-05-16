@@ -11,6 +11,7 @@ class education extends Model
     protected $table = 'education';
     public $timestamps = false;
     protected $fillable = [
+        'e_id',
         'cv_id',
         'degree',
         'uni',

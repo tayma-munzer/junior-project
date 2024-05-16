@@ -32,14 +32,17 @@ use App\Http\Requests\edit_project_request;
 use App\Http\Requests\edit_service_request;
 use App\Http\Requests\edit_skill_request;
 use App\Http\Requests\edit_course_request;
-use APP\Http\Requests\edit_training_request;
+use App\Http\Requests\edit_cv_education_request;
+use APP\Http\Requests\edit_training_courses;
 use APP\Http\Requests\edit_education_request;
+use App\Http\Requests\edit_training_course_request;
 use App\Http\Requests\get_all_alt_request;
 use App\Http\Requests\get_all_cv;
 use App\Http\Requests\get_by_token;
 use App\Http\Requests\get_langs_request;
 use App\Http\Requests\get_projects_request;
 use App\Http\Requests\get_skills_request;
+use App\Http\Requests\get_course_detils;
 use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Http\Requests\get_courses_type_request;
@@ -1417,8 +1420,10 @@ public function get_course(edit_course_request $request) {
 
 }
 //
-public function edit_training_course(edit_training_request $request){
+public function edit_training_courses(edit_training_course_request $request){
     $validator = Validator::make($request->all(), [
+        't_id'=>'required|exists:training_courses,t_id',
+        'cv_id'=>'required',
         'course_name' => 'required|string',
         'training_center' => 'required|string',
         'completion_date' => 'required|date',
@@ -1432,10 +1437,11 @@ public function edit_training_course(edit_training_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows=training_courses::where('t_id','=',$request->t_id)->update([
+    $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([ 
+        'cv_id'=>$request->cv_id,
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
-        'completion_date'=>$request->completion_date
+        'completion_date'=>date('Y-m-d' , strtotime($request->completion_date))
         
     ]);
     if ($effected_rows!=0){
@@ -1450,9 +1456,9 @@ public function edit_training_course(edit_training_request $request){
 } 
 }
 //
-public function delete_training_course(edit_training_request $request){
+public function delete_training_courses(edit_training_course_request $request){
     $validator = Validator::make($request->all(), [
-        't_id' =>'required|exists:training,t_id',
+        't_id' =>'required|exists:training_courses,t_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1475,9 +1481,9 @@ public function delete_training_course(edit_training_request $request){
     }
 }
 //
-public function get_training_course(edit_training_request $request) {
+public function get_training_courses(edit_training_course_request $request) {
     $validator = Validator::make($request->all(), [
-        't_id' =>'required',
+        't_id' =>'required|exists:training_courses,t_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1490,8 +1496,10 @@ public function get_training_course(edit_training_request $request) {
     return $training_courses->get(); }
 }
  //
- public function edit_education(edit_education_request $request){
+ public function edit_education(edit_cv_education_request $request){
     $validator = Validator::make($request->all(), [
+         'e_id'=>'required|exists:education,e_id',
+         'cv_id'=>'required',
            'degree' => 'required|string',
             'uni' => 'required|string',
             'field_of_study' => 'required|string',
@@ -1509,6 +1517,7 @@ public function get_training_course(edit_training_request $request) {
         return response($errors,402);
     }else{
     $effected_rows=education::where('e_id','=',$request->e_id)->update([
+        'cv_id'=>$request->cv_id,
         'degree'=>$request->degree,
         'uni'=>$request-> uni,
         'field_of_study'=>$request->field_of_study,
@@ -1528,7 +1537,7 @@ public function get_training_course(edit_training_request $request) {
 } 
 }
 //
-public function delete_education(edit_education_request $request){
+public function delete_education(edit_cv_education_request $request){
     $validator = Validator::make($request->all(), [
         'e_id' =>'required|exists:education,e_id',
     ] , $message =[
@@ -1553,7 +1562,7 @@ public function delete_education(edit_education_request $request){
     }
 }
 //
-public function get_education(edit_education_request $request) {
+public function get_education(edit_cv_education_request $request) {
     $validator = Validator::make($request->all(), [
         'e_id' =>'required|exists:education,e_id',
     ], $messages = [
@@ -1609,10 +1618,10 @@ public function get_courses_for_type(get_courses_type_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $course=course::all()->where('ct_id','=',$request->ct_id);
-        return response($course,200);
+        $courses_type=course::where('ct_id','=',$request->ct_id);
+        return $courses_type->get(); }
     }
-}
+
 //
 public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
@@ -1628,11 +1637,21 @@ public function get_course_for_user(get_course_for_user $request){
     $course=course::where('u_id','=',$request->u_id);
     return $course->get(); }
 }
-
-
-
-
-
+//
+public function get_course_detils(get_course_detils $request){
+    $validator = Validator::make($request->all(), [
+        'cd_id' =>'required|exists:course_detils,cd_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $course_detils=course::where('cd_id','=',$request->cd_id);
+    return $course_detils->get(); }
+}
 
 public function get_skill(get_skills_request $request){
     $validator = Validator::make($request->all(), [

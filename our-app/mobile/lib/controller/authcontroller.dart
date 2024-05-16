@@ -204,7 +204,7 @@ class AuthCont {
       'p_desc': p_desc,
       'start_date': start_date,
       'end_date': end_date,
-      'resbonsabilities': resbonsabilities,
+      'responsibilities': resbonsabilities,
     });
     return res;
   }

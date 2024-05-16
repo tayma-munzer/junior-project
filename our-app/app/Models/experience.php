@@ -11,6 +11,7 @@ class experience extends Model
     protected $table = 'experiences';
     public $timestamps = false;
     protected $fillable = [
+        'exp_id',
         'cv_id',
         'position',
         'company',
