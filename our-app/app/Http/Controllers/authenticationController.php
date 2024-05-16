@@ -1423,6 +1423,7 @@ public function get_course(edit_course_request $request) {
 public function edit_training_courses(edit_training_course_request $request){
     $validator = Validator::make($request->all(), [
         't_id'=>'required|exists:training_courses,t_id',
+        'cv_id'=>'required',
         'course_name' => 'required|string',
         'training_center' => 'required|string',
         'completion_date' => 'required|date',
@@ -1437,6 +1438,7 @@ public function edit_training_courses(edit_training_course_request $request){
         return response($errors,402);
     }else{
     $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([ 
+        'cv_id'=>$request->cv_id,
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
         'completion_date'=>date('Y-m-d' , strtotime($request->completion_date))
@@ -1497,6 +1499,7 @@ public function get_training_courses(edit_training_course_request $request) {
  public function edit_education(edit_cv_education_request $request){
     $validator = Validator::make($request->all(), [
          'e_id'=>'required|exists:education,e_id',
+         'cv_id'=>'required',
            'degree' => 'required|string',
             'uni' => 'required|string',
             'field_of_study' => 'required|string',
@@ -1514,6 +1517,7 @@ public function get_training_courses(edit_training_course_request $request) {
         return response($errors,402);
     }else{
     $effected_rows=education::where('e_id','=',$request->e_id)->update([
+        'cv_id'=>$request->cv_id,
         'degree'=>$request->degree,
         'uni'=>$request-> uni,
         'field_of_study'=>$request->field_of_study,

@@ -457,7 +457,7 @@ class DatabaseSeeder extends Seeder
             'gba'=>'3.2'
         ]);
         DB::table('education')->insert([
-            'cv_id'=>'1',
+            'cv_id'=>'2',
             'grad_year'=>'2023',
             'degree'=>'ماجستير',
             'uni'=>'دمشق',

@@ -22,7 +22,7 @@ class edit_cv_education_request extends FormRequest
     public function rules(): array
     {
         return [
-            'e_id',
+            'cv_id',
             'degree',
             'uni',
             'field_of_study',
