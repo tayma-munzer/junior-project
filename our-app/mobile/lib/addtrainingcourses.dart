@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
-import 'package:mobile/addcvtrainingcourse.dart';
+import 'package:mobile/addcvprojects.dart';
 import 'package:mobile/viewCV.dart';
 
-class AddSkill extends StatefulWidget {
+class AddTrainingCourse extends StatefulWidget {
   final int cv_id;
-  const AddSkill(this.cv_id, {Key? key}) : super(key: key);
+  const AddTrainingCourse(this.cv_id, {Key? key}) : super(key: key);
 
   @override
-  _AddSkillState createState() => _AddSkillState();
+  State<AddTrainingCourse> createState() => _AddTrainingCourseState();
 }
 
-class _AddSkillState extends State<AddSkill> {
-  TextEditingController CVSkillNameController = TextEditingController();
-  TextEditingController CVSkillLevelController = TextEditingController();
-  TextEditingController CVNumYearsController = TextEditingController();
+class _AddTrainingCourseState extends State<AddTrainingCourse> {
+  TextEditingController CVCourseNameController = TextEditingController();
+  TextEditingController CVTrainingCenterController = TextEditingController();
+  TextEditingController CVCompletionDateController = TextEditingController();
+
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<Map<String, String>> skills = [];
+  String course_name = '';
+  String training_center = '';
+  String completion_date = '';
+  List<Map<String, String>> courses = [];
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(33.0),
@@ -40,76 +44,82 @@ class _AddSkillState extends State<AddSkill> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(': قسم المهارات', textAlign: TextAlign.right),
-                SizedBox(height: 16.0),
-                Text(' اسم المهارة ',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                TextFormField(
-                  controller: CVSkillNameController,
+                Text(
+                  ':قسم الدورات التدريبية',
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل اسم المهارة'),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                SizedBox(height: 16.0),
+                Text(' اسم الدورة ',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                TextFormField(
+                  controller: CVCourseNameController,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(hintText: 'ادخل اسم الدورة'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال اسم المهارة';
+                      return 'يرجى ادخال اسم الدورة';
                     }
+                    course_name = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('مستوى الخبرة ',
+                Text('اسم المركز التدريبي',
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextFormField(
-                  controller: CVSkillLevelController,
+                  controller: CVTrainingCenterController,
                   maxLines: null,
                   textAlign: TextAlign.right,
                   keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(hintText: 'ادخل مستوى خبرتك'),
+                  decoration:
+                      InputDecoration(hintText: 'ادخل اسم المركز التدريبي'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى ادخال مستوى الخدمة ';
+                      return 'يرجى ادخال اسم المركز التدريبي ';
                     }
+                    training_center = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                Text('عدد سنين الخبرة ',
+                Text(' تاريخ انتهاء الدورة ',
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextFormField(
-                  controller: CVNumYearsController,
+                  controller: CVCompletionDateController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(hintText: 'ادخل عدد سنين الخبرة'),
+                  decoration:
+                      InputDecoration(hintText: 'ادخل تاريخ انتهاء الدورة'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return ' يرجى ادخال عدد سنين الخبرة ';
+                      return 'يرجى ادخل تاريخ انتهاء الدورة  ';
                     }
-                    if (!RegExp(r'^\d+$').hasMatch(value)) {
-                      return 'الرجاء إدخال رقم صحيح موجب';
-                    }
+                    completion_date = value;
                     return null;
                   },
                 ),
                 SizedBox(height: 16.0),
-                // Add Button
                 ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, String> skill = {
-                        's_name': CVSkillNameController.text,
-                        's_level': CVSkillLevelController.text,
-                        'years_of_exp': CVNumYearsController.text
+                      Map<String, String> course = {
+                        'course_name': course_name,
+                        'training_center': training_center,
+                        'completion_date': completion_date
                       };
-                      skills.add(skill);
-                      print('skill added to list');
+                      courses.add(course);
+                      print('course added to the list');
                       setState(() {
-                        CVSkillNameController.clear();
-                        CVSkillLevelController.clear();
-                        CVNumYearsController.clear();
+                        CVCourseNameController.clear();
+                        CVTrainingCenterController.clear();
+                        CVCompletionDateController.clear();
                       });
                     }
                   },
@@ -121,7 +131,7 @@ class _AddSkillState extends State<AddSkill> {
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontSize: 16),
                       ),
                     ),
                   ),
@@ -131,9 +141,9 @@ class _AddSkillState extends State<AddSkill> {
                   textDirection: TextDirection.rtl,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: skills.length,
+                    itemCount: courses.length,
                     itemBuilder: (context, index) {
-                      final skill = skills[index];
+                      final course = courses[index];
                       return Container(
                         color: index % 2 == 0
                             ? const Color.fromARGB(255, 163, 214, 255)
@@ -143,13 +153,16 @@ class _AddSkillState extends State<AddSkill> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                " اسم المهارة : ${skill['s_name']} ",
+                                "اسم الدورة : ${course['course_name']}",
+                                style: TextStyle(fontSize: 20),
                               ),
                               Text(
-                                " مستوى الخبرة : ${skill['s_level']}",
+                                " اسم مركز التدريب  : ${course['training_center']}",
+                                style: TextStyle(fontSize: 20),
                               ),
                               Text(
-                                " عدد سنين الخدمة : ${skill['years_of_exp']}  ",
+                                " تاريخ انهاء الدورة : ${course['completion_date']} ",
+                                style: TextStyle(fontSize: 20),
                               ),
                             ],
                           ),
@@ -158,7 +171,6 @@ class _AddSkillState extends State<AddSkill> {
                     },
                   ),
                 ),
-
                 SizedBox(height: 16.0),
                 Row(
                   children: [
@@ -166,32 +178,33 @@ class _AddSkillState extends State<AddSkill> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
+                              MaterialStateProperty.all<Color>(Colors.blue),
                         ),
                         onPressed: () {
-                          AuthCont.add_skills(widget.cv_id.toString(), skills)
+                          AuthCont.add_training_courses(
+                                  widget.cv_id.toString(), courses)
                               .then((value) {
                             if (value.statusCode == 200) {
-                              print('skill added to the CV successfully');
+                              print(
+                                  'training course added to the CV sucessfully successfully');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => viewcv(),
-                                ),
+                                    builder: (context) => viewcv()),
                               );
                             } else {
                               // Error response
                               print(
-                                  'Failed to add the skill to the CV. Error: ${value.body}');
+                                  'Failed to add the training course to the CV. Error: ${value.body}');
                             }
                           });
                         },
                         child: Text(
-                          'حفظ ',
+                          ' التالي',
                           style: TextStyle(
                               color: Color.fromARGB(255, 255, 255, 255),
                               fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                              fontSize: 16),
                         ),
                       ),
                     ),

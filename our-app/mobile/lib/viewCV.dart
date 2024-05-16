@@ -1,4 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mobile/addeducation.dart';
+import 'package:mobile/addexperince.dart';
+import 'package:mobile/addlanguage.dart';
+import 'package:mobile/addproject.dart';
+import 'package:mobile/addtrainingcourses.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,6 +19,7 @@ import 'package:mobile/editexp.dart';
 import 'package:mobile/editproject.dart';
 import 'package:mobile/editskill.dart';
 import 'package:mobile/edittrainingcourse.dart';
+import 'package:mobile/addskill.dart';
 
 class viewcv extends StatefulWidget {
   const viewcv({Key? key}) : super(key: key);
@@ -154,9 +163,10 @@ class _viewcvState extends State {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditCv()),
-                      );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddSkill(mainInfo['cv_id']),
+                          ));
                     },
                   ),
                   Text(
@@ -188,6 +198,30 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_skill;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
+                                      's_id': skills[i]['s_id'].toString()
+                                    });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  var url = get_cv_skills;
+                                  var res = await http.post(Uri.parse(url),
+                                      body: {
+                                        'cv_id': mainInfo['cv_id'].toString()
+                                      });
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    skills = data['skills'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
+                            IconButton(
                               icon: Icon(Icons.edit),
                               onPressed: () {
                                 Navigator.push(
@@ -217,12 +251,30 @@ class _viewcvState extends State {
                       ),
                 ],
               ),
-              Text(
-                'الدورات التدريبية ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddTrainingCourse(mainInfo['cv_id']),
+                          ));
+                    },
+                  ),
+                  Text(
+                    ' الدورات التدريبية',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -273,12 +325,33 @@ class _viewcvState extends State {
                       ),
                 ],
               ),
-              Text(
-                ' الخبرة ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddExperience(mainInfo['cv_id']),
+                          ));
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    ' الخبرات',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -329,12 +402,30 @@ class _viewcvState extends State {
                       ),
                 ],
               ),
-              Text(
-                ' المشاريع ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddExperience(mainInfo['cv_id']),
+                          ));
+                    },
+                  ),
+                  Text(
+                    'المشاريع',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -370,7 +461,7 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  '   عنوان المشروع : ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_date']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
+                                  '  اسم المشروع :  ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_date']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -385,12 +476,33 @@ class _viewcvState extends State {
                       ),
                 ],
               ),
-              Text(
-                ' اللغات ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                addLanguage(mainInfo['cv_id']),
+                          ));
+                    },
+                  ),
+                  Text(
+                    'اللغات',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -454,12 +566,30 @@ class _viewcvState extends State {
                       ),
                 ],
               ),
-              Text(
-                ' التعليم ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                addeduction(mainInfo['cv_id']),
+                          ));
+                    },
+                  ),
+                  Text(
+                    '  التعليم',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -508,6 +638,22 @@ class _viewcvState extends State {
                         ),
                       ),
                 ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    //هون رح يكون حذف كل ال cv
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                  ),
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),
