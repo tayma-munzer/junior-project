@@ -146,12 +146,28 @@ class _viewcvState extends State {
               SizedBox(
                 height: 20,
               ),
-              Text(
-                'المهارات',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.only(right: 8.0),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditCv()),
+                      );
+                    },
+                  ),
+                  Text(
+                    ' المهارات',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
               Column(
                 children: [
