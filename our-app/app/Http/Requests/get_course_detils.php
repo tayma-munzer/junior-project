@@ -22,15 +22,13 @@ class get_course_detils extends FormRequest
     public function rules(): array
     {
         return [
-            'cd_id',
-            'cd_id',
-            'cd_name',
-            'cd_desc',
-            'cd_price',
-            'cd_img',
             'c_id',
-            'cd_duration',
-            'cd_pre_requisite',
+            'c_name',
+            'c_desc',
+            'c_price',
+            'c_img',
+            'c_duration',
+            'pre_requisite',
             //
         ];
     }

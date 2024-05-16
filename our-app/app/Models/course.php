@@ -19,7 +19,7 @@ class course extends Model
         'c_duration',
         'pre_requisite',
         'ct_id',
-        'cd_id',
+    
     ];
 
     public function courses_type(){
@@ -27,8 +27,4 @@ class course extends Model
         $this->belongsTo(courses_type::class,'ct_id','c_id');
     }
     
-    public function course_detils(){
-        return 
-        $this->belongsTo(course_detils::class,'ct_id','c_id');
-    }
 }
