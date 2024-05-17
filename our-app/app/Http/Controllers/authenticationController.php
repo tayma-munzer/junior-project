@@ -1349,7 +1349,7 @@ public function get_exp(edit_exp_request $request) {
 //
 public function edit_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id'=>'required|exists:course,c_id',
+        'c_id'=>'required|exists:courses,c_id',
         'c_name'=>'required|string',
         'c_desc'=>'required|string',
         'c_price'=>'required|integer|gte:50000',
@@ -1390,7 +1390,7 @@ public function edit_course(edit_course_request $request){
 //
 public function delete_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1415,7 +1415,7 @@ public function delete_course(edit_course_request $request){
 //
 public function get_course(edit_course_request $request) {
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1639,7 +1639,7 @@ public function get_courses_for_type(get_courses_type_request $request){
 //
 public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
-        'u_id' =>'required|exists:course,u_id',
+        'u_id' =>'required|exists:courses,u_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1654,7 +1654,7 @@ public function get_course_for_user(get_course_for_user $request){
 //
 public function get_course_detils(get_course_detils $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course_detils,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
