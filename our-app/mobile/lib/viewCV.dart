@@ -21,6 +21,7 @@ import 'package:mobile/editproject.dart';
 import 'package:mobile/editskill.dart';
 import 'package:mobile/edittrainingcourse.dart';
 import 'package:mobile/addskill.dart';
+import 'package:mobile/firstpage.dart';
 
 class viewcv extends StatefulWidget {
   const viewcv({Key? key}) : super(key: key);
@@ -208,11 +209,6 @@ class _viewcvState extends State {
                                     });
                                 if (res.statusCode == 200) {
                                   print('deleted seccessfully');
-                                  var url = get_cv_skills;
-                                  var res = await http.post(Uri.parse(url),
-                                      body: {
-                                        'cv_id': mainInfo['cv_id'].toString()
-                                      });
                                   Map data = json.decode(res.body);
                                   setState(() {
                                     skills = data['skills'];
@@ -296,6 +292,25 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_training_courses;
+                                var res = await http
+                                    .post(Uri.parse(url), body: {
+                                  't_id': training_courses[i]['t_id'].toString()
+                                });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    training_courses = data['courses'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
+                            IconButton(
                               padding: EdgeInsets.only(right: 100.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
@@ -373,6 +388,25 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_exp;
+                                var res = await http
+                                    .post(Uri.parse(url), body: {
+                                  'exp_id': experience[i]['exp_id'].toString()
+                                });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    experience = data['experiences'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
+                            IconButton(
                               padding: EdgeInsets.only(right: 10.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
@@ -446,6 +480,25 @@ class _viewcvState extends State {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_project;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
+                                      'p_id': projects[i]['p_id'].toString()
+                                    });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    projects = data['projects'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
                             IconButton(
                               padding: EdgeInsets.only(right: 10.0),
                               icon: Icon(Icons.edit),
@@ -612,6 +665,25 @@ class _viewcvState extends State {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_education;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
+                                      'e_id': education[i]['e_id'].toString()
+                                    });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    education = data['educations'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
+                            ),
+                            IconButton(
                               padding: EdgeInsets.only(right: 60.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
@@ -645,8 +717,21 @@ class _viewcvState extends State {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     //هون رح يكون حذف كل ال cv
+
+                    var url = delete_all_cv;
+                    var res = await http.post(Uri.parse(url),
+                        body: {'cv_id': mainInfo['cv_id'].toString()});
+                    if (res.statusCode == 200) {
+                      print('deleted seccessfully');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FirstPage()),
+                      );
+                    } else {
+                      print('something went wrong');
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor:
