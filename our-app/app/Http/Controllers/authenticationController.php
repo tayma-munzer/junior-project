@@ -1177,9 +1177,11 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=skills::where('s_id','=',$request->s_id)->delete();
+        $skills = skills::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'skills'=>$skills ,
         ],200); }
         else {
             return response([
@@ -1201,9 +1203,11 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=cv_lang::where('cvl_id','=',$request->cvl_id)->delete();
+        $cv_langs =cv_lang::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'languages'=> $cv_langs,
         ],200); }
         else {
             return response([
@@ -1225,9 +1229,11 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=projects::where('p_id','=',$request->p_id)->delete();
+        $projects = projects ::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'projects'=>$projects,
         ],200); }
         else {
             return response([
@@ -1310,9 +1316,11 @@ public function delete_exp(edit_exp_request $request){
     }
     else{
         $effected_rows=experience::where('exp_id','=',$request->exp_id)->delete();
+        $experiences = experience::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'experiences' => $experiences,
         ],200); }
         else {
             return response([
@@ -1470,9 +1478,11 @@ public function delete_training_courses(edit_training_course_request $request){
     }
     else{
         $effected_rows=training_courses::where('t_id','=',$request->t_id)->delete();
+        $courses = training_courses::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'courses'=>$courses,
         ],200); }
         else {
             return response([
@@ -1551,9 +1561,11 @@ public function delete_education(edit_cv_education_request $request){
     }
     else{
         $effected_rows=education::where('e_id','=',$request->e_id)->delete();
+        $educations = education::all();
         if ($effected_rows!=0){
         return response([
-            'message'=> 'deleted successfully'
+            'message'=> 'deleted successfully',
+            'educations' => $educations,
         ],200); }
         else {
             return response([
