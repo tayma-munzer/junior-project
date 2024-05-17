@@ -1202,8 +1202,9 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+        $cv_id = cv_lang::where('cvl_id','=',$request->cvl_id)->first()->cv_id;
         $effected_rows=cv_lang::where('cvl_id','=',$request->cvl_id)->delete();
-        $cv_langs =cv_lang::all();
+        $cv_langs =DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$cv_id)->get();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully',

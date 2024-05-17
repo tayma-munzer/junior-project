@@ -405,14 +405,15 @@ class _viewcvState extends State {
                                 });
                                 if (res.statusCode == 200) {
                                   print('deleted seccessfully');
-                                  var url = get_cv_lang;
-                                  var res = await http.post(Uri.parse(url),
-                                      body: {
-                                        'cv_id': mainInfo['cv_id'].toString()
-                                      });
+                                  // var url = get_cv_lang;
+                                  // var res = await http.post(Uri.parse(url),
+                                  //     body: {
+                                  //       'cv_id': mainInfo['cv_id'].toString()
+                                  //     });
                                   Map data = json.decode(res.body);
                                   setState(() {
                                     languages = data['languages'];
+                                    print(languages);
                                   });
                                 } else {
                                   print('something went wrong');
