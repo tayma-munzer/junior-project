@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/edittrainingcourse.dart';
 
 class AuthCont {
   static Future<http.Response> loginAuth(email, pass) async {
@@ -224,6 +225,39 @@ class AuthCont {
       'start_date': start_date,
       'end_date': end_date,
       'responsibilities': responsibilities,
+    });
+    return res;
+  }
+
+  static Future<http.Response> edittrainingcourse(
+      String t_id,
+      String course_name,
+      String training_center,
+      String completion_date) async {
+    var url = edit_training_courses;
+    var res = await http.post(Uri.parse(url), body: {
+      't_id': t_id,
+      'course_name': course_name,
+      'completion_date': completion_date
+    });
+    return res;
+  }
+
+  static Future<http.Response> editeducation(
+      String e_id,
+      String uni,
+      String degree,
+      String field_of_study,
+      String grad_year,
+      String gba) async {
+    var url = edit_education;
+    var res = await http.post(Uri.parse(url), body: {
+      'e_id': e_id,
+      'uni': uni,
+      'degree': degree,
+      'field_of_study': field_of_study,
+      'grad_year': grad_year,
+      'gba': gba,
     });
     return res;
   }

@@ -1347,6 +1347,7 @@ public function edit_course(edit_course_request $request){
         'c_img'=>'required|string',
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
+    
     ],$messages = [
         'required' => 'The :attribute field is required.',
         'integer' => 'the :attribute field should be a number',
@@ -1640,7 +1641,7 @@ public function get_course_for_user(get_course_for_user $request){
 //
 public function get_course_detils(get_course_detils $request){
     $validator = Validator::make($request->all(), [
-        'cd_id' =>'required|exists:course_detils,cd_id',
+        'c_id' =>'required|exists:course_detils,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1649,7 +1650,7 @@ public function get_course_detils(get_course_detils $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course_detils=course::where('cd_id','=',$request->cd_id);
+    $course_detils=course::where('c_id','=',$request->c_id);
     return $course_detils->get(); }
 }
 

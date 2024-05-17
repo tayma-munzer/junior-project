@@ -31,7 +31,7 @@ class edit_course_request extends FormRequest
             'c_img',
             'c_duration',
             'pre_requisite',
-             'ct_id',
+            'ct_id',
             
         ];
     }

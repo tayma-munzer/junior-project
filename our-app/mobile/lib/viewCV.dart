@@ -15,6 +15,7 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editcv.dart';
+import 'package:mobile/editeducation.dart';
 import 'package:mobile/editexp.dart';
 import 'package:mobile/editproject.dart';
 import 'package:mobile/editskill.dart';
@@ -298,12 +299,12 @@ class _viewcvState extends State {
                               padding: EdgeInsets.only(right: 100.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => edittrainingcourse(
-                                //           training_courses[i]['t_id'])),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => edittrainingcourse(
+                                          training_courses[i]['t_id'])),
+                                );
                               },
                             ),
                             Column(
@@ -613,11 +614,12 @@ class _viewcvState extends State {
                               padding: EdgeInsets.only(right: 60.0),
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => EditSkill()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          editeducation(education[i]['e_id'])),
+                                );
                               },
                             ),
                             Column(

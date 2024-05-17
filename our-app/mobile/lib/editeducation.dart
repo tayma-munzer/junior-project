@@ -8,34 +8,34 @@ import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:http/http.dart' as http;
 
-class projectedit extends StatefulWidget {
-  final int p_id;
-  const projectedit(this.p_id, {Key? key}) : super(key: key);
+class editeducation extends StatefulWidget {
+  final int e_id;
+  const editeducation(this.e_id, {Key? key}) : super(key: key);
 
   @override
-  State<projectedit> createState() => _projecteditState();
+  State<editeducation> createState() => _editeducationState();
 }
 
-class _projecteditState extends State<projectedit> {
-  Map<String, dynamic> Projects = {};
+class _editeducationState extends State<editeducation> {
+  Map<String, dynamic> education = {};
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController startController = TextEditingController();
-  TextEditingController endController = TextEditingController();
-  TextEditingController responsibilitiesController = TextEditingController();
+  TextEditingController uniController = TextEditingController();
+  TextEditingController degreeController = TextEditingController();
+  TextEditingController fieldController = TextEditingController();
+  TextEditingController gradyearController = TextEditingController();
+  TextEditingController gbaController = TextEditingController();
 
   void fetch() async {
-    var url = get_project;
+    var url = get_education;
     var res =
-        await http.post(Uri.parse(url), body: {'p_id': widget.p_id.toString()});
+        await http.post(Uri.parse(url), body: {'e_id': widget.e_id.toString()});
     Map<String, dynamic> data = json.decode(res.body);
-    Projects = data;
-    nameController.text = Projects['p_name'] ?? '';
-    descriptionController.text = Projects['p_desc'] ?? '';
-    startController.text = Projects['start_date'] ?? '';
-    endController.text = Projects['end_date'] ?? '';
-    responsibilitiesController.text = Projects['responsibilities'] ?? '';
+    education = data;
+    uniController.text = education['uni'] ?? '';
+    degreeController.text = education['degree'] ?? '';
+    fieldController.text = education['field_of_study'] ?? '';
+    gradyearController.text = education['grad_year'] ?? '';
+    gbaController.text = education['gba'] ?? '';
 
     print(data);
     setState(() {});
@@ -61,38 +61,38 @@ class _projecteditState extends State<projectedit> {
           child: Column(
             children: [
               Text(
-                'المشاريع',
+                'التعليم',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
               SizedBox(height: 10),
-              buildTextField('اسم المشروع', nameController, (value) {
+              buildTextField('اسم الجامعة', uniController, (value) {
                 if (value.isEmpty) {
                   return 'project name cant be empty';
                 }
                 return null;
               }),
-              buildTextField(' وصف المشروع', descriptionController, (value) {
+              buildTextField('  درجة الشهادة', degreeController, (value) {
                 if (value.isEmpty) {
                   return ' project description cant be empty';
                 }
                 return null;
               }),
-              buildTextField('تاريخ البدء بالمشروع ', startController, (value) {
+              buildTextField('اختصاص الدراسة', fieldController, (value) {
                 if (value.isEmpty) {
                   return 'start date of project cant be empty';
                 }
                 return null;
               }),
-              buildTextField('تاريخ انهاء المشروع ', endController, (value) {
+              buildTextField('سنة التخرج', gradyearController, (value) {
                 if (value.isEmpty) {
                   return 'end date of project cant be empty';
                 }
                 return null;
               }),
-              buildTextField('مسؤوليات', responsibilitiesController, (value) {
+              buildTextField('المعدل التراكمي', gbaController, (value) {
                 if (value.isEmpty) {
                   return 'responsabilities of project cant be empty';
                 }
@@ -101,11 +101,11 @@ class _projecteditState extends State<projectedit> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (nameController.text.isEmpty &&
-                      descriptionController.text.isNotEmpty &&
-                      startController.text.isNotEmpty &&
-                      endController.text.isNotEmpty &&
-                      responsibilitiesController.text.isNotEmpty) {
+                  if (uniController.text.isEmpty &&
+                      fieldController.text.isNotEmpty &&
+                      gbaController.text.isNotEmpty &&
+                      gradyearController.text.isNotEmpty &&
+                      degreeController.text.isNotEmpty) {
                     saveValues();
                   } else {}
                 },
@@ -134,21 +134,21 @@ class _projecteditState extends State<projectedit> {
   }
 
   void saveValues() {
-    String name = nameController.text;
-    String desc = descriptionController.text;
-    String startdate = startController.text;
-    String enddate = endController.text;
-    String resbonsabilities = responsibilitiesController.text;
+    String uni = uniController.text;
+    String degree = degreeController.text;
+    String field_of_study = fieldController.text;
+    String grad_year = gradyearController.text;
+    String gba = gbaController.text;
 
-    print('name: $name');
-    print('desc: $desc');
-    print('start date: $startdate');
-    print('end date: $enddate');
-    print('resbonsabilities :$resbonsabilities');
-    print('project id: ${Projects['p_id']}');
+    print('uni: $uni');
+    print('degree: $degree');
+    print(' field_of_study: $field_of_study');
+    print('grad_year: $grad_year');
+    print('gba :$gba');
+    print('education id: ${education['e_id']}');
 
-    AuthCont.editproject(Projects['p_id'].toString(), name, desc, startdate,
-            enddate, resbonsabilities)
+    AuthCont.editeducation(education['e_id'].toString(), uni, degree,
+            field_of_study, grad_year, gba)
         .then((value) {
       if (value.statusCode == 200) {
         print('edit successfully');

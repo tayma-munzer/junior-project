@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('course_detils', function (Blueprint $table) {
-            $table->integer('cd_duration');
-            $table->string('cd_pre_requisite');
+        //
+        
+        Schema::table('courses', function (Blueprint $table) {
+            //
+            $table->integer('cd_id');
         });
+        
     }
 
     /**
@@ -22,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('course_detils', function (Blueprint $table) {
-            //
-        });
+        //
     }
 };
