@@ -59,7 +59,7 @@ class _AddCourseState extends State<AddCourse> {
           File('path/to/images/folder/${image.path.split('/').last}');
       await newImage.writeAsBytes(await image.readAsBytes());
     }
-//هون بنخط اللوجيك تيع الفيديو
+//هون بنخط اللوجيك تيع الفيديو video
   }
 
   @override
@@ -78,6 +78,7 @@ class _AddCourseState extends State<AddCourse> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
+                Center(child: Image.asset('assets/course.png', width: 150)),
                 Text('اسم الكورس', textAlign: TextAlign.right),
                 TextFormField(
                   textAlign: TextAlign.right,

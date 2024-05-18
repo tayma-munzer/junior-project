@@ -11,6 +11,7 @@ import 'package:mobile/constant/links.dart';
 import 'package:mobile/services_types.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -32,6 +33,9 @@ class _AddServiceState extends State<AddService> {
   File? _imageFile;
   String? _savedImagePath;
   String? base64Image;
+  String durationOrCalendar = 'duration';
+  DateTime? selectedDate;
+  int durationInDays = 0;
   String? image_name;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -46,6 +50,10 @@ class _AddServiceState extends State<AddService> {
       first_type = data.map((item) => item).toList();
       selectedMainCategory = first_type[0]['type'];
     });
+  }
+
+  int calculateDaysDifference(DateTime startDate, DateTime endDate) {
+    return endDate.difference(startDate).inDays;
   }
 
   void fetchnext() async {
@@ -125,7 +133,15 @@ class _AddServiceState extends State<AddService> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text('اسم الخدمة', textAlign: TextAlign.right),
+                Center(child: Image.asset('assets/service.png', width: 200)),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'اسم الخدمة',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 TextFormField(
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
@@ -142,8 +158,12 @@ class _AddServiceState extends State<AddService> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
-                Text('سعر الخدمة', textAlign: TextAlign.right),
+                SizedBox(height: 30),
+                Text(
+                  'سعر الخدمة',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 TextFormField(
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
@@ -164,8 +184,12 @@ class _AddServiceState extends State<AddService> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
-                Text('التصنيف الرئيسي', textAlign: TextAlign.right),
+                SizedBox(height: 30),
+                Text(
+                  'التصنيف الرئيسي',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 DropdownButton<String>(
                   value: selectedMainCategory,
                   items: first_type.map((value) {
@@ -180,9 +204,14 @@ class _AddServiceState extends State<AddService> {
                       fetch_sec_types(value.trim());
                     });
                   },
+                  icon: SizedBox.shrink(),
                 ),
                 SizedBox(height: 10),
-                Text('التصنيف الفرعي', textAlign: TextAlign.right),
+                Text(
+                  'التصنيف الفرعي',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 DropdownButton<String>(
                   value: selectedSecondaryCategory,
                   items: sec_type.map((value) {
@@ -198,9 +227,14 @@ class _AddServiceState extends State<AddService> {
                       service_sec_type = value;
                     });
                   },
+                  icon: SizedBox.shrink(),
                 ),
                 SizedBox(height: 10),
-                Text('الوصف', textAlign: TextAlign.right),
+                Text(
+                  'الوصف',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 TextFormField(
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
@@ -217,25 +251,120 @@ class _AddServiceState extends State<AddService> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
-                Text('المدة', textAlign: TextAlign.right),
-                DropdownButton<String>(
-                  value: selectedDuration,
-                  items: <String>['1 hour', '2 hours', '3 hours', '4 hours']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, textAlign: TextAlign.right),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      selectedDuration = value!;
-                    });
-                  },
+                SizedBox(height: 20),
+                Text(
+                  'مدة الخدمة',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
-                Text('قواعد للمشتريين', textAlign: TextAlign.right),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'مدة',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Radio(
+                      value: 'duration',
+                      groupValue: durationOrCalendar,
+                      onChanged: (value) {
+                        setState(() {
+                          durationOrCalendar = value!;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'تقويم',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Radio(
+                      value: 'calendar',
+                      groupValue: durationOrCalendar,
+                      onChanged: (value) {
+                        setState(() {
+                          durationOrCalendar = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+
+                if (durationOrCalendar == 'calendar')
+                  ElevatedButton(
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null && picked.isAfter(DateTime.now())) {
+                        setState(() {
+                          selectedDate = picked;
+                          durationInDays =
+                              calculateDaysDifference(DateTime.now(), picked);
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('التاريخ يجب أن يكون في المستقبل'),
+                        ));
+                      }
+                    },
+                    child: const Text('اختر التاريخ'),
+                  )
+                else
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDate = null;
+                        durationInDays = int.tryParse(value) ?? 0;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'المدة بالساعات',
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+// عرض التاريخ المتاح
+                if (selectedDate != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'التاريخ المحدد: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}',
+                        textAlign: TextAlign.right,
+                      ),
+                      Text(
+                        'عدد الأيام المتبقية: $durationInDays',
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  )
+                else if (durationInDays > 0)
+                  Text(
+                    'المدة المحددة: $durationInDays ساعات',
+                    textAlign: TextAlign.right,
+                  ),
+                SizedBox(height: 30),
+                Text(
+                  'قواعد للمشتريين',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 TextFormField(
                   textAlign: TextAlign.right,
                   decoration: InputDecoration(
@@ -245,7 +374,11 @@ class _AddServiceState extends State<AddService> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Text('الصور', textAlign: TextAlign.right),
+                Text(
+                  'الصور',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Container(
@@ -253,9 +386,9 @@ class _AddServiceState extends State<AddService> {
                       width: 250,
                       child: base64Image != null
                           ? Image.memory(base64Decode(base64Image!))
-                          : Text('no image selected')),
+                          : Text('لا يوجد صور للعرض')),
                 ),
-                SizedBox(height: 10),
+
                 Center(
                   child: Column(
                     children: [
@@ -269,7 +402,11 @@ class _AddServiceState extends State<AddService> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        child: Text('اضف صورة او فيديو'),
+                        child: Text(
+                          'اضف صورة',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(height: 10),
                       ElevatedButton(
@@ -314,7 +451,11 @@ class _AddServiceState extends State<AddService> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        child: Text('   اضف خدمة    '),
+                        child: Text(
+                          '   اضف خدمة    ',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
