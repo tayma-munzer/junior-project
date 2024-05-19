@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:mobile/homepage.dart';
 import 'package:mobile/login.dart';
 import 'package:mobile/signup.dart';
 import 'package:mobile/firstpage.dart';
@@ -79,8 +80,10 @@ class HomePage extends StatelessWidget {
                     minWidth: double.infinity,
                     height: 60,
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => FirstPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MainHomePage()));
                     },
                     color: Color(0xff0095FF),
                     shape: RoundedRectangleBorder(
