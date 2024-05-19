@@ -536,14 +536,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  pusher_client:
+  pusher_channels_flutter:
     dependency: "direct main"
     description:
-      name: pusher_client
-      sha256: "0dce30a1b4b0dca2a9af2f680eec495b9cdc2b0281491426f3af9718776dc14a"
+      name: pusher_channels_flutter
+      sha256: "1e4e1878f4c600b32adec898d9974355fcdbb08ac3bd1b3fd4fb1f8c3f732e6d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.0.5"
   rxdart:
     dependency: transitive
     description:
