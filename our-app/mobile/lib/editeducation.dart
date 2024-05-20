@@ -34,8 +34,8 @@ class _editeducationState extends State<editeducation> {
     uniController.text = education['uni'] ?? '';
     degreeController.text = education['degree'] ?? '';
     fieldController.text = education['field_of_study'] ?? '';
-    gradyearController.text = education['grad_year'] ?? '';
-    gbaController.text = education['gba'] ?? '';
+    gradyearController.text = education['grad_year'].toString() ?? '';
+    gbaController.text = education['gba'].toString() ?? '';
 
     print(data);
     setState(() {});
@@ -101,15 +101,17 @@ class _editeducationState extends State<editeducation> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (uniController.text.isEmpty &&
+                  if (uniController.text.isNotEmpty &&
                       fieldController.text.isNotEmpty &&
                       gbaController.text.isNotEmpty &&
                       gradyearController.text.isNotEmpty &&
                       degreeController.text.isNotEmpty) {
                     saveValues();
-                  } else {}
+                  } else {
+                    //make any thing that represent the error
+                  }
                 },
-                child: Text('Save'),
+                child: Text('حفظ'),
               ),
             ],
           ),

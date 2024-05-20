@@ -238,6 +238,7 @@ class AuthCont {
     var res = await http.post(Uri.parse(url), body: {
       't_id': t_id,
       'course_name': course_name,
+      'training_center': training_center,
       'completion_date': completion_date
     });
     return res;

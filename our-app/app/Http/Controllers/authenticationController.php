@@ -1504,7 +1504,7 @@ public function get_training_courses(edit_training_course_request $request) {
         return response($errors,402);
     }else{
     $training_courses=training_courses::where('t_id','=',$request->t_id);
-    return $training_courses->get(); }
+    return $training_courses->first(); }
 }
  //
  public function edit_education(edit_cv_education_request $request){
@@ -1585,7 +1585,7 @@ public function get_education(edit_cv_education_request $request) {
         return response($errors,402);
     }else{
     $education=education::where('e_id','=',$request->e_id);
-    return $education->get(); }
+    return $education->first(); }
 }  
 public function check_job_owner(edit_education_request $request) {
     $validator = Validator::make($request->all(), [
