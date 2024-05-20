@@ -197,37 +197,43 @@ class _viewcvState extends State {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_skill;
-                                var res = await http.post(Uri.parse(url),
-                                    body: {
-                                      's_id': skills[i]['s_id'].toString()
-                                    });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    skills = data['skills'];
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          editskill(skills[i]['s_id'])),
-                                );
-                              },
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  //padding: EdgeInsets.only(left: 19.0),
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    var url = delete_skill;
+                                    var res = await http.post(Uri.parse(url),
+                                        body: {
+                                          's_id': skills[i]['s_id'].toString()
+                                        });
+                                    if (res.statusCode == 200) {
+                                      print('deleted seccessfully');
+                                      Map data = json.decode(res.body);
+                                      setState(() {
+                                        skills = data['skills'];
+                                      });
+                                    } else {
+                                      print('something went wrong');
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              editskill(skills[i]['s_id'])),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -289,38 +295,45 @@ class _viewcvState extends State {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_training_courses;
-                                var res = await http
-                                    .post(Uri.parse(url), body: {
-                                  't_id': training_courses[i]['t_id'].toString()
-                                });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    training_courses = data['courses'];
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.only(right: 100.0),
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => edittrainingcourse(
-                                          training_courses[i]['t_id'])),
-                                );
-                              },
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    var url = delete_training_courses;
+                                    var res = await http
+                                        .post(Uri.parse(url), body: {
+                                      't_id':
+                                          training_courses[i]['t_id'].toString()
+                                    });
+                                    if (res.statusCode == 200) {
+                                      print('deleted seccessfully');
+                                      Map data = json.decode(res.body);
+                                      setState(() {
+                                        training_courses = data['courses'];
+                                      });
+                                    } else {
+                                      print('something went wrong');
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.only(right: 100.0),
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              edittrainingcourse(
+                                                  training_courses[i]['t_id'])),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -385,38 +398,44 @@ class _viewcvState extends State {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_exp;
-                                var res = await http
-                                    .post(Uri.parse(url), body: {
-                                  'exp_id': experience[i]['exp_id'].toString()
-                                });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    experience = data['experiences'];
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.only(right: 10.0),
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          editexp(experience[i]['exp_id'])),
-                                );
-                              },
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    var url = delete_exp;
+                                    var res = await http.post(Uri.parse(url),
+                                        body: {
+                                          'exp_id':
+                                              experience[i]['exp_id'].toString()
+                                        });
+                                    if (res.statusCode == 200) {
+                                      print('deleted seccessfully');
+                                      Map data = json.decode(res.body);
+                                      setState(() {
+                                        experience = data['experiences'];
+                                      });
+                                    } else {
+                                      print('something went wrong');
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.only(right: 10.0),
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              editexp(experience[i]['exp_id'])),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -574,33 +593,39 @@ class _viewcvState extends State {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              padding: EdgeInsets.only(right: 250.0),
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_cv_language;
-                                var res = await http
-                                    .post(Uri.parse(url), body: {
-                                  'cvl_id': languages[i]['cvl_id'].toString()
-                                });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  // var url = get_cv_lang;
-                                  // var res = await http.post(Uri.parse(url),
-                                  //     body: {
-                                  //       'cv_id': mainInfo['cv_id'].toString()
-                                  //     });
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    languages = data['languages'];
-                                    print(languages);
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.only(right: 250.0),
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    var url = delete_cv_language;
+                                    var res = await http.post(Uri.parse(url),
+                                        body: {
+                                          'cvl_id':
+                                              languages[i]['cvl_id'].toString()
+                                        });
+                                    if (res.statusCode == 200) {
+                                      print('deleted seccessfully');
+                                      // var url = get_cv_lang;
+                                      // var res = await http.post(Uri.parse(url),
+                                      //     body: {
+                                      //       'cv_id': mainInfo['cv_id'].toString()
+                                      //     });
+                                      Map data = json.decode(res.body);
+                                      setState(() {
+                                        languages = data['languages'];
+                                        print(languages);
+                                      });
+                                    } else {
+                                      print('something went wrong');
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -662,38 +687,45 @@ class _viewcvState extends State {
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_education;
-                                var res = await http.post(Uri.parse(url),
-                                    body: {
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  alignment: Alignment.centerLeft,
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    var url = delete_education;
+                                    var res = await http
+                                        .post(Uri.parse(url), body: {
                                       'e_id': education[i]['e_id'].toString()
                                     });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    education = data['educations'];
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.only(right: 60.0),
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          editeducation(education[i]['e_id'])),
-                                );
-                              },
+                                    if (res.statusCode == 200) {
+                                      print('deleted seccessfully');
+                                      Map data = json.decode(res.body);
+                                      setState(() {
+                                        education = data['educations'];
+                                      });
+                                    } else {
+                                      print('something went wrong');
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  //padding: EdgeInsets.only(right: 60.0),
+                                  alignment: Alignment(-1.0, 0),
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => editeducation(
+                                              education[i]['e_id'])),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
