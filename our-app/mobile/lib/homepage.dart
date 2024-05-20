@@ -20,6 +20,41 @@ class _MainHomePageState extends State {
   int _currentServiceIndex = 0;
   int _currentCourseIndex = 0;
   int _currentJobIndex = 0;
+  List<dynamic> jobs = [];
+  List<dynamic> services = [];
+  List<dynamic> courses = [];
+  void fetchJobs() async {
+    var url = get_home_page_jobs;
+    var res = await http.get(Uri.parse(url));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      jobs = data.map((item) => item).toList();
+      print('jobs');
+      print(jobs);
+    });
+  }
+
+  void fetchCourses() async {
+    var url = get_home_page_courses;
+    var res = await http.get(Uri.parse(url));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      courses = data.map((item) => item).toList();
+      print('courses');
+      print(courses);
+    });
+  }
+
+  void fetchServices() async {
+    var url = get_home_page_services;
+    var res = await http.get(Uri.parse(url));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      services = data.map((item) => item).toList();
+      print('services');
+      print(services);
+    });
+  }
 
   Future<List<String>> _getAllServices() async {
     return ['Service 1', 'Service 2', 'Service 3', 'Service 4'];
@@ -47,6 +82,15 @@ class _MainHomePageState extends State {
     } else {
       throw Exception('Failed to load jobs');
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchJobs();
+    fetchCourses();
+    fetchServices();
   }
 
   @override
@@ -269,7 +313,6 @@ class _MainHomePageState extends State {
                               startIndex,
                               endIndex.clamp(0, jobs.length),
                             );
-
                             return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: displayedJob.length,

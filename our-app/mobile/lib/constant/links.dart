@@ -1,5 +1,5 @@
+//const URL = "http://192.168.1.103:8000/api/";
 const URL = "http://10.0.2.2:8000/api/";
-
 const login = URL + "login"; // تسجيل الدخول لمستخدم لديه حساب
 const services_first_type =
     URL + "getfirst_type"; //get بجيب كل الانواع الاولية ,هاد نوعو
@@ -88,3 +88,6 @@ const get_skill = URL + "get_skill"; //بجيب المهارة عن طريق ا�
 const get_project = URL + "get_project";
 const get_cv_lang = URL + "get_cv_lang";
 const get_profile = URL + "get_profile";
+const get_home_page_services = URL + "get_home_page_services";
+const get_home_page_jobs = URL + "get_home_page_jobs";
+const get_home_page_courses = URL + "get_home_page_courses";

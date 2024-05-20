@@ -1723,4 +1723,6 @@ public function  get_profile(get_by_token $request){
         return $personal_info->first(); }
 } 
 
+
+
 }

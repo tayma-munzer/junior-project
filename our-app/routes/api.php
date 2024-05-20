@@ -86,3 +86,6 @@ Route::post('/get_cv_lang',[authenticationController::class,'get_cv_lang'] );
 Route::post('/get_profile',[authenticationController::class,'get_profile'] );
 
 Route::post('/send-message', [MessageController::class, 'sendMessage']);
+Route::get('/get_home_page_services', [gets::class, 'get_home_page_services']);
+Route::get('/get_home_page_jobs', [gets::class, 'get_home_page_jobs']);
+Route::get('/get_home_page_courses', [gets::class, 'get_home_page_courses']);

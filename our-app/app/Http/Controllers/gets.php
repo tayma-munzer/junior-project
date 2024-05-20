@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\user_id;
 use App\Models\common_questions;
+use App\Models\course;
 use App\Models\courses_type;
 use App\Models\job;
 use App\Models\languages;
 use App\Models\media;
+use Illuminate\Queue\Jobs\Job as JobsJob;
 
 class gets extends Controller
 {
@@ -70,6 +72,18 @@ class gets extends Controller
     static function get_course_types () {
         return courses_type::all();
     }
-   
+
+    static function get_home_page_services(){
+        return services::all()->take(8);
+    }
+
+    static function get_home_page_jobs(){
+        return job::all()->take(8);
+    }
+
+    static function get_home_page_courses(){
+        return course::all()->take(8);
+    }
+    
     
 }
