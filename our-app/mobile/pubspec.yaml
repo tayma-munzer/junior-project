@@ -51,6 +51,8 @@ dependencies:
 
   #pusher_client: ^2.0.0
   pusher_channels_flutter: ^1.0.0
+  intl: ^0.18.0 
+  #pusher_client: ^2.0.0
   
 dev_dependencies:
   flutter_test:
@@ -81,6 +83,9 @@ flutter:
      - assets/job.png
      - assets/workingbag.png
      - assets/edit.png
+     - assets/service.png
+     - assets/add.png
+     - assets/course.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

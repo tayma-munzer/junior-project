@@ -134,7 +134,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $img_data = $request ->service_img;
         $decoded_img = base64_decode($img_data);
         $path = storage_path('images/');
