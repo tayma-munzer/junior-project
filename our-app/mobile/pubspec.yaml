@@ -50,7 +50,7 @@ dependencies:
   flutter_custom_clippers: ^2.1.0
 
   #pusher_client: ^2.0.0
-  pusher_channels_flutter: ^1.0.0
+  #pusher_channels_flutter: ^1.0.0
   intl: ^0.18.0 
   
 dev_dependencies:
