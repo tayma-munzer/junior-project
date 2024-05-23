@@ -171,7 +171,6 @@ class _MainHomePageState extends State<MainHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // service Image
-                        // service Image
                         Image.network(
                           services[_currentServicesIndex]['s_img'].toString(),
                           height: 50,
