@@ -16,30 +16,10 @@ class MainHomePage extends StatefulWidget {
 
 class _MainHomePageState extends State<MainHomePage> {
   int _currentJobIndex = 0;
+  int _currentServicesIndex = 0;
+
   List<dynamic> jobs = [];
-
-  Future<List<Map<String, String>>> _getAllJobs() async {
-    final url = get_user_jobs;
-    String? token = await AuthManager.getToken();
-    var res = await http.post(Uri.parse(url), body: {'token': token});
-
-    if (res.statusCode == 200) {
-      List<dynamic> data = json.decode(res.body);
-
-      int maxJobsToDisplay = data.length < 8 ? data.length : 8;
-      List<Map<String, String>> jobs =
-          data.sublist(0, maxJobsToDisplay).map((item) {
-        return {
-          'name': item['j_name'].toString(),
-          'description': item['j_desc'].toString(),
-        };
-      }).toList();
-
-      return jobs;
-    } else {
-      throw Exception('Failed to load jobs');
-    }
-  }
+  List<dynamic> services = [];
 
   void fetchJobs() async {
     var url = get_home_page_jobs;
@@ -52,10 +32,22 @@ class _MainHomePageState extends State<MainHomePage> {
     });
   }
 
+  void fetchServices() async {
+    var url = get_home_page_services;
+    var res = await http.get(Uri.parse(url));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      services = data.map((item) => item).toList();
+      print('services');
+      print(services);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     fetchJobs();
+    fetchServices();
   }
 
   @override
@@ -112,7 +104,7 @@ class _MainHomePageState extends State<MainHomePage> {
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -162,16 +154,14 @@ class _MainHomePageState extends State<MainHomePage> {
             ),
           ),
           SizedBox(height: 10),
-          // Job Card with Arrows
-          if (jobs.isNotEmpty)
+          // service Card with Arrows
+          if (services.isNotEmpty)
             SizedBox(
               height: 150,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    height: 100,
-                    width: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.grey[200],
@@ -180,22 +170,28 @@ class _MainHomePageState extends State<MainHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Job Name
-                        Text(
-                          jobs[_currentJobIndex]['j_name'].toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                        // service Image
+                        // service Image
+                        Image.network(
+                          services[_currentServicesIndex]['s_img'].toString(),
+                          height: 50,
+                          width: 50,
+                          fit: BoxFit.cover,
+                          errorBuilder: (BuildContext context, Object error,
+                              StackTrace? stackTrace) {
+                            return Placeholder(
+                              fallbackHeight: 50,
+                              fallbackWidth: 50,
+                            );
+                          },
                         ),
-                        // Job Description
+
+                        // services Description
                         Text(
-                          jobs[_currentJobIndex]['j_desc'].toString(),
+                          services[_currentServicesIndex]['s_desc'].toString(),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -208,8 +204,8 @@ class _MainHomePageState extends State<MainHomePage> {
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _currentJobIndex = (_currentJobIndex - 1)
-                                .clamp(0, jobs.length - 1);
+                            _currentServicesIndex = (_currentServicesIndex - 1)
+                                .clamp(0, services.length - 1);
                           });
                         },
                         icon: const Icon(Icons.arrow_back_ios),
@@ -218,8 +214,8 @@ class _MainHomePageState extends State<MainHomePage> {
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _currentJobIndex = (_currentJobIndex + 1)
-                                .clamp(0, jobs.length - 1);
+                            _currentServicesIndex = (_currentServicesIndex + 1)
+                                .clamp(0, services.length - 1);
                           });
                         },
                         icon: const Icon(Icons.arrow_forward_ios),
