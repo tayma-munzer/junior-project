@@ -86,6 +86,9 @@ flutter:
      - assets/add.png
      - assets/course.png
      - assets/homepage.png
+     - assets/getjob.png
+     - assets/getservice.png
+     - assets/getcourse.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
