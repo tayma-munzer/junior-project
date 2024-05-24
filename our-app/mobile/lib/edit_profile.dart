@@ -1,31 +1,72 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
-import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  const EditProfilePage({Key? key}) : super(key: key);
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  void fetch() async {
+  bool showPassword = false;
+
+  Map<String, dynamic>? userDetails = {};
+  final _formKey = GlobalKey<FormState>();
+  late String _currentImage = '';
+  late File _selectedImage = File(''); // Initialize with an empty file path
+  TextEditingController _ageController = TextEditingController();
+  TextEditingController _descController = TextEditingController();
+  TextEditingController _fNameController = TextEditingController();
+  TextEditingController _lNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+
+  Future<void> fetch() async {
     String? token = await AuthManager.getToken();
-    print('object');
     var url = get_profile;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-    print(data);
-    setState(() {});
+    print(res.body);
+    userDetails = data;
+    String imageUrl = data['u_img'].replaceAll(r'\/', '/');
+    http.Response imageRes = await http.get(Uri.parse(imageUrl));
+    String base64Image = base64Encode(imageRes.bodyBytes);
+    setState(() {
+      _ageController.text = userDetails!['age'].toString();
+      _descController.text = userDetails!['u_desc'].toString();
+      _currentImage = base64Image;
+      _fNameController.text = userDetails!['f_name'].toString();
+      _lNameController.text = userDetails!['l_name'].toString();
+      _emailController.text = userDetails!['email'].toString();
+      _passwordController.text = userDetails!['password'].toString();
+      _usernameController.text = userDetails!['username'].toString();
+    });
+  }
+
+  Future<void> _selectImage() async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedImage != null) {
+      final pickedImageBytes = await pickedImage.readAsBytes();
+      String base64Image = base64Encode(pickedImageBytes);
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+        _currentImage = base64Image;
+      });
+    }
   }
 
   @override
@@ -33,31 +74,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     fetch();
   }
-
-  bool showPassword = false;
-  // Define arrays for profile information and image URL
-  List<String> labels = [
-    "الاسم",
-    "الكنية",
-    "البريد الالكتروني",
-    "كلمة المرور",
-    "اسم المستخدم",
-    "العمر",
-    "التوصيف",
-    "ذكر/انثى",
-  ];
-  List<String> placeholders = [
-    "سارة",
-    " عماد",
-    "sarah@gmail.com",
-    "sarah123",
-    "سارةة",
-    "22",
-    "طالبة جامعية",
-    "انثى",
-  ];
-  String networkImageUrl =
-      "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -67,132 +83,123 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Container(
-        padding: EdgeInsets.only(left: 16, top: 25, right: 16),
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: ListView(
             children: [
-              const Text(
-                "تعديل الملف الشخصي",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-              //create space between the text and picture
-              SizedBox(
-                height: 20,
-              ),
               Center(
-                child: Stack(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                        width: 150,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 4,
-                            color: Color.fromARGB(255, 255, 255, 255),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0, 10))
-                          ],
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(networkImageUrl),
-                          ),
-                        )),
+                    SizedBox(height: 50),
                     InkWell(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
+                      onTap: _selectImage,
+                      child: _selectedImage != null &&
+                              _selectedImage.path.isNotEmpty
+                          ? Image.file(
+                              _selectedImage,
+                              height: 300.0,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : _currentImage.isNotEmpty
+                              ? Image.memory(
+                                  base64Decode(_currentImage),
+                                  height: 300.0,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(),
+                    ),
+                    SizedBox(height: 10),
+                    IconButton(
+                      onPressed: _selectImage,
+                      icon: Icon(Icons.image),
+                      tooltip: 'اختر صورة',
+                    ),
+                    SizedBox(height: 50),
+                    _buildItem(
+                      'السن',
+                      'age',
+                      _ageController,
+                      (value) {
+                        _updateField('age', value);
                       },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            width: 4,
-                            color: Color.fromARGB(255, 255, 255, 255),
-                          ),
-                          color: AppColors.appColor,
-                        ),
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.white,
+                      isInteger: true,
+                    ),
+                    _buildItem(
+                      'الوصف',
+                      'u_desc',
+                      _descController,
+                      (value) {
+                        _updateField('u_desc', value);
+                      },
+                    ),
+                    _buildItem(
+                      'الاسم الأول',
+                      'f_name',
+                      _fNameController,
+                      (value) {
+                        _updateField('f_name', value);
+                      },
+                    ),
+                    _buildItem(
+                      'الاسم الأخير',
+                      'l_name',
+                      _lNameController,
+                      (value) {
+                        _updateField('l_name', value);
+                      },
+                    ),
+                    _buildItem(
+                      'البريد الإلكتروني',
+                      'email',
+                      _emailController,
+                      (value) {
+                        _updateField('email', value);
+                      },
+                    ),
+                    _buildItem(
+                      'كلمة المرور',
+                      'password',
+                      _passwordController,
+                      (value) {
+                        _updateField('password', value);
+                      },
+                    ),
+                    _buildItem(
+                      'اسم المستخدم',
+                      'username',
+                      _usernameController,
+                      (value) {
+                        _updateField('username', value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _saveDetails();
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.blue),
+                        minimumSize: WidgetStateProperty.all(Size(200, 50)),
+                      ),
+                      child: Text(
+                        'حفظ التغيرات',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          fontSize: 18,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: Column(
-                  children: List.generate(labels.length, (index) {
-                    return buildTextField(
-                        labels[index], placeholders[index], index == 3);
-                  }),
-                ),
-              ),
-              SizedBox(
-                height: 38,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.appColor,
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Text(
-                      "CANCEL",
-                      style: TextStyle(
-                        fontSize: 14,
-                        letterSpacing: 2.2,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.appColor,
-                      padding: EdgeInsets.symmetric(horizontal: 60),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Text(
-                      "SAVE",
-                      style: TextStyle(
-                        fontSize: 14,
-                        letterSpacing: 2.2,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 38,
               ),
             ],
           ),
@@ -202,49 +209,80 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget buildTextField(
-    String labelText,
-    String placeholder,
-    bool isPasswordTextField,
-  ) {
-    bool showCurrentPassword = false;
-
+  Widget _buildItem(String labelText, String key,
+      TextEditingController controller, void Function(String) onSave,
+      {bool isInteger = false}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 35.0),
-      child: TextFormField(
-        obscureText: isPasswordTextField ? !showCurrentPassword : false,
-        decoration: InputDecoration(
-          suffixIcon: isPasswordTextField
-              ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showCurrentPassword = !showCurrentPassword;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.remove_red_eye,
-                    color: Colors.grey,
-                  ),
-                )
-              : null,
-          contentPadding: const EdgeInsets.only(bottom: 3),
-          labelText: labelText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          hintText: placeholder,
-          hintStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 54, 54, 54),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end, // Align children to the end
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment:
+                MainAxisAlignment.end, // Align label to the right
+            children: [
+              Text(
+                labelText,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-        ),
-        validator: (value) {
-          // تمت إضافة وظيفة التحقق من الحقل النصي
-          if (value == null || value.isEmpty) {
-            return 'الرجاء إدخال $labelText';
-          }
-          return null;
-        },
+          SizedBox(height: 5),
+          TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            ),
+            textAlign: TextAlign.right,
+            maxLines: 2,
+            validator: (input) {
+              if (input == null || input.isEmpty) {
+                return 'يرجى ملء الحقل';
+              } else if (isInteger && int.tryParse(input) == null) {
+                return 'يرجى ادخال رقم موجب صحيح';
+              }
+              return null;
+            },
+            onChanged: (newValue) {
+              onSave(newValue);
+            },
+          ),
+          SizedBox(height: 10),
+        ],
       ),
     );
+  }
+
+  Future<void> _saveDetails() async {
+    userDetails!['u_img'] = _currentImage;
+
+    print(userDetails);
+    AuthCont.editProfile(
+      userDetails!['age'].toString(),
+      userDetails!['u_desc'],
+      userDetails!['f_name'],
+      userDetails!['l_name'].toString(),
+      userDetails!['u_img'],
+      userDetails!['email'],
+      userDetails!['password'],
+      userDetails!['username'],
+    ).then((value) {
+      if (value.statusCode == 200) {
+        print('edited successfully');
+      } else {
+        print('something went wrong');
+      }
+    });
+  }
+
+  void _updateField(String key, String value) {
+    if (userDetails![key] != value) {
+      setState(() {
+        userDetails![key] = value;
+      });
+    }
   }
 }

@@ -1,26 +1,60 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class BuildItem extends StatelessWidget {
   final String s_name;
   final String s_desc;
-  final String s_img;
+  final String image;
   final String s_price;
-  final String discount;
-  final String status;
+  final String? discount;
+  final String? status;
 
   BuildItem(
     this.s_name,
     this.s_desc,
-    this.s_img,
+    this.image,
     this.s_price,
     this.discount,
     this.status,
   );
 
+  factory BuildItem.without2(
+    String s_name,
+    String s_desc,
+    String image,
+    String s_price,
+  ) {
+    return BuildItem(s_name, s_desc, image, s_price, null, null);
+  }
+
   @override
   Widget build(BuildContext context) {
     final discountValue =
         discount ?? "0"; // Use 0 as default if discount is null
+
+    Widget buildImageWidget() {
+      if (image.startsWith('assets/')) {
+        // Image is an asset image
+        return Image.asset(
+          image,
+          fit: BoxFit.cover,
+          height: 180.0,
+          width: double.infinity,
+        );
+      } else {
+        // Image is a base64-encoded image
+        final Uint8List imageData = base64Decode(image);
+        return Image.memory(
+          imageData,
+          fit: BoxFit.cover,
+          height: 180.0,
+          width: double.infinity,
+        );
+      }
+    }
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -40,35 +74,15 @@ class BuildItem extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize:
-              MainAxisSize.min, // Set mainAxisSize to MainAxisSize.min
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Stack(
               children: [
-                Image(
-                  image: NetworkImage(s_img),
-                  fit: BoxFit.cover,
-                  height: 180.0,
-                  width: double.infinity,
-                  loadingBuilder: (context, imageProvider, loadingProgress) {
-                    if (loadingProgress == null) {
-                      // Image is loaded, return the image widget itself
-                      return imageProvider;
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    ); // Show a spinner while loading
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(
-                      child: Text('Error loading image'),
-                    ); // Display error message
-                  },
-                ),
+                if (image != null) buildImageWidget(),
               ],
             ),
             Flexible(
-              fit: FlexFit.loose, // Use FlexFit.loose for flexible child
+              fit: FlexFit.loose,
               child: Container(
                 padding: const EdgeInsets.all(25.0),
                 decoration: const BoxDecoration(

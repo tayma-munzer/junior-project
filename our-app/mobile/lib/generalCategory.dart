@@ -89,6 +89,9 @@ class _CategoriesState extends State<Categories> {
   }
 
   Widget _buildItemWidget(dynamic item) {
+    final String imageUrl = item["s_img"] ??
+        "assets/job.png"; // Provide a default image asset or handle null
+
     return GestureDetector(
       onTap: () {
         Navigator.pop(context); // Close the drawer
@@ -103,7 +106,7 @@ class _CategoriesState extends State<Categories> {
       child: BuildItem(
         item["s_name"],
         item["s_desc"],
-        item["s_img"],
+        imageUrl,
         item["s_price"],
         item["discount"],
         item["status"],

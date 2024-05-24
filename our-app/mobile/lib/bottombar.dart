@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/categories.dart';
 import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/generalCategory.dart';
 import 'package:mobile/homepage.dart';
 import 'package:mobile/add.dart';
 import 'package:mobile/search.dart';
@@ -129,7 +131,7 @@ class _BottomBarState extends State<BottomBar> {
               onPressed: () {
                 _updateIconColor('categories');
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => services_types()));
+                    MaterialPageRoute(builder: (context) => AllCategories()));
               },
             ),
           ],
