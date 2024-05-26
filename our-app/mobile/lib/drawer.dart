@@ -6,6 +6,7 @@ import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/listCourses.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/video_upload.dart';
@@ -168,6 +169,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => viewallJobs()),
+                    );
+                  },
+                )
+              : Container(),
+          service == 'true'
+              ? ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(' الدورات التعليمية الخاصة بي'),
+                      SizedBox(width: 10),
+                      Icon(Icons.rule),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ListCourses()),
                     );
                   },
                 )

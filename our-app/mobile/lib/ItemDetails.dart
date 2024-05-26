@@ -1,11 +1,11 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mobile/colors.dart';
 
 class ItemDetails extends StatelessWidget {
-  final String imageUrl;
+  final String image;
   final String serviceTitle;
   final String description;
   final String price;
@@ -15,7 +15,7 @@ class ItemDetails extends StatelessWidget {
   final String discount;
 
   ItemDetails({
-    required this.imageUrl,
+    required this.image,
     required this.serviceTitle,
     required this.description,
     required this.price,
@@ -27,6 +27,25 @@ class ItemDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget imageWidget;
+
+    if (image.startsWith('asset')) {
+      imageWidget = Image.asset(
+        image,
+        height: 300,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+    } else {
+      // Assuming you have the image data available
+      imageWidget = Image.memory(
+        image as Uint8List,
+        height: 300,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+    }
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
@@ -35,12 +54,7 @@ class ItemDetails extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.all(16),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                height: 300,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              child: imageWidget,
             ),
             Column(
               children: [

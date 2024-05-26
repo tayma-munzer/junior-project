@@ -1,28 +1,31 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
-import 'package:mobile/constant/links.dart';
-import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/viewjob.dart';
+import 'package:mobile/viewcoursetobuy.dart';
+import 'package:mobile/viewjobtobuy.dart';
+import 'package:mobile/viewservicetobuy.dart';
+import 'package:mobile/wallet.dart';
 
 class MainHomePage extends StatefulWidget {
   const MainHomePage({Key? key}) : super(key: key);
 
   @override
-  State createState() => _MainHomePageState();
+  State<MainHomePage> createState() => _MainHomePageState();
 }
 
-class _MainHomePageState extends State {
-  int _currentServiceIndex = 0;
-  int _currentCourseIndex = 0;
+class _MainHomePageState extends State<MainHomePage> {
   int _currentJobIndex = 0;
+  int _currentServicesIndex = 0;
+  int _currentCoursesIndex = 0;
+
   List<dynamic> jobs = [];
   List<dynamic> services = [];
   List<dynamic> courses = [];
+
   void fetchJobs() async {
     var url = get_home_page_jobs;
     var res = await http.get(Uri.parse(url));
@@ -31,17 +34,6 @@ class _MainHomePageState extends State {
       jobs = data.map((item) => item).toList();
       print('jobs');
       print(jobs);
-    });
-  }
-
-  void fetchCourses() async {
-    var url = get_home_page_courses;
-    var res = await http.get(Uri.parse(url));
-    List<dynamic> data = json.decode(res.body);
-    setState(() {
-      courses = data.map((item) => item).toList();
-      print('courses');
-      print(courses);
     });
   }
 
@@ -56,371 +48,318 @@ class _MainHomePageState extends State {
     });
   }
 
-  Future<List<String>> _getAllServices() async {
-    return ['Service 1', 'Service 2', 'Service 3', 'Service 4'];
-  }
-
-  Future<List<String>> _getAllCourses() async {
-    return ['course 1', 'course 2', 'course 3', 'course 4'];
-  }
-
-  Future<List<Map<String, String>>> _getAllJobs() async {
-    final url = get_user_jobs;
-    String? token = await AuthManager.getToken();
-    var res = await http.post(Uri.parse(url), body: {'token': token});
-
-    if (res.statusCode == 200) {
-      List<dynamic> data = json.decode(res.body);
-      List<Map<String, String>> jobs = data.map((item) {
-        return {
-          'name': item['j_name'].toString(),
-          'description': item['j_desc'].toString(),
-        };
-      }).toList();
-
-      return jobs;
-    } else {
-      throw Exception('Failed to load jobs');
-    }
+  void fetchCourses() async {
+    var url = get_home_page_courses;
+    var res = await http.get(Uri.parse(url));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      courses = data.map((item) => item).toList();
+      print('courses');
+      print(courses);
+    });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchJobs();
-    fetchCourses();
     fetchServices();
+    fetchCourses();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(33.0),
+        preferredSize: Size.fromHeight(33.0),
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: FutureBuilder<List<String>>(
-        future: _getAllServices(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final services = snapshot.data!;
-            final startIndex = _currentServiceIndex * 2;
-            final endIndex = startIndex + 2;
-            final displayedServices = services.sublist(
-              startIndex,
-              endIndex.clamp(0, services.length),
-            );
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Center(child: Image.asset('assets/homepage.png', width: 300)),
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'الخدمات',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
+            // Jobs Section
+            Text(
+              'الاعمال',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            // Job Card with Arrows
+            if (jobs.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              viewjobtobuy(jobs[_currentJobIndex]['j_id'])));
+                },
+                child: SizedBox(
                   height: 150,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: displayedServices.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 1.0),
-                            child: Container(
-                              width: 140,
-                              height: 130,
-                              margin: const EdgeInsets.only(left: 31),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.blue,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  displayedServices[index],
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
+                      Container(
+                        height: 100,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color.fromARGB(255, 255, 227, 184),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              jobs[_currentJobIndex]['j_name'].toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                      Positioned(
-                        left: 5,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _currentServiceIndex = (_currentServiceIndex - 1)
-                                  .clamp(0, (services.length / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_back_ios),
+                            Text(
+                              jobs[_currentJobIndex]['j_desc'].toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _currentServiceIndex = (_currentServiceIndex + 1)
-                                  .clamp(0, (services.length / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_forward_ios),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentJobIndex = (_currentJobIndex - 1)
+                                    .clamp(0, jobs.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_back_ios),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentJobIndex = (_currentJobIndex + 1)
+                                    .clamp(0, jobs.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'الكورسات',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
+              )
+            else
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            SizedBox(height: 10),
+            Text(
+              'الخدمات',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            if (services.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => viewservicetobuy(
+                              services[_currentServicesIndex]['s_id'])));
+                },
+                child: SizedBox(
                   height: 150,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      FutureBuilder<List<String>>(
-                        future: _getAllCourses(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final courses = snapshot.data!;
-                            final startIndex = _currentCourseIndex * 2;
-                            final endIndex = startIndex + 2;
-                            final displayedCourses = courses.sublist(
-                              startIndex,
-                              endIndex.clamp(0, courses.length),
-                            );
-
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: displayedCourses.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 1.0),
-                                  child: Container(
-                                    width: 140,
-                                    height: 130,
-                                    margin: const EdgeInsets.only(left: 31),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.green,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        displayedCourses[index],
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Center(
-                              child: Text('Error fetching courses'),
-                            );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                      Positioned(
-                        left: 5,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () async {
-                            final coursesLength =
-                                (await _getAllCourses()).length;
-                            setState(() {
-                              _currentCourseIndex = (_currentCourseIndex - 1)
-                                  .clamp(0, (coursesLength / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_back_ios),
+                      Container(
+                        height: 100,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color.fromARGB(255, 255, 227, 184),
+                          image: DecorationImage(
+                            image: NetworkImage(services[_currentServicesIndex]
+                                    ['s_image']
+                                .toString()),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              services[_currentServicesIndex]['s_name']
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              services[_currentServicesIndex]['s_desc']
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () async {
-                            final coursesLength =
-                                (await _getAllCourses()).length;
-                            setState(() {
-                              _currentCourseIndex = (_currentCourseIndex + 1)
-                                  .clamp(0, (coursesLength / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_forward_ios),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentServicesIndex =
+                                    (_currentServicesIndex - 1)
+                                        .clamp(0, services.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_back_ios),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentServicesIndex =
+                                    (_currentServicesIndex + 1)
+                                        .clamp(0, services.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'الاعمال',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
+              )
+            else
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            SizedBox(height: 10),
+            Text(
+              'الكورسات',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            // course Card with Arrows
+            if (courses.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => viewcoursetotobuy(
+                              courses[_currentCoursesIndex]['c_id'])));
+                },
+                child: SizedBox(
                   height: 150,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      FutureBuilder<List<Map<String, String>>>(
-                        future: _getAllJobs(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final jobs = snapshot.data!;
-                            final startIndex = _currentJobIndex * 2;
-                            final endIndex = startIndex + 2;
-                            final displayedJob = jobs.sublist(
-                              startIndex,
-                              endIndex.clamp(0, jobs.length),
-                            );
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: displayedJob.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  // onTap: () {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //             viewjob(jobdetails['j_id'])),
-                                  //   );
-                                  // },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 1.0),
-                                    child: Container(
-                                      width: 140,
-                                      height: 130,
-                                      margin: const EdgeInsets.only(left: 31),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: const Color.fromARGB(
-                                            255, 175, 76, 134),
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              displayedJob[index]['name']!,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                            Text(
-                                              displayedJob[index]
-                                                  ['description']!,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Center(
-                              child: Text('Error fetching jobs'),
-                            );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                      Positioned(
-                        left: 5,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () async {
-                            final jobsLength = (await _getAllJobs()).length;
-                            setState(() {
-                              _currentJobIndex = (_currentJobIndex - 1)
-                                  .clamp(0, (jobsLength / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_back_ios),
+                      Container(
+                        height: 100,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color.fromARGB(255, 255, 227, 184),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              courses[_currentCoursesIndex]['c_name']
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              courses[_currentCoursesIndex]['c_desc']
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 66, 62, 62),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        top: 50,
-                        child: IconButton(
-                          onPressed: () async {
-                            final jobsLength = (await _getAllJobs()).length;
-                            setState(() {
-                              _currentJobIndex = (_currentJobIndex + 1)
-                                  .clamp(0, (jobsLength / 2).floor() - 1);
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_forward_ios),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentCoursesIndex =
+                                    (_currentCoursesIndex - 1)
+                                        .clamp(0, courses.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_back_ios),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _currentCoursesIndex =
+                                    (_currentCoursesIndex + 1)
+                                        .clamp(0, courses.length - 1);
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text('Error fetching services'),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+              )
+            else
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ]),
+        ),
       ),
       bottomNavigationBar: BottomBar(),
     );
