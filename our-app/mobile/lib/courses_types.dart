@@ -7,27 +7,24 @@ import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/icon_circles.dart';
-import 'package:mobile/secondaryCategory.dart';
+import 'package:mobile/secondary_courses.dart';
 
-class services_types extends StatefulWidget {
-  const services_types({Key? key}) : super(key: key);
+class Course_types extends StatefulWidget {
+  const Course_types({Key? key}) : super(key: key);
 
   @override
-  State<services_types> createState() => _services_typesState();
+  State<Course_types> createState() => _Course_typesState();
 }
 
-class _services_typesState extends State<services_types> {
+class _Course_typesState extends State<Course_types> {
   List data = [];
   void fetch() async {
-    var url = services_first_type;
-    var res = await http.get(
-      Uri.parse(url),
-    );
-    setState(
-      () {
-        data = json.decode(res.body);
-      },
-    );
+    var url = get_course_types;
+    var res = await http.get(Uri.parse(url));
+    // print('Response body: ${res.body}'); // Print response body
+    setState(() {
+      data = json.decode(res.body);
+    });
   }
 
   @override
@@ -87,16 +84,15 @@ class _services_typesState extends State<services_types> {
       data: data[index],
       onTap: () {
         Navigator.pop(context); // Close the drawer
-        final int id = int.parse(data[index]["t_id"].toString());
-        final String title = data[index]["title"].toString();
+        final int id = int.parse(data[index]["ct_id"].toString());
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SecondaryCategories(id, title),
+            builder: (context) => SecondaryCoursesPage(id),
           ),
         );
       },
-      iconKey: "t_icon",
+      iconKey: "ct_icon",
     );
   }
 }

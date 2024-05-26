@@ -90,7 +90,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
   Widget _buildItemWidget(Map<String, dynamic> item) {
     return ItemDetails(
-      imageUrl: item["s_img"],
+      image: item["s_img"],
       serviceTitle: item["s_name"],
       description: item["s_desc"],
       price: item["s_price"],

@@ -48,6 +48,10 @@ dependencies:
   cached_network_image: ^3.3.1
   flutter_secure_storage: ^9.0.0
   flutter_custom_clippers: ^2.1.0
+
+  #pusher_client: ^2.0.0
+  #pusher_channels_flutter: ^1.0.0
+  intl: ^0.18.0 
   
 dev_dependencies:
   flutter_test:
@@ -78,6 +82,13 @@ flutter:
      - assets/job.png
      - assets/workingbag.png
      - assets/edit.png
+     - assets/service.png
+     - assets/add.png
+     - assets/course.png
+     - assets/homepage.png
+     - assets/getjob.png
+     - assets/getservice.png
+     - assets/getcourse.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

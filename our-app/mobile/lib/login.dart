@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/firstpage.dart';
 import 'package:mobile/controller/authcontroller.dart';
+import 'package:mobile/homepage.dart';
 import 'package:mobile/signup.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -80,7 +81,7 @@ class _LoginState extends State<Login> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FirstPage()),
+                                builder: (context) => MainHomePage()),
                           );
                         } else if (value.statusCode == 402) {
                           // email or password is written wrong

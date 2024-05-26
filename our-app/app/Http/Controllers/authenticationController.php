@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StringEvent;
 use App\Http\Requests\addserviceRequest;
 use App\Http\Requests\loginRequest;
 use App\Http\Requests\addjobRequest;
@@ -133,7 +134,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             
-        $user_token = token::where('token','=',$request->token)->first();
+        $user_token = PersonalAccessToken::findToken($request->token);
         $img_data = $request ->service_img;
         $decoded_img = base64_decode($img_data);
         $path = storage_path('images/');
@@ -1349,7 +1350,7 @@ public function get_exp(edit_exp_request $request) {
 //
 public function edit_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id'=>'required|exists:courses,c_id',
+        'c_id'=>'required|exists:course,c_id',
         'c_name'=>'required|string',
         'c_desc'=>'required|string',
         'c_price'=>'required|integer|gte:50000',
@@ -1390,7 +1391,7 @@ public function edit_course(edit_course_request $request){
 //
 public function delete_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:courses,c_id',
+        'c_id' =>'required|exists:course,c_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1415,7 +1416,7 @@ public function delete_course(edit_course_request $request){
 //
 public function get_course(edit_course_request $request) {
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:courses,c_id',
+        'c_id' =>'required|exists:course,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1433,7 +1434,6 @@ public function get_course(edit_course_request $request) {
 public function edit_training_courses(edit_training_course_request $request){
     $validator = Validator::make($request->all(), [
         't_id'=>'required|exists:training_courses,t_id',
-        'cv_id'=>'required',
         'course_name' => 'required|string',
         'training_center' => 'required|string',
         'completion_date' => 'required|date',
@@ -1448,7 +1448,6 @@ public function edit_training_courses(edit_training_course_request $request){
         return response($errors,402);
     }else{
     $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([ 
-        'cv_id'=>$request->cv_id,
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
         'completion_date'=>date('Y-m-d' , strtotime($request->completion_date))
@@ -1505,19 +1504,18 @@ public function get_training_courses(edit_training_course_request $request) {
         return response($errors,402);
     }else{
     $training_courses=training_courses::where('t_id','=',$request->t_id);
-    return $training_courses->get(); }
+    return $training_courses->first(); }
 }
  //
  public function edit_education(edit_cv_education_request $request){
     $validator = Validator::make($request->all(), [
-         'e_id'=>'required|exists:education,e_id',
-         'cv_id'=>'required',
-           'degree' => 'required|string',
-            'uni' => 'required|string',
-            'field_of_study' => 'required|string',
-            'grad_year' => 'required|integer',
-            'gba' => 'required|numeric|lte:100|gte:0'],
-         $messages = [
+        'e_id'=>'required|exists:education,e_id',
+        'degree' => 'required|string',
+        'uni' => 'required|string',
+        'field_of_study' => 'required|string',
+        'grad_year' => 'required|integer',
+        'gba' => 'required|numeric|lte:100|gte:0'],
+        $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
             'integer'=> 'the :attribute field should be integer',
@@ -1529,7 +1527,6 @@ public function get_training_courses(edit_training_course_request $request) {
         return response($errors,402);
     }else{
     $effected_rows=education::where('e_id','=',$request->e_id)->update([
-        'cv_id'=>$request->cv_id,
         'degree'=>$request->degree,
         'uni'=>$request-> uni,
         'field_of_study'=>$request->field_of_study,
@@ -1588,7 +1585,7 @@ public function get_education(edit_cv_education_request $request) {
         return response($errors,402);
     }else{
     $education=education::where('e_id','=',$request->e_id);
-    return $education->get(); }
+    return $education->first(); }
 }  
 public function check_job_owner(edit_education_request $request) {
     $validator = Validator::make($request->all(), [
@@ -1639,7 +1636,7 @@ public function get_courses_for_type(get_courses_type_request $request){
 //
 public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
-        'u_id' =>'required|exists:courses,u_id',
+        'u_id' =>'required|exists:course,u_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1654,7 +1651,7 @@ public function get_course_for_user(get_course_for_user $request){
 //
 public function get_course_detils(get_course_detils $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:courses,c_id',
+        'c_id' =>'required|exists:course_detils,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',

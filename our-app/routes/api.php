@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\authenticationController;
 use App\Http\Controllers\gets;
+use App\Http\Controllers\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -83,3 +84,8 @@ Route::post('/get_project',[authenticationController::class,'get_project'] );
 Route::post('/get_user_jobs',[authenticationController::class,'get_user_jobs'] );
 Route::post('/get_cv_lang',[authenticationController::class,'get_cv_lang'] );
 Route::post('/get_profile',[authenticationController::class,'get_profile'] );
+
+Route::post('/send-message', [MessageController::class, 'sendMessage']);
+Route::get('/get_home_page_services', [gets::class, 'get_home_page_services']);
+Route::get('/get_home_page_jobs', [gets::class, 'get_home_page_jobs']);
+Route::get('/get_home_page_courses', [gets::class, 'get_home_page_courses']);

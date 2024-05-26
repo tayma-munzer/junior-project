@@ -238,6 +238,7 @@ class AuthCont {
     var res = await http.post(Uri.parse(url), body: {
       't_id': t_id,
       'course_name': course_name,
+      'training_center': training_center,
       'completion_date': completion_date
     });
     return res;
@@ -260,5 +261,59 @@ class AuthCont {
       'gba': gba,
     });
     return res;
+  }
+
+  static Future<http.Response> editCourse(
+    String c_id,
+    String c_name,
+    String c_desc,
+    String c_price,
+    String c_img,
+    String c_duration,
+    String pre_requisite,
+  ) async {
+    var url = edit_course;
+
+    var response = await http.post(Uri.parse(url), body: {
+      'c_id': c_id,
+      'c_name': c_name,
+      'c_desc': c_desc,
+      'c_price': c_price,
+      'c_img': c_img,
+      'c_duration': c_duration,
+      'pre_requisite': pre_requisite,
+    });
+
+    return response;
+  }
+
+  static Future<http.Response> editProfile(
+    String age,
+    String u_desc,
+    String u_img,
+    String f_name,
+    String l_name,
+    String email,
+    String password,
+    String username,
+  ) async {
+    var url = edit_profile;
+    final token = await AuthManager.getToken();
+    var response = await http.post(
+      Uri.parse(url),
+      body: {
+        'token': token,
+        'age': age,
+        'u_desc': u_desc,
+        'u_img': u_img,
+        'f_name': f_name,
+        'l_name': l_name,
+        'email': email,
+        'password': password,
+        'username': username,
+      },
+    );
+
+    return response;
   }
 }
