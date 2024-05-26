@@ -3,6 +3,7 @@
 use App\Http\Controllers\authenticationController;
 use App\Http\Controllers\gets;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\VideoUploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -89,3 +90,8 @@ Route::post('/send-message', [MessageController::class, 'sendMessage']);
 Route::get('/get_home_page_services', [gets::class, 'get_home_page_services']);
 Route::get('/get_home_page_jobs', [gets::class, 'get_home_page_jobs']);
 Route::get('/get_home_page_courses', [gets::class, 'get_home_page_courses']);
+
+
+
+Route::post('/upload-chunk', [VideoUploadController::class, 'uploadChunk']);
+Route::post('/requestvideo', [VideoUploadController::class, 'sendVideoChunks']);

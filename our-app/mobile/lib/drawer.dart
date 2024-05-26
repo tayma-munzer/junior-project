@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/WebSocketDemo.dart';
 import 'package:mobile/addcourse.dart';
 import 'package:mobile/addcveducation.dart';
 import 'package:mobile/addcvskills.dart';
@@ -7,7 +8,9 @@ import 'package:mobile/contactus.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
+import 'package:mobile/video_upload.dart';
 import 'package:mobile/viewCV.dart';
+import 'package:mobile/view_video.dart';
 import 'package:mobile/viewallJobs.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
@@ -97,7 +100,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => viewcv()),
+                MaterialPageRoute(builder: (context) => video_upload()),
               );
             },
           ),
@@ -113,7 +116,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WhoPage()),
+                MaterialPageRoute(builder: (context) => view_video()),
               );
             },
           ),
@@ -129,7 +132,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => viewcv()),
+                MaterialPageRoute(builder: (context) => hello()),
               );
             },
           ),

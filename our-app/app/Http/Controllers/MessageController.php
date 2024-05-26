@@ -9,7 +9,7 @@ class MessageController extends Controller
 {
     public function sendMessage(Request $request)
     {
-        $message = $request->input('message');
+        $message = $request->message;
         event(new MessageSent($message));
 
         return response()->json(['status' => 'Message Sent!']);

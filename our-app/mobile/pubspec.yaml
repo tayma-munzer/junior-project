@@ -52,6 +52,8 @@ dependencies:
   #pusher_client: ^2.0.0
   pusher_channels_flutter: ^1.0.0
   intl: ^0.18.0 
+  web_socket_channel: ^2.1.0
+
   
 dev_dependencies:
   flutter_test:
