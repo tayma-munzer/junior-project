@@ -105,6 +105,25 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseDetailsPage(1),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text(
+                  'test read',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),

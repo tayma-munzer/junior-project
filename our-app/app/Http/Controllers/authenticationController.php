@@ -306,7 +306,7 @@ class authenticationController extends Controller
             'u_img' => 'required|string',
             'f_name' => 'required|string',
             'l_name' => 'required|string',
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required',//|email:rfc,dns
             'password' => 'required|min:5',
             'username' => 'required|string',
         ], $messages = [
@@ -1636,7 +1636,7 @@ public function get_courses_for_type(get_courses_type_request $request){
 //
 public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
-        'u_id' =>'required|exists:course,u_id',
+        'token' =>'required',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1645,7 +1645,9 @@ public function get_course_for_user(get_course_for_user $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course=course::where('u_id','=',$request->u_id);
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+    $course=course::where('u_id','=',$user_id);
     return $course->get(); }
 }
 //
