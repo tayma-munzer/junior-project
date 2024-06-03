@@ -12,7 +12,7 @@ class SendBroadcast extends Command
      * @var string
      */
     protected $signature = 'broadcast:send';
- 
+
     /**
      * The console command description.
      *
