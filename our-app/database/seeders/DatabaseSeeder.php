@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'l_name' => 'عبدربه',
             'age' => '21',
             'u_desc' => 'طالبة جامعية',
-            'u_img' => 'assets/profile.jpg',
+            'u_img' => 'personal_image.jpg',
             'email' => 'tayma@gmail.com',
             'username' => 'تيمه',
             'password' => '123456',
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'l_name' => 'مرعي',
             'age' => '21',
             'u_desc' => 'طالبة جامعية ',
-            'u_img' => 'assets/profile.jpg',
+            'u_img' => 'personal_image.jpg',
             'email' => 'hala@gmail.com',
             'username' => 'حلا',
             'password' => '123456',
@@ -476,12 +476,12 @@ class DatabaseSeeder extends Seeder
         
         DB::table('media')->insert([
             'm_name'=>'course1',
-            'm_path'=>'laravel',
+            'm_path'=>'ll.mp4',
             'c_id'=>'1'
         ]);
         DB::table('media')->insert([
             'm_name'=>'course2',
-            'm_path'=>'database',
+            'm_path'=>'j2.mp4',
             'c_id'=>'2'
         ]);
          
