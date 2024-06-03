@@ -136,7 +136,7 @@ class authenticationController extends Controller
         }else{
             
         $user_token = PersonalAccessToken::findToken($request->token);
-        $img_data = $request ->service_img;
+        $img_data = $request ->service_img_data;
         $decoded_img = base64_decode($img_data);
         $path = storage_path('images/');
         if (!file_exists($path)) {
