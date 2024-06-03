@@ -95,3 +95,6 @@ Route::get('/get_home_page_courses', [gets::class, 'get_home_page_courses']);
 
 Route::post('/upload-chunk', [VideoUploadController::class, 'uploadChunk']);
 Route::post('/requestvideo', [VideoUploadController::class, 'sendVideoChunks']);
+
+Route::post('/test_add_media',[authenticationController::class,'test_add_media'] );
+Route::post('/test_get_media',[authenticationController::class,'test_get_media'] );

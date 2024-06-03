@@ -29,28 +29,28 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-
-      if (decodedData is List<dynamic>) {
-        setState(() {
-          data = decodedData.map((item) {
-            return {
-              "s_id": item["s_id"],
-              "s_name": item["s_name"],
-              "s_desc": item["s_desc"],
-              "s_price": item["s_price"].toString(),
-              "num_of_buyers": item["num_of_buyers"].toString(),
-              "s_duration": item["s_duration"],
-              "discount": item["discount"].toString(),
-              "status": item["status"],
-              "s_img": item["s_img"],
-            };
-          }).toList();
-        });
-      } else {
-        print("Invalid response format: $decodedData");
-      }
+      print(decodedData);
+      // if (decodedData is List<dynamic>) {
+      //   setState(() {
+      //     data = decodedData.map((item) {
+      //       return {
+      //         "s_id": item["s_id"],
+      //         "s_name": item["s_name"],
+      //         "s_desc": item["s_desc"],
+      //         "s_price": item["s_price"].toString(),
+      //         "num_of_buyers": item["num_of_buyers"].toString(),
+      //         "s_duration": item["s_duration"],
+      //         "discount": item["discount"].toString(),
+      //         "status": item["status"],
+      //         "s_img": item["s_img"],
+      //       };
+      //     }).toList();
+      //   });
+      // } else {
+      //   print("Invalid response format: $decodedData");
+      // }
     } else {
-      print("Request failed with status: ${response.statusCode}");
+      print("Request failed with status: ${response.body}");
     }
   }
 
@@ -90,7 +90,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
   Widget _buildItemWidget(Map<String, dynamic> item) {
     return ItemDetails(
-      image: item["s_img"],
+      image: item["image"],
       serviceTitle: item["s_name"],
       description: item["s_desc"],
       price: item["s_price"],

@@ -120,7 +120,8 @@ class authenticationController extends Controller
             'service_desc' => 'required|string',
             'service_duration' => 'required|string',
             'service_sec_type' => 'required',
-            'service_img',
+            'service_img_data' => 'required',
+            'img_name' => 'required',
             'token'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -151,7 +152,7 @@ class authenticationController extends Controller
         's_duration' => $request->service_duration,
         'u_id'=> $user_token->tokenable_id ,
         'st_id'=>gets::sec_service_type_id($request->service_sec_type),
-        's_img' => $fullpath,
+        's_img' => $request->img_name,
         'status' => 'pinding',
         'discount' => 0,
         ]);
@@ -294,6 +295,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $services=services::all()->where('st_id','=',$request->st_id);
+
             return response($services,200);
         }
     }
@@ -922,7 +924,9 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $service =services::where('s_id','=',$request->s_id)->first();
-        $image = file_get_contents($service->s_img);
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$service->s_img;
+        $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $service->image = $base64image;
         return $service; }
@@ -1350,7 +1354,7 @@ public function get_exp(edit_exp_request $request) {
 //
 public function edit_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id'=>'required|exists:course,c_id',
+        'c_id'=>'required|exists:courses,c_id',
         'c_name'=>'required|string',
         'c_desc'=>'required|string',
         'c_price'=>'required|integer|gte:50000',
@@ -1391,7 +1395,7 @@ public function edit_course(edit_course_request $request){
 //
 public function delete_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1416,7 +1420,7 @@ public function delete_course(edit_course_request $request){
 //
 public function get_course(edit_course_request $request) {
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1725,6 +1729,57 @@ public function  get_profile(get_by_token $request){
         return $personal_info->first(); }
 } 
 
+
+public function  test_add_media(add_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required',
+        'm_name'=>'required',
+        'video_name'=>'required',
+        'm_data'=>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $video_data = $request ->m_data;
+        $decoded_video = base64_decode($video_data);
+        $path = storage_path('videos/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->video_name;
+        file_put_contents($fullpath,$decoded_video);
+        $media = media::create([ 
+        'c_id' =>$request->c_id,
+        'm_name'=>$request->m_name,
+        'm_path'=>$request->video_name,
+    ]);
+        return response([
+            'message'=> 'media add successfully'
+        ],200);
+    }
+} 
+public function  test_get_media(edit_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'm_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $media =media::where('m_id','=',$request->m_id)->first();
+        $path = storage_path('videos\\');
+        $fullpath = $path.''.$media->m_path;
+        $video = file_get_contents($fullpath);
+        $base64video = base64_encode($video);
+        $media->video = $base64video;
+        return $media ;
+    }
+} 
 
 
 }
