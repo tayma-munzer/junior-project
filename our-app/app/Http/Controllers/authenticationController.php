@@ -65,6 +65,7 @@ use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -305,7 +306,8 @@ class authenticationController extends Controller
             'token' => 'required',
             'age' => 'required|integer|gte:10',
             'u_desc' => 'required|string',
-            'u_img' => 'required|string',
+            'u_img_data' => 'required',
+            'u_img_name' => 'required',
             'f_name' => 'required|string',
             'l_name' => 'required|string',
             'email' => 'required',//|email:rfc,dns
@@ -323,6 +325,21 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $user_token = PersonalAccessToken::findToken($request->token);
+            $user = User::where('u_id','=',$user_token->tokenable_id);
+            //delete the old image of the user
+            $user_image= $user->u_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$user_image;
+            File::delete($fullpath);
+            // add the new image of the user 
+            $img_data = $request ->u_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $fullpath = $path.''.$request->u_img_name;
+            file_put_contents($fullpath,$decoded_img);
             $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
                 ['age'=>$request->age,
                 'u_desc'=>$request->u_desc,
