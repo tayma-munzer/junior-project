@@ -1726,6 +1726,11 @@ public function  get_profile(get_by_token $request){
     }else{
         $token = PersonalAccessToken::findToken($request->token);
         $personal_info=User::where('u_id','=',$token->tokenable_id);
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$personal_info->u_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $personal_info->image = $base64image;
         return $personal_info->first(); }
 } 
 
