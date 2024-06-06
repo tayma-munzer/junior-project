@@ -1674,7 +1674,7 @@ public function get_course_for_user(get_course_for_user $request){
 //
 public function get_course_detils(get_course_detils $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course_detils,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1683,8 +1683,13 @@ public function get_course_detils(get_course_detils $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course_detils=course::where('c_id','=',$request->c_id);
-    return $course_detils->get(); }
+    $course_detils=course::where('c_id','=',$request->c_id)->first();
+    $path = storage_path('images\\');
+    $fullpath = $path.''.$course_detils->c_img;
+    $image = file_get_contents($fullpath);
+    $base64image = base64_encode($image);
+    $course_detils->image = $base64image;
+    return $course_detils; }
 }
 
 public function get_skill(get_skills_request $request){

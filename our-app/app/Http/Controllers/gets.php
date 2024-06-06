@@ -81,7 +81,6 @@ class gets extends Controller
             $image = file_get_contents($fullpath);
             $base64image = base64_encode($image);
             $service->image = $base64image;
-            //$service->save();
         }
         return $services;
     }
