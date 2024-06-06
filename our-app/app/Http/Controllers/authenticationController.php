@@ -1650,8 +1650,15 @@ public function get_courses_for_type(get_courses_type_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $courses_type=course::where('ct_id','=',$request->ct_id);
-        return $courses_type->get(); }
+        $courses_type=course::where('ct_id','=',$request->ct_id)->get();
+        $path = storage_path('images\\');
+        foreach ($courses_type as $course) {
+            $fullpath = $path.''.$course->c_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $course->image = $base64image;
+        }
+        return $courses_type; }
     }
 
 //
