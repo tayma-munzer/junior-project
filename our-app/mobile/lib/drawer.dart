@@ -276,7 +276,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddCVMain()),
+                                builder: (context) => viewservice(2)),
                           );
                         },
                       )
