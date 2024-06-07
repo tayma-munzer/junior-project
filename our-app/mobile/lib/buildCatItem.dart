@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -6,26 +7,26 @@ import 'package:flutter/material.dart';
 class BuildItem extends StatelessWidget {
   final String s_name;
   final String s_desc;
-  final String image;
+  final String? image;
   final String s_price;
   final String? discount;
   final String? status;
 
   BuildItem(
-    this.s_name,
-    this.s_desc,
-    this.image,
-    this.s_price,
-    this.discount,
-    this.status,
-  );
+      this.s_name,
+      this.s_desc,
+      this.image,
+      this.s_price,
+      this.discount,
+      this.status,
+      );
 
   factory BuildItem.without2(
-    String s_name,
-    String s_desc,
-    String image,
-    String s_price,
-  ) {
+      String s_name,
+      String s_desc,
+      String image,
+      String s_price,
+      ) {
     return BuildItem(s_name, s_desc, image, s_price, null, null);
   }
 
@@ -35,26 +36,24 @@ class BuildItem extends StatelessWidget {
         discount ?? "0"; // Use 0 as default if discount is null
 
     Widget buildImageWidget() {
-      if (image.startsWith('assets/')) {
-        // Image is an asset image
-        return Image.asset(
-          image,
-          fit: BoxFit.cover,
-          height: 180.0,
-          width: double.infinity,
-        );
-      } else {
-        // Image is a base64-encoded image
-        final Uint8List imageData = base64Decode(image);
-        return Image.memory(
-          imageData,
-          fit: BoxFit.cover,
-          height: 180.0,
-          width: double.infinity,
-        );
+      if (image != null && image!.isNotEmpty) {
+        try {
+          String paddedImage = image!.padRight((image!.length + 3) ~/ 4 * 4, '=');
+          Uint8List imageData = base64Url.decode(paddedImage);
+          return Image.memory(
+            imageData,
+            height: 300,
+          );
+        } catch (error) {
+          print('Error decoding base64 image: $error');
+        }
       }
+      // Placeholder widget if image is null or empty, or if decoding fails
+      return Container(
+        height: 100,
+        color: Colors.grey,
+      );
     }
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(

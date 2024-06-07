@@ -29,31 +29,30 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-      print(decodedData);
-      // if (decodedData is List<dynamic>) {
-      //   setState(() {
-      //     data = decodedData.map((item) {
-      //       return {
-      //         "s_id": item["s_id"],
-      //         "s_name": item["s_name"],
-      //         "s_desc": item["s_desc"],
-      //         "s_price": item["s_price"].toString(),
-      //         "num_of_buyers": item["num_of_buyers"].toString(),
-      //         "s_duration": item["s_duration"],
-      //         "discount": item["discount"].toString(),
-      //         "status": item["status"],
-      //         "s_img": item["s_img"],
-      //       };
-      //     }).toList();
-      //   });
-      // } else {
-      //   print("Invalid response format: $decodedData");
-      // }
+print(decodedData);
+      if (decodedData is Map<String, dynamic>) {
+        setState(() {
+          data = [
+            {
+              "s_id": decodedData["s_id"],
+              "s_name": decodedData["s_name"],
+              "s_desc": decodedData["s_desc"],
+              "s_price": decodedData["s_price"].toString(),
+              "num_of_buyers": decodedData["num_of_buyers"].toString(),
+              "s_duration": decodedData["s_duration"],
+              "discount": decodedData["discount"].toString(),
+              "status": decodedData["status"],
+              "image": decodedData["image"],
+            }
+          ];
+        });
+      } else {
+        print("Invalid response format: $decodedData");
+      }
     } else {
-      print("Request failed with status: ${response.body}");
+      print("Request failed with status: ${response.statusCode}");
     }
   }
-
   @override
   void initState() {
     super.initState();

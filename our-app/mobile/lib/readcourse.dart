@@ -107,7 +107,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 child: FutureBuilder<Uint8List?>(
                   future: courseData["c_img"] != null
                       ? Future.value(
-                          base64Decode(courseData["c_img"] as String))
+                          base64Decode(courseData["c_img"] ))
                       : Future.value(null),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

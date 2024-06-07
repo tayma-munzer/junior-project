@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,22 +30,30 @@ class ItemDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget imageWidget;
 
-    if (image.startsWith('asset')) {
-      imageWidget = Image.asset(
-        image,
-        height: 300,
-        width: double.infinity,
-        fit: BoxFit.cover,
-      );
+    // Assuming you have the image data available
+    if (image != null && image!.isNotEmpty) {
+      try {
+        Uint8List imageData = base64Url.decode(image!);
+        imageWidget = Image.memory(
+          imageData,
+          height: 300,
+        );
+      } catch (error) {
+        print('Error decoding base64 image: $error');
+        // Placeholder widget if decoding fails
+        imageWidget = Container(
+          height: 100,
+          color: Colors.grey,
+        );
+      }
     } else {
-      // Assuming you have the image data available
-      imageWidget = Image.memory(
-        image as Uint8List,
-        height: 300,
-        width: double.infinity,
-        fit: BoxFit.cover,
+      // Placeholder widget if image is null or empty
+      imageWidget = Container(
+        height: 100,
+        color: Colors.grey,
       );
     }
+
 
     return Directionality(
       textDirection: TextDirection.rtl,
