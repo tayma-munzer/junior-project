@@ -15,11 +15,7 @@ return [
     |
     */
 
-<<<<<<< HEAD
-    'default' => env('BROADCAST_CONNECTION', 'null'),
-=======
     'default' => env('BROADCAST_CONNECTION', 'pusher'),
->>>>>>> f8ce7e7ed9e4dbb6dad91119a007067a8c346b4a
 
     /*
     |--------------------------------------------------------------------------

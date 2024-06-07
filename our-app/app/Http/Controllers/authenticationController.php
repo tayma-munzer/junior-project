@@ -1403,12 +1403,8 @@ public function edit_course(edit_course_request $request){
         'c_img'=>'required|string',
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
-<<<<<<< HEAD
-
-=======
         'c_img_data'=>'required',
     
->>>>>>> f8ce7e7ed9e4dbb6dad91119a007067a8c346b4a
     ],$messages = [
         'required' => 'The :attribute field is required.',
         'integer' => 'the :attribute field should be a number',
