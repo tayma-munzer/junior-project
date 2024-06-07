@@ -1,4 +1,4 @@
-//const URL = "http://192.168.1.103:8000/api/";
+//const URL = "http://192.168.1.13:8000/api/";
 const URL = "http://10.0.2.2:8000/api/";
 const login = URL + "login"; // تسجيل الدخول لمستخدم لديه حساب
 const services_first_type =
