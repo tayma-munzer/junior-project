@@ -296,7 +296,13 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $services=services::all()->where('st_id','=',$request->st_id);
-
+            $path = storage_path('images\\');
+            foreach ($services as $service) {
+                $fullpath = $path.''.$service->s_img;
+                $image = file_get_contents($fullpath);
+                $base64image = base64_encode($image);
+                $service->image = $base64image;
+            }
             return response($services,200);
         }
     }

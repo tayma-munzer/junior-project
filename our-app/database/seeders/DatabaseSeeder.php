@@ -332,6 +332,17 @@ class DatabaseSeeder extends Seeder
             
         ]);
         DB::table('courses')->insert([
+            'c_name'=>'5 اسم كورس ',
+            'c_desc'=> ' 5 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'IMG_20240505_103220.jpg',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'1',
+            
+        ]);
+        DB::table('courses')->insert([
             'c_name'=>'اسم كورس 4',
             'c_desc'=> 'وصف كورس 4',
             'c_price'=>'100000',
@@ -340,6 +351,50 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'40',
             'pre_requisite'=>'cl',
             'ct_id'=>'4',
+            
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'6 اسم كورس ',
+            'c_desc'=> ' 6 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'IMG_20240505_103220.jpg',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'1',
+            
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'7 اسم كورس ',
+            'c_desc'=> ' 7 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'IMG_20240505_103220.jpg',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'2',
+            
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'8 اسم كورس ',
+            'c_desc'=> ' 8 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'IMG_20240505_103220.jpg',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'2',
+            
+        ]);
+        DB::table('courses')->insert([
+            'c_name'=>'9 اسم كورس ',
+            'c_desc'=> ' 9 وصف كورس',
+            'c_price'=>'100000',
+            'c_img'=>  'IMG_20240505_103220.jpg',
+            'u_id'=>   '1',
+            'c_duration'=>'10',
+            'pre_requisite'=>'pr',
+            'ct_id'=>'3',
             
         ]);
         DB::table('jobs')->insert([
