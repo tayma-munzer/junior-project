@@ -544,6 +544,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+<<<<<<< HEAD
+=======
   pusher_channels_flutter:
     dependency: "direct main"
     description:
@@ -552,6 +554,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+>>>>>>> e81c0d3d3638d7c0ceec8d7593ea8c834d45d0b7
   rxdart:
     dependency: transitive
     description:
@@ -733,6 +736,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+<<<<<<< HEAD
+=======
   web_socket:
     dependency: transitive
     description:
@@ -749,6 +754,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+>>>>>>> e81c0d3d3638d7c0ceec8d7593ea8c834d45d0b7
   win32:
     dependency: transitive
     description:

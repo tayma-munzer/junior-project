@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/settings_.dart';
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+//simport 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
