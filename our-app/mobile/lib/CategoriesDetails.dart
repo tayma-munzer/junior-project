@@ -29,7 +29,10 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-print(decodedData);
+      //print(decodedData);
+      print('object');
+      print(decodedData["image"].toString().length);
+      print('object');
       if (decodedData is Map<String, dynamic>) {
         setState(() {
           data = [
@@ -53,6 +56,7 @@ print(decodedData);
       print("Request failed with status: ${response.statusCode}");
     }
   }
+
   @override
   void initState() {
     super.initState();

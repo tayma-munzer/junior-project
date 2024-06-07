@@ -25,13 +25,18 @@ class _CategoriesState extends State<Categories> {
     var response = await http.post(Uri.parse(url), body: {
       "st_id": widget.st_id.toString(),
     });
-
+    print("data fetched ");
     if (response.statusCode == 200) {
+      print(200);
       var decodedData = json.decode(response.body);
-      print(decodedData);
+      //print(decodedData);
+      print("kkkkkk");
       if (decodedData is Map<String, dynamic>) {
+        print("lololool");
         setState(() {
           data = decodedData.values.toList().map((item) {
+            print(item["image"].toString().length);
+            print("lfllfl");
             return {
               "s_id": item["s_id"],
               "s_name": item["s_name"],
@@ -43,8 +48,7 @@ class _CategoriesState extends State<Categories> {
             };
           }).toList();
         });
-        print(data); // Print the populated data list
-
+        //print(data); // Print the populated data list
       } else {
         print("Invalid response format: $decodedData");
       }
@@ -104,7 +108,6 @@ class _CategoriesState extends State<Categories> {
               ),
             ],
           ),
-
         ),
         bottomNavigationBar: BottomBar(),
       ),
@@ -112,9 +115,6 @@ class _CategoriesState extends State<Categories> {
   }
 
   Widget _buildItemWidget(dynamic item) {
-
-
-
     return GestureDetector(
       onTap: () {
         Navigator.pop(context); // Close the drawer

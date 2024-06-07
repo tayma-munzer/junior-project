@@ -33,9 +33,10 @@ class ItemDetails extends StatelessWidget {
     // Assuming you have the image data available
     if (image != null && image!.isNotEmpty) {
       try {
-        Uint8List imageData = base64Url.decode(image!);
+        print("try");
+        Uint8List imageData = base64Decode(image!);
         imageWidget = Image.memory(
-          imageData,
+          base64Decode(image!),
           height: 300,
         );
       } catch (error) {
@@ -53,7 +54,6 @@ class ItemDetails extends StatelessWidget {
         color: Colors.grey,
       );
     }
-
 
     return Directionality(
       textDirection: TextDirection.rtl,

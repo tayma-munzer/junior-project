@@ -13,20 +13,20 @@ class BuildItem extends StatelessWidget {
   final String? status;
 
   BuildItem(
-      this.s_name,
-      this.s_desc,
-      this.image,
-      this.s_price,
-      this.discount,
-      this.status,
-      );
+    this.s_name,
+    this.s_desc,
+    this.image,
+    this.s_price,
+    this.discount,
+    this.status,
+  );
 
   factory BuildItem.without2(
-      String s_name,
-      String s_desc,
-      String image,
-      String s_price,
-      ) {
+    String s_name,
+    String s_desc,
+    String image,
+    String s_price,
+  ) {
     return BuildItem(s_name, s_desc, image, s_price, null, null);
   }
 
@@ -36,15 +36,20 @@ class BuildItem extends StatelessWidget {
         discount ?? "0"; // Use 0 as default if discount is null
 
     Widget buildImageWidget() {
+      print('object');
+      print(image!.length);
       if (image != null && image!.isNotEmpty) {
         try {
-          String paddedImage = image!.padRight((image!.length + 3) ~/ 4 * 4, '=');
-          Uint8List imageData = base64Url.decode(paddedImage);
+          // String paddedImage =
+          //     image!.padRight((image!.length + 3) ~/ 4 * 4, '=');
+          //Uint8List imageData = base64Url.decode(paddedImage);
+          print("print");
           return Image.memory(
-            imageData,
+            base64Decode(image!),
             height: 300,
           );
         } catch (error) {
+          print("this page");
           print('Error decoding base64 image: $error');
         }
       }
@@ -54,6 +59,7 @@ class BuildItem extends StatelessWidget {
         color: Colors.grey,
       );
     }
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
