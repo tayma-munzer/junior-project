@@ -65,6 +65,7 @@ use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -120,7 +121,8 @@ class authenticationController extends Controller
             'service_desc' => 'required|string',
             'service_duration' => 'required|string',
             'service_sec_type' => 'required',
-            'service_img',
+            'service_img_data' => 'required',
+            'img_name' => 'required',
             'token'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -135,7 +137,7 @@ class authenticationController extends Controller
         }else{
 
         $user_token = PersonalAccessToken::findToken($request->token);
-        $img_data = $request ->service_img;
+        $img_data = $request ->service_img_data;
         $decoded_img = base64_decode($img_data);
         $path = storage_path('images/');
         if (!file_exists($path)) {
@@ -151,7 +153,7 @@ class authenticationController extends Controller
         's_duration' => $request->service_duration,
         'u_id'=> $user_token->tokenable_id ,
         'st_id'=>gets::sec_service_type_id($request->service_sec_type),
-        's_img' => $fullpath,
+        's_img' => $request->img_name,
         'status' => 'pinding',
         'discount' => 0,
         ]);
@@ -296,6 +298,13 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $services=services::all()->where('st_id','=',$request->st_id);
+            $path = storage_path('images\\');
+            foreach ($services as $service) {
+                $fullpath = $path.''.$service->s_img;
+                $image = file_get_contents($fullpath);
+                $base64image = base64_encode($image);
+                $service->image = $base64image;
+            }
             return response($services,200);
         }
     }
@@ -305,10 +314,11 @@ class authenticationController extends Controller
             'token' => 'required',
             'age' => 'required|integer|gte:10',
             'u_desc' => 'required|string',
-            'u_img' => 'required|string',
+            'u_img_data' => 'required',
+            'u_img_name' => 'required',
             'f_name' => 'required|string',
             'l_name' => 'required|string',
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required',//|email:rfc,dns
             'password' => 'required|min:5',
             'username' => 'required|string',
         ], $messages = [
@@ -323,15 +333,27 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $user_token = PersonalAccessToken::findToken($request->token);
+            $user = User::where('u_id','=',$user_token->tokenable_id);
+            $user_image= $user->u_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$user_image;
+            File::delete($fullpath);
+            $img_data = $request ->u_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $fullpath = $path.''.$request->u_img_name;
+            file_put_contents($fullpath,$decoded_img);
             $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
                 ['age'=>$request->age,
                 'u_desc'=>$request->u_desc,
-                'u_img'=>$request->u_img,
                 'f_name'=>$request->f_name,
                 'l_name'=>$request->l_name,
                 'email'=>$request->email,
                 'password'=>$request->password,
-                'u_img'=>$request->u_img,
+                'u_img'=>$request->u_img_name,
                 'username'=>$request->username,
                 ]
             );
@@ -729,6 +751,7 @@ class authenticationController extends Controller
             's_duration'=> 'required|string',
             's_img'=> 'required|string',
             's_video'=> 'required|string',
+            's_img_data'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
@@ -739,6 +762,19 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $service = services::where('s_id','=',$request->s_id);
+            $service_img =$service ->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
+            $img_data = $request ->s_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $fullpath = $path.''.$request->s_img;
+            file_put_contents($fullpath,$decoded_img);
         $effected_rows=services::where('s_id','=',$request->s_id)->update([
             's_name'=>$request->s_name,
             's_desc'=>$request->s_desc,
@@ -831,6 +867,11 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $service= services::where('s_id','=',$request->s_id);
+            $service_img= $service->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
         $effected_rows=services::where('s_id','=',$request->s_id)->delete();
         if ($effected_rows!=0){
         return response([
@@ -925,7 +966,9 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $service =services::where('s_id','=',$request->s_id)->first();
-        $image = file_get_contents($service->s_img);
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$service->s_img;
+        $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $service->image = $base64image;
         return $service; }
@@ -1353,14 +1396,19 @@ public function get_exp(edit_exp_request $request) {
 //
 public function edit_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id'=>'required|exists:course,c_id',
+        'c_id'=>'required|exists:courses,c_id',
         'c_name'=>'required|string',
         'c_desc'=>'required|string',
         'c_price'=>'required|integer|gte:50000',
         'c_img'=>'required|string',
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
+<<<<<<< HEAD
 
+=======
+        'c_img_data'=>'required',
+    
+>>>>>>> f8ce7e7ed9e4dbb6dad91119a007067a8c346b4a
     ],$messages = [
         'required' => 'The :attribute field is required.',
         'integer' => 'the :attribute field should be a number',
@@ -1371,6 +1419,19 @@ public function edit_course(edit_course_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
+        $course = course::where('c_id','=',$request->c_id);
+        $course_image = $course->c_img;
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$course_image;
+        File::delete($fullpath);
+        $img_data = $request ->c_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->c_img;
+        file_put_contents($fullpath,$decoded_img);
     $effected_rows=course::where('c_id','=',$request->c_id)->update([
         'c_name'=>$request->c_name,
         'c_desc'=>$request->c_desc,
@@ -1394,7 +1455,7 @@ public function edit_course(edit_course_request $request){
 //
 public function delete_course(edit_course_request $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ] , $message =[
         'required'=> 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1419,7 +1480,7 @@ public function delete_course(edit_course_request $request){
 //
 public function get_course(edit_course_request $request) {
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1632,14 +1693,21 @@ public function get_courses_for_type(get_courses_type_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $courses_type=course::where('ct_id','=',$request->ct_id);
-        return $courses_type->get(); }
+        $courses_type=course::where('ct_id','=',$request->ct_id)->get();
+        $path = storage_path('images\\');
+        foreach ($courses_type as $course) {
+            $fullpath = $path.''.$course->c_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $course->image = $base64image;
+        }
+        return $courses_type; }
     }
 
 //
 public function get_course_for_user(get_course_for_user $request){
     $validator = Validator::make($request->all(), [
-        'u_id' =>'required|exists:course,u_id',
+        'token' =>'required',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1648,13 +1716,15 @@ public function get_course_for_user(get_course_for_user $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course=course::where('u_id','=',$request->u_id);
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+    $course=course::where('u_id','=',$user_id);
     return $course->get(); }
 }
 //
 public function get_course_detils(get_course_detils $request){
     $validator = Validator::make($request->all(), [
-        'c_id' =>'required|exists:course_detils,c_id',
+        'c_id' =>'required|exists:courses,c_id',
     ], $messages = [
         'required' => 'The :attribute field is required.',
         'exists'=> 'the :attribute field should be exist',
@@ -1663,8 +1733,13 @@ public function get_course_detils(get_course_detils $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course_detils=course::where('c_id','=',$request->c_id);
-    return $course_detils->get(); }
+    $course_detils=course::where('c_id','=',$request->c_id)->first();
+    $path = storage_path('images\\');
+    $fullpath = $path.''.$course_detils->c_img;
+    $image = file_get_contents($fullpath);
+    $base64image = base64_encode($image);
+    $course_detils->image = $base64image;
+    return $course_detils; }
 }
 
 public function get_skill(get_skills_request $request){
@@ -1723,9 +1798,65 @@ public function  get_profile(get_by_token $request){
     }else{
         $token = PersonalAccessToken::findToken($request->token);
         $personal_info=User::where('u_id','=',$token->tokenable_id);
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$personal_info->u_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $personal_info->image = $base64image;
         return $personal_info->first(); }
 }
 
+
+public function  test_add_media(add_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required',
+        'm_name'=>'required',
+        'video_name'=>'required',
+        'm_data'=>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $video_data = $request ->m_data;
+        $decoded_video = base64_decode($video_data);
+        $path = storage_path('videos/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->video_name;
+        file_put_contents($fullpath,$decoded_video);
+        $media = media::create([ 
+        'c_id' =>$request->c_id,
+        'm_name'=>$request->m_name,
+        'm_path'=>$request->video_name,
+    ]);
+        return response([
+            'message'=> 'media add successfully'
+        ],200);
+    }
+} 
+public function  test_get_media(edit_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'm_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $media =media::where('m_id','=',$request->m_id)->first();
+        $path = storage_path('videos\\');
+        $fullpath = $path.''.$media->m_path;
+        $video = file_get_contents($fullpath);
+        $base64video = base64_encode($video);
+        $media->video = $base64video;
+        return $media ;
+    }
+} 
 
 
 }
