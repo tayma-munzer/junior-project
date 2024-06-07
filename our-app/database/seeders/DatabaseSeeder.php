@@ -322,24 +322,13 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 3',
-            'c_desc'=> 'وصف كورس 2',
+            'c_desc'=> 'وصف كورس 3',
             'c_price'=>'100000',
             'c_img'=>  'IMG_20240505_103220.jpg',
             'u_id'=>   '2',
             'c_duration'=>'30',
             'pre_requisite'=>'lc',
             'ct_id'=>'3',
-            
-        ]);
-        DB::table('courses')->insert([
-            'c_name'=>'5 اسم كورس ',
-            'c_desc'=> ' 5 وصف كورس',
-            'c_price'=>'100000',
-            'c_img'=>  'IMG_20240505_103220.jpg',
-            'u_id'=>   '1',
-            'c_duration'=>'10',
-            'pre_requisite'=>'pr',
-            'ct_id'=>'1',
             
         ]);
         DB::table('courses')->insert([
@@ -352,8 +341,19 @@ class DatabaseSeeder extends Seeder
             'pre_requisite'=>'cl',
             'ct_id'=>'4',
             
-        ]);
-        DB::table('courses')->insert([
+            ]);
+            DB::table('courses')->insert([
+                'c_name'=>'5 اسم كورس ',
+                'c_desc'=> ' 5 وصف كورس',
+                'c_price'=>'100000',
+                'c_img'=>  'IMG_20240505_103220.jpg',
+                'u_id'=>   '1',
+                'c_duration'=>'10',
+                'pre_requisite'=>'pr',
+                'ct_id'=>'1',
+                
+            ]);
+            DB::table('courses')->insert([
             'c_name'=>'6 اسم كورس ',
             'c_desc'=> ' 6 وصف كورس',
             'c_price'=>'100000',
