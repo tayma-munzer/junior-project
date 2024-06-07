@@ -332,12 +332,10 @@ class authenticationController extends Controller
         }else{
             $user_token = PersonalAccessToken::findToken($request->token);
             $user = User::where('u_id','=',$user_token->tokenable_id);
-            //delete the old image of the user
             $user_image= $user->u_img;
             $path = storage_path('images\\');
             $fullpath = $path.''.$user_image;
             File::delete($fullpath);
-            // add the new image of the user 
             $img_data = $request ->u_img_data;
             $decoded_img = base64_decode($img_data);
             $path = storage_path('images/');
@@ -349,12 +347,11 @@ class authenticationController extends Controller
             $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
                 ['age'=>$request->age,
                 'u_desc'=>$request->u_desc,
-                'u_img'=>$request->u_img,
                 'f_name'=>$request->f_name,
                 'l_name'=>$request->l_name,
                 'email'=>$request->email,
                 'password'=>$request->password,
-                'u_img'=>$request->u_img,
+                'u_img'=>$request->u_img_name,
                 'username'=>$request->username,
                 ]
             );
@@ -751,6 +748,7 @@ class authenticationController extends Controller
             's_duration'=> 'required|string',
             's_img'=> 'required|string',
             's_video'=> 'required|string',
+            's_img_data'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
@@ -761,6 +759,19 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $service = services::where('s_id','=',$request->s_id);
+            $service_img =$service ->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
+            $img_data = $request ->s_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $fullpath = $path.''.$request->s_img;
+            file_put_contents($fullpath,$decoded_img);
         $effected_rows=services::where('s_id','=',$request->s_id)->update([
             's_name'=>$request->s_name,
             's_desc'=>$request->s_desc, 
@@ -853,6 +864,11 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $service= services::where('s_id','=',$request->s_id);
+            $service_img= $service->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
         $effected_rows=services::where('s_id','=',$request->s_id)->delete();
         if ($effected_rows!=0){
         return response([
@@ -1384,6 +1400,7 @@ public function edit_course(edit_course_request $request){
         'c_img'=>'required|string',
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
+        'c_img_data'=>'required',
     
     ],$messages = [
         'required' => 'The :attribute field is required.',
@@ -1395,6 +1412,19 @@ public function edit_course(edit_course_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
+        $course = course::where('c_id','=',$request->c_id);
+        $course_image = $course->c_img;
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$course_image;
+        File::delete($fullpath);
+        $img_data = $request ->c_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->c_img;
+        file_put_contents($fullpath,$decoded_img);
     $effected_rows=course::where('c_id','=',$request->c_id)->update([
         'c_name'=>$request->c_name,
         'c_desc'=>$request->c_desc,
