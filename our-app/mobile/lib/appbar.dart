@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/colors.dart';
+import 'package:mobile/notifications.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 class CustomAppBar extends StatelessWidget {
   @override
@@ -8,7 +10,10 @@ class CustomAppBar extends StatelessWidget {
       backgroundColor: AppColors.appbarColor,
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>const notifications()));
+          },
           icon: Icon(Icons.notifications_active),
         ),
         IconButton(

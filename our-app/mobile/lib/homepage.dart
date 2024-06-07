@@ -5,6 +5,7 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/services/PusherServices.dart';
 import 'package:mobile/viewcoursetobuy.dart';
 import 'package:mobile/viewjobtobuy.dart';
 import 'package:mobile/viewservicetobuy.dart';
@@ -62,6 +63,7 @@ class _MainHomePageState extends State<MainHomePage> {
   @override
   void initState() {
     super.initState();
+    PusherServices.instance.reinitilizePusher(context);
     fetchJobs();
     fetchServices();
     fetchCourses();

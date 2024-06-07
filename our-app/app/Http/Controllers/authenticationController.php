@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\StringEvent;
+use App\Events\{CourseCreated, JobCreated, ServiceCreated, StringEvent};
 use App\Http\Requests\addserviceRequest;
 use App\Http\Requests\loginRequest;
 use App\Http\Requests\addjobRequest;
@@ -112,7 +112,7 @@ class authenticationController extends Controller
     //     return $user_id;
     // }
 
-// done 
+// done
     public function addservice(addserviceRequest $request){
         $validator = Validator::make($request->all(), [
             'service_name' => 'required|string',
@@ -133,7 +133,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            
+
         $user_token = PersonalAccessToken::findToken($request->token);
         $img_data = $request ->service_img;
         $decoded_img = base64_decode($img_data);
@@ -143,7 +143,7 @@ class authenticationController extends Controller
         }
         $fullpath = $path.''.$request->img_name;
         file_put_contents($fullpath,$decoded_img);
-        $service = services::create([ 
+        $service = services::create([
         's_name' => $request->service_name,
         's_price' => $request->service_price,
         'num_of_buyers' => 0,
@@ -155,15 +155,16 @@ class authenticationController extends Controller
         'status' => 'pinding',
         'discount' => 0,
         ]);
+            event(new ServiceCreated($service->s_name));
         return response([
             'message'=> 'added successfully'
-        ],200);   
-    }   
+        ],200);
     }
-    // done 
+    }
+    // done
     public function addalt_service(addalt_serviceRequest $request){
         $validator = Validator::make($request->input('alt_service'), [
-            'alt_service'=> [ 
+            'alt_service'=> [
             'a_name' => 'required|string',
             'a_price' => 'required|gte:5000',
             'added_duration'=>'required|string' ]
@@ -178,8 +179,8 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{$data = $request->alt_service;
             $s_id = $request->s_id;
-            foreach ($data as $d){ 
-                $alt_service = alt_services::create([ 
+            foreach ($data as $d){
+                $alt_service = alt_services::create([
                     's_id' => $s_id,
                     'a_name' => $d['a_name'],
                     'a_price' => $d['a_price'],
@@ -188,10 +189,10 @@ class authenticationController extends Controller
             }
         return response([
             'message'=> 'added successfully'
-        ],200); 
-    } 
+        ],200);
     }
-// done 
+    }
+// done
     public function addjob (addjobRequest $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
@@ -210,24 +211,25 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $user_token =PersonalAccessToken::findToken($request->token);
-        $job = job::create([ 
+        $job = job::create([
         'u_id' => $user_token->tokenable_id,
         'j_name' => $request->j_name,
         'j_desc' => $request->j_desc,
         'j_sal' => $request->j_sal,
         'j_req' => $request->j_req,
         ]);
+        event(new JobCreated($job->j_name));
         return response([
             'message'=> 'added successfully',
             'j_id' =>$job->id
-        ],200);  
+        ],200);
     }
     }
-// not done yet 
+// not done yet
     public function delete_account(deleteRequest $request){
         $request->validated();
 
-        // deleting process 
+        // deleting process
     }
 // done
     public function add_discount(discountRequest $request){
@@ -255,7 +257,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
 // done
     public function delete_discount(discountRequest $request){
@@ -279,7 +281,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     // done
     public function get_type_services(get_type_service_request $request){
@@ -342,7 +344,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is edited something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function add_course(add_course_request $request){
@@ -365,7 +367,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $user_token = PersonalAccessToken::findToken($request->token);
-        $course = course::create([ 
+        $course = course::create([
         'u_id' => $user_token->tokenable_id,
         'c_name' => $request->c_name,
         'c_desc' => $request->c_desc,
@@ -374,16 +376,17 @@ class authenticationController extends Controller
         'c_duration'=>$request->c_duration,
         'pre_requisite' =>$request->pre_requisite,
         ]);
+        event(new CourseCreated($course->c_name));
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
     //done
     public function add_media(add_media_request $request){
         //$data = json_decode($request->media, true);
         $validator = Validator::make($request->media, [
-            'media' => [ 
+            'media' => [
             'c_id' => 'required|integer|exists:courses,c_id',
             'm_name' => 'required|string',
             'm_path' => 'required|string',
@@ -398,8 +401,8 @@ class authenticationController extends Controller
         }else{
             $data = $request->media;
             $c_id = $request->c_id;
-            foreach ($data as $d){ 
-                $media = media::create([ 
+            foreach ($data as $d){
+                $media = media::create([
                 'c_id' => $c_id,
                 'm_name' => $d['m_name'],
                 'm_path' => $d['m_path'],
@@ -407,10 +410,10 @@ class authenticationController extends Controller
     }
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
-    //done 
+    //done
     public function add_cv(add_cv_request $request){
         $validator = Validator::make($request->all(),[
             'token' => 'required',
@@ -429,7 +432,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $user_token = PersonalAccessToken::findToken($request->token);
-        $cv = cv::create([ 
+        $cv = cv::create([
         'u_id' =>$user_token->tokenable_id,
         'email' => $request->email,
         'address' => $request->address,
@@ -439,10 +442,10 @@ class authenticationController extends Controller
         return response([
             'message'=> 'added successfully',
             'cv_id'=>$cv->id,
-        ],200);  
+        ],200);
     }
     }
-    //done 
+    //done
     public function add_skills(add_skill_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
@@ -463,8 +466,8 @@ class authenticationController extends Controller
         }else{
             $cv_id= $requestData ['cv_id'];
             $skills = $requestData['skills'];
-            foreach ($skills as $d){ 
-                $skill = skills::create([ 
+            foreach ($skills as $d){
+                $skill = skills::create([
                 'cv_id' =>$cv_id,
                 's_name' => $d['s_name'],
                 's_level' => $d['s_level'],
@@ -475,7 +478,7 @@ class authenticationController extends Controller
             'message'=> 'added successfully'
         ],200);  }
     }
-    //done 
+    //done
     public function add_language(add_language_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
@@ -493,15 +496,15 @@ class authenticationController extends Controller
         }else{
             $cv_id=$requestData['cv_id'];
             $data=$requestData['languages'];
-            foreach ($data as $d){ 
-                $cv_lang = cv_lang::create([ 
+            foreach ($data as $d){
+                $cv_lang = cv_lang::create([
                 'cv_id' =>$cv_id,
                 'l_id' => $d['l_id'],
                 ]);
             }
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
     //done
@@ -524,12 +527,12 @@ class authenticationController extends Controller
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
-    
+
         }else{
             $cv_id=$requestData['cv_id'];
             $data=$requestData['projects'];
-            foreach ($data as $d){ 
-        $project = projects::create([ 
+            foreach ($data as $d){
+        $project = projects::create([
         'cv_id' =>$cv_id,
         'p_name' => $d['p_name'],
         'p_desc' => $d['p_desc'],
@@ -539,7 +542,7 @@ class authenticationController extends Controller
         ]);}
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
 //done
@@ -565,8 +568,8 @@ class authenticationController extends Controller
         }else{
             $cv_id=$requestData['cv_id'];
             $data=$requestData['experiences'];
-            foreach ($data as $d){ 
-                $exp = experience::create([ 
+            foreach ($data as $d){
+                $exp = experience::create([
                 'cv_id' =>$cv_id,
                 'position' => $d['position'],
                 'company' => $d['company'],
@@ -577,7 +580,7 @@ class authenticationController extends Controller
             }
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
     //done
@@ -601,8 +604,8 @@ class authenticationController extends Controller
         }else{
             $cv_id=$requestData['cv_id'];
             $data=$requestData['training_courses'];
-            foreach ($data as $d){ 
-                $course = training_courses::create([ 
+            foreach ($data as $d){
+                $course = training_courses::create([
                 'cv_id' =>$cv_id,
                 'course_name' => $d['course_name'],
                 'training_center' => $d['training_center'],
@@ -610,10 +613,10 @@ class authenticationController extends Controller
                 ]);}
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
-    //done 
+    //done
     public function add_education(add_education_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
@@ -637,8 +640,8 @@ class authenticationController extends Controller
         }else{
             $cv_id=$requestData['cv_id'];
             $data=$requestData['education'];
-            foreach ($data as $d){ 
-                $education = education::create([ 
+            foreach ($data as $d){
+                $education = education::create([
                 'cv_id' =>$cv_id,
                 'degree' => $d['degree'],
                 'uni' => $d['uni'],
@@ -648,7 +651,7 @@ class authenticationController extends Controller
                 ]);}
         return response([
             'message'=> 'added successfully'
-        ],200);  
+        ],200);
     }
     }
     //done
@@ -673,7 +676,7 @@ class authenticationController extends Controller
             'j_sal'=>$request->j_sal,
             'j_name'=>$request->j_name,
             'j_desc'=>$request->j_desc,
-            'j_req'=>$request->j_req,        
+            'j_req'=>$request->j_req,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -684,7 +687,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_media(edit_media_request $request){
@@ -703,7 +706,7 @@ class authenticationController extends Controller
         }else{
         $effected_rows=media::where('m_id','=',$request->m_id)->update([
             'm_name'=>$request->m_name,
-            'm_path'=>$request->m_path,      
+            'm_path'=>$request->m_path,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -714,7 +717,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_service(edit_service_request $request){
@@ -738,11 +741,11 @@ class authenticationController extends Controller
         }else{
         $effected_rows=services::where('s_id','=',$request->s_id)->update([
             's_name'=>$request->s_name,
-            's_desc'=>$request->s_desc, 
+            's_desc'=>$request->s_desc,
             's_price'=>$request->s_price,
             's_duration'=>$request->s_duration,
             's_img'=>$request->s_img,
-            's_video'=>$request->s_video,   
+            's_video'=>$request->s_video,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -753,7 +756,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_cv(edit_cv_request $request){
@@ -775,9 +778,9 @@ class authenticationController extends Controller
         }else{
         $effected_rows=cv::where('cv_id','=',$request->cv_id)->update([
             'career_obj'=>$request->career_obj,
-            'phone'=>$request->phone, 
+            'phone'=>$request->phone,
             'address'=>$request->address,
-            'email'=>$request->email,  
+            'email'=>$request->email,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -788,7 +791,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_job(edit_job_request $request){
@@ -814,7 +817,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_service(edit_service_request $request){
@@ -838,7 +841,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_media(edit_media_request $request){
@@ -862,7 +865,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function get_job(edit_job_request $request){
@@ -878,7 +881,7 @@ class authenticationController extends Controller
         }else{
         $job =job::where('j_id','=',$request->j_id)->first();
         return $job; }
-    } 
+    }
     //done
     public function get_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
@@ -893,7 +896,7 @@ class authenticationController extends Controller
         }else{
         $media =media::where('m_id','=',$request->m_id);
         return $media->get(); }
-    } 
+    }
     //done
     public function get_all_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
@@ -908,7 +911,7 @@ class authenticationController extends Controller
         }else{
         $media =media::where('c_id','=',$request->c_id);
         return $media->get(); }
-    } 
+    }
     //done
     public function get_service(edit_service_request $request){
         $validator = Validator::make($request->all(), [
@@ -926,7 +929,7 @@ class authenticationController extends Controller
         $base64image = base64_encode($image);
         $service->image = $base64image;
         return $service; }
-    } 
+    }
     //done
     public function get_all_cv (get_all_cv $request){
         $token = PersonalAccessToken::findToken($request->token);
@@ -990,7 +993,7 @@ class authenticationController extends Controller
         $effected_rows=alt_services::where('a_id','=',$request->a_id)->update([
             'a_price'=>$request->a_price,
             'a_name'=>$request->a_name,
-            'added_duration'=>$request->added_duration,     
+            'added_duration'=>$request->added_duration,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -1001,7 +1004,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_skills(edit_skill_request $request){
@@ -1023,7 +1026,7 @@ class authenticationController extends Controller
         $effected_rows=skills::where('s_id','=',$request->s_id)->update([
             's_level'=>$request->s_level,
             's_name'=>$request->s_name,
-            'years_of_exp'=>$request->years_of_exp,     
+            'years_of_exp'=>$request->years_of_exp,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -1037,7 +1040,7 @@ class authenticationController extends Controller
     }
 
     }
-    
+
     //done
     public function edit_language(edit_language_request $request){
         $validator = Validator::make($request->all(), [
@@ -1054,7 +1057,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=cv_lang::where('cvl_id','=',$request->cvl_id)->update([
-            'l_id'=>$request->l_id,  
+            'l_id'=>$request->l_id,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -1065,7 +1068,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_projects(edit_project_request $request){
@@ -1087,7 +1090,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=projects::where('p_id','=',$request->p_id)->update([
-            'p_desc'=>$request->p_desc,  
+            'p_desc'=>$request->p_desc,
             'p_name'=>$request->p_name,
             'responsibilities'=>$request->responsibilities,
             'start_date'=>date('Y-m-d' , strtotime($request->start_date)),
@@ -1102,7 +1105,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function edit_experience(edit_exp_request $request){
@@ -1124,7 +1127,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=experience::where('exp_id','=',$request->exp_id)->update([
-            'company'=>$request->company,  
+            'company'=>$request->company,
             'position'=>$request->position,
             'responsibilities'=>$request->responsibilities,
             'start_date'=>date('Y-m-d' , strtotime($request->start_date)),
@@ -1139,7 +1142,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is updated something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_alt_service(edit_alt_service_request $request){
@@ -1163,7 +1166,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_skill(edit_skill_request $request){
@@ -1189,7 +1192,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_cv_language(edit_language_request $request){
@@ -1216,7 +1219,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function delete_project(edit_project_request $request){
@@ -1242,7 +1245,7 @@ class authenticationController extends Controller
                 'message'=> 'nothing is deleted something went wrong'
             ],402);
         }
-    } 
+    }
     }
     //done
     public function get_all_alt_services(get_all_alt_request $request){
@@ -1258,7 +1261,7 @@ class authenticationController extends Controller
         }else{
         $alt_services =alt_services::where('s_id','=',$request->s_id);
         return $alt_services->get(); }
-    } 
+    }
     //done
     public function get_skills(get_skills_request $request){
         $validator = Validator::make($request->all(), [
@@ -1273,7 +1276,7 @@ class authenticationController extends Controller
         }else{
         $skills =skills::where('cv_id','=',$request->cv_id);
         return $skills->get(); }
-    } 
+    }
     //done
     public function get_languages(get_langs_request $request){
         $validator = Validator::make($request->all(), [
@@ -1288,7 +1291,7 @@ class authenticationController extends Controller
         }else{
         $langs =cv_lang::where('cv_id','=',$request->cv_id);
         return $langs->get(); }
-    } 
+    }
     //done
     public function get_projects(get_projects_request $request){
         $validator = Validator::make($request->all(), [
@@ -1303,7 +1306,7 @@ class authenticationController extends Controller
         }else{
         $projects =projects::where('cv_id','=',$request->cv_id);
         return $projects->get(); }
-    } 
+    }
 //
 public function delete_exp(edit_exp_request $request){
     $validator = Validator::make($request->all(), [
@@ -1357,7 +1360,7 @@ public function edit_course(edit_course_request $request){
         'c_img'=>'required|string',
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
-    
+
     ],$messages = [
         'required' => 'The :attribute field is required.',
         'integer' => 'the :attribute field should be a number',
@@ -1375,7 +1378,7 @@ public function edit_course(edit_course_request $request){
         'c_img'=>$request->c_img ,
         'c_duration'=>$request->c_duration,
         'pre_requisite' =>$request->pre_requisite,
-        
+
     ]);
     if ($effected_rows!=0){
     return response([
@@ -1386,7 +1389,7 @@ public function edit_course(edit_course_request $request){
             'message'=> 'nothing is updated something went wrong'
         ],402);
     }
-} 
+}
 }
 //
 public function delete_course(edit_course_request $request){
@@ -1447,11 +1450,11 @@ public function edit_training_courses(edit_training_course_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([ 
+    $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([
         'course_name'=>$request->course_name,
         'training_center'=>$request->training_center,
         'completion_date'=>date('Y-m-d' , strtotime($request->completion_date))
-        
+
     ]);
     if ($effected_rows!=0){
     return response([
@@ -1462,7 +1465,7 @@ public function edit_training_courses(edit_training_course_request $request){
             'message'=> 'nothing is updated something went wrong'
         ],402);
     }
-} 
+}
 }
 //
 public function delete_training_courses(edit_training_course_request $request){
@@ -1532,7 +1535,7 @@ public function get_training_courses(edit_training_course_request $request) {
         'field_of_study'=>$request->field_of_study,
         'grad_year'=>$request->grad_year,
         'gba' =>$request ->gba
-        
+
     ]);
     if ($effected_rows!=0){
     return response([
@@ -1543,7 +1546,7 @@ public function get_training_courses(edit_training_course_request $request) {
             'message'=> 'nothing is updated something went wrong'
         ],402);
     }
-} 
+}
 }
 //
 public function delete_education(edit_cv_education_request $request){
@@ -1586,7 +1589,7 @@ public function get_education(edit_cv_education_request $request) {
     }else{
     $education=education::where('e_id','=',$request->e_id);
     return $education->first(); }
-}  
+}
 public function check_job_owner(edit_education_request $request) {
     $validator = Validator::make($request->all(), [
         'e_id' =>'required|exists:education,e_id',
@@ -1600,7 +1603,7 @@ public function check_job_owner(edit_education_request $request) {
     }else{
     $education=education::where('e_id','=',$request->e_id);
     return $education->get(); }
-} 
+}
 
 public function get_user_jobs(get_by_token $request) {
     $validator = Validator::make($request->all(), [
@@ -1677,7 +1680,7 @@ public function get_skill(get_skills_request $request){
     }else{
     $skill=skills::where('s_id','=',$request->s_id)->first();
     return $skill; }
-}  
+}
 public function get_project(get_project_request $request){
     $validator = Validator::make($request->all(), [
         'p_id' =>'required',
@@ -1691,7 +1694,7 @@ public function get_project(get_project_request $request){
     }else{
     $skill=projects::where('p_id','=',$request->p_id)->first();
     return $skill; }
-} 
+}
 public function get_cv_lang(get_langs_request $request){
     $validator = Validator::make($request->all(), [
         'cv_id' =>'required',
@@ -1706,7 +1709,7 @@ public function get_cv_lang(get_langs_request $request){
         $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$request->cv_id)->get();
     return ['languages'=> $languages];
     }
-} 
+}
 public function  get_profile(get_by_token $request){
     $validator = Validator::make($request->all(), [
         'token' =>'required',
@@ -1721,7 +1724,7 @@ public function  get_profile(get_by_token $request){
         $token = PersonalAccessToken::findToken($request->token);
         $personal_info=User::where('u_id','=',$token->tokenable_id);
         return $personal_info->first(); }
-} 
+}
 
 
 

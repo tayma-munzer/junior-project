@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ServiceCreated;
 use App\Http\Controllers\authenticationController;
 use App\Http\Controllers\gets;
 use App\Http\Controllers\MessageController;
@@ -20,7 +21,7 @@ Route::post('/addjob',[authenticationController::class,'addjob']); //added
 Route::post('/addservice',[authenticationController::class,'addservice']); //added
 Route::get('/getsec_types',[gets::class,'sec_types']); // added
 Route::post('/get_type_services',[authenticationController::class,'get_type_services']); //added
-Route::post('/add_discount',[authenticationController::class,'add_discount']);//added 
+Route::post('/add_discount',[authenticationController::class,'add_discount']);//added
 Route::post('/edit_discount',[authenticationController::class,'add_discount']);//added
 Route::post('/delete_discount',[authenticationController::class,'delete_discount']);//added
 Route::post('/edit_profile',[authenticationController::class,'edit_profile']);//added

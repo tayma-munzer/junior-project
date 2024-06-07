@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/homepage.dart';
 import 'package:mobile/login.dart';
+import 'package:mobile/services/LocalNotificationsService.dart';
 import 'package:mobile/signup.dart';
 import 'package:mobile/firstpage.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: HomePage(),
