@@ -18,9 +18,9 @@ class JobCreated implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct($title, $company)
+    public function __construct($title)
     {
-        $this->message = "Checkout the new $title position in $company";
+        $this->message = "Checkout the new $title position in company";
     }
 
     /**
