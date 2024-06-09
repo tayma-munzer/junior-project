@@ -1793,13 +1793,13 @@ public function  get_profile(get_by_token $request){
         return response($errors,402);
     }else{
         $token = PersonalAccessToken::findToken($request->token);
-        $personal_info=User::where('u_id','=',$token->tokenable_id);
+        $personal_info=User::where('u_id','=',$token->tokenable_id)->first();
         $path = storage_path('images\\');
         $fullpath = $path.''.$personal_info->u_img;
         $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $personal_info->image = $base64image;
-        return $personal_info->first(); }
+        return $personal_info; }
 }
 
 
