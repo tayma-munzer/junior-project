@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\rates_reviews;
 use App\Events\{CourseCreated, JobCreated, ServiceCreated, StringEvent};
 use App\Http\Requests\addserviceRequest;
 use App\Http\Requests\loginRequest;
@@ -68,6 +68,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -220,7 +221,7 @@ class authenticationController extends Controller
         'j_sal' => $request->j_sal,
         'j_req' => $request->j_req,
         ]);
-        event(new JobCreated($job->j_name));
+        event(new JobCreated($job->j_name,"ll"));
         return response([
             'message'=> 'added successfully',
             'j_id' =>$job->id
@@ -1795,13 +1796,13 @@ public function  get_profile(get_by_token $request){
         return response($errors,402);
     }else{
         $token = PersonalAccessToken::findToken($request->token);
-        $personal_info=User::where('u_id','=',$token->tokenable_id)->first();
+        $personal_info=User::where('u_id','=',$token->tokenable_id);
         $path = storage_path('images\\');
         $fullpath = $path.''.$personal_info->u_img;
         $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $personal_info->image = $base64image;
-        return $personal_info; }
+        return $personal_info->first(); }
 }
 
 
@@ -1836,6 +1837,107 @@ public function  test_add_media(add_media_request $request){
         ],200);
     }
 } 
+
+public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:user,u_id'],
+            'rate' => ['required', 'numeric'],
+            'review' => ['required', 'string'],
+            'course_id' => ['required', 'exists:courses,c_id'],
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response($errors, 402);
+        } else {
+            rates_reviews::create([
+                'user_id' => $request->user_id,
+                'rate' => $request->rate,
+                'review' => $request->review,
+                'ratable_id' => $request->service_id,
+                'ratable_type' => course::class
+            ]);
+            return response([
+                'message' => 'added successfully'
+            ], 200);
+        }
+    }
+
+    public function add_service_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:user,u_id'],
+            'rate' => ['required', 'numeric'],
+            'review' => ['required', 'string'],
+            'service_id' => ['required', 'exists:services,s_id'],
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response($errors, 402);
+        } else {
+            rates_reviews::create([
+                'user_id' => $request->user_id,
+                'rate' => $request->rate,
+                'review' => $request->review,
+                'ratable_id' => $request->service_id,
+                'ratable_type' => services::class
+            ]);
+            return response([
+                'message' => 'added successfully'
+            ], 200);
+        }
+    }
+
+    public function add_job_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:user,u_id'],
+            'rate' => ['required', 'numeric'],
+            'review' => ['required', 'string'],
+            'job_id' => ['required', 'exists:jobs,j_id'],
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response($errors, 402);
+        } else {
+            rates_reviews::create([
+                'user_id' => $request->user_id,
+                'rate' => $request->rate,
+                'review' => $request->review,
+                'ratable_id' => $request->job_id,
+                'ratable_type' => job::class
+            ]);
+            return response([
+                'message' => 'added successfully'
+            ], 200);
+        }
+    }
+
+    public function add_training_courses_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:user,u_id'],
+            'rate' => ['required', 'numeric'],
+            'review' => ['required', 'string'],
+            'training_courses_id' => ['required', 'exists:training_courses,t_id'],
+        ]);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response($errors, 402);
+        } else {
+            rates_reviews::create([
+                'user_id' => $request->user_id,
+                'rate' => $request->rate,
+                'review' => $request->review,
+                'ratable_id' => $request->course_id,
+                'ratable_type' => training_courses::class
+            ]);
+            return response([
+                'message' => 'added successfully'
+            ], 200);
+        }
+    }
+
 
 
 }

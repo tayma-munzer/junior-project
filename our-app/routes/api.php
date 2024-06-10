@@ -99,3 +99,8 @@ Route::post('/requestvideo', [VideoUploadController::class, 'sendVideoChunks']);
 
 Route::post('/test_add_media',[authenticationController::class,'test_add_media'] );
 Route::post('/test_get_media',[authenticationController::class,'test_get_media'] );
+
+Route::post('/add_course_rating',[authenticationController::class, 'add_course_rating']);
+Route::post('/add_job_rating',[authenticationController::class, 'add_job_rating']);
+Route::post('/add_service_rating',[authenticationController::class, 'add_service_rating']);
+Route::post('/add_training_courses_rating',[authenticationController::class, 'add_training_courses_rating']);
