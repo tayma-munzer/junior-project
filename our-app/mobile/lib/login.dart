@@ -75,6 +75,7 @@ class _LoginState extends State<Login> {
                           final Map<String, dynamic> responseMap =
                               json.decode(value.body);
                           AuthManager.saveToken(responseMap['token']);
+                          print(responseMap['token']);
                           print(responseMap['roles']);
                           List roles = responseMap['roles'];
                           AuthManager.saveRoles(roles);

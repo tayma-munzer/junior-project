@@ -951,7 +951,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $media =media::where('c_id','=',$request->c_id);
-        return $media->get(); }
+        return $media->first(); }
     }
     //done
     public function get_service(edit_service_request $request){
@@ -1832,25 +1832,6 @@ public function  test_add_media(add_media_request $request){
         return response([
             'message'=> 'media add successfully'
         ],200);
-    }
-} 
-public function  test_get_media(edit_media_request $request){
-    $validator = Validator::make($request->all(), [
-        'm_id' =>'required',
-    ], $messages = [
-        'required' => 'The :attribute field is required.',
-    ]);
-    if ($validator->fails()){
-        $errors = $validator->errors();
-        return response($errors,402);
-    }else{
-        $media =media::where('m_id','=',$request->m_id)->first();
-        $path = storage_path('videos\\');
-        $fullpath = $path.''.$media->m_path;
-        $video = file_get_contents($fullpath);
-        $base64video = base64_encode($video);
-        $media->video = $base64video;
-        return $media ;
     }
 } 
 
