@@ -93,3 +93,7 @@ const get_home_page_jobs = URL + "get_home_page_jobs";
 const get_home_page_courses = URL + "get_home_page_courses";
 const test_add_media = URL + "test_add_media";
 const test_get_media = URL + "test_get_media";
+const add_course_rating = URL + "add_course_rating";
+const add_job_rating = URL + "add_job_rating";
+const add_service_rating = URL + "add_service_rating";
+const add_training_courses_rating = URL + "add_training_courses_rating";
