@@ -1954,7 +1954,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             ], 200);
         }
     }
-
+    
 
 
 }
