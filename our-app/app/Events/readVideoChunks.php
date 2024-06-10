@@ -11,32 +11,29 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcastNow
+class readVideoChunks implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public $message;
+    public $chunk;
+    public $isLastChunk;
 
-    public function __construct($message)
+    public function __construct($chunk, $isLastChunk)
     {
-        $this->message = $message;
+        $this->chunk = $chunk;
+        $this->isLastChunk = $isLastChunk;
     }
 
     public function broadcastOn()
     {
-        return new Channel('chat');
+        return new Channel('video-channel');
     }
 
-    public function broadcastWith()
+    public function broadcastAs()
     {
-        return ['message' => $this->message];
+        return 'App\\Events\\VideoChunkBroadcast';
     }
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    }
+}

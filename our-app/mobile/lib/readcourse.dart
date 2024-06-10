@@ -35,25 +35,28 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
 
-      if (decodedData is Map<String, dynamic>) {
-        setState(() {
-          courseData = {
-            "c_id": decodedData["c_id"].toString(),
-            "c_name": decodedData["c_name"],
-            "c_desc": decodedData["c_desc"],
-            "c_price": decodedData["c_price"].toString(),
-            "c_img": decodedData["c_img"],
-            "c_duration": decodedData["c_duration"].toString(),
-            "pre_recuisite": decodedData["pre_recuisite"],
-          };
-        });
-        fetchVideoData(); // Fetch video data after course data is retrieved
-      } else {
-        print("Invalid response format: $decodedData");
-      }
+      //if (decodedData is Map<String, dynamic>) {
+      setState(() {
+        courseData = {
+          "c_id": decodedData["c_id"].toString(),
+          "c_name": decodedData["c_name"],
+          "c_desc": decodedData["c_desc"],
+          "c_price": decodedData["c_price"].toString(),
+          "c_img": decodedData["c_img"],
+          "c_duration": decodedData["c_duration"].toString(),
+          "pre_recuisite": decodedData["pre_recuisite"],
+        };
+        print('000');
+        print(decodedData["c_name"].toString());
+      });
+      fetchVideoData(); // Fetch video data after course data is retrieved
     } else {
-      print("Request failed with status: ${response.statusCode}");
+      print(response.body);
+      print("Invalid response format: decodedData");
     }
+    //} else {
+    //   print("Request failed with status: ${response.statusCode}");
+    // }
   }
 
   Future<void> fetchVideoData() async {
@@ -104,7 +107,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 child: FutureBuilder<Uint8List?>(
                   future: courseData["c_img"] != null
                       ? Future.value(
-                          base64Decode(courseData["c_img"] as String))
+                          base64Decode(courseData["c_img"] ))
                       : Future.value(null),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
