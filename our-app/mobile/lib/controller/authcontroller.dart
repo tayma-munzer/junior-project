@@ -34,7 +34,7 @@ class AuthCont {
       String subCategory,
       String description,
       String duration,
-      String img_data,
+      String img_path,
       String img_name) async {
     var url = add_service;
     final token = await AuthManager.getToken();
@@ -45,7 +45,7 @@ class AuthCont {
       'service_sec_type': subCategory,
       'service_desc': description,
       'service_duration': duration,
-      'service_img_data': img_data,
+      'service_img': img_path,
       'img_name': img_name,
       'token': token,
     });

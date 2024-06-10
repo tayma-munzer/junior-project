@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'l_name' => 'عبدربه',
             'age' => '21',
             'u_desc' => 'طالبة جامعية',
-            'u_img' => 'personal_image.jpg',
+            'u_img' => 'assets/profile.jpg',
             'email' => 'tayma@gmail.com',
             'username' => 'تيمه',
             'password' => '123456',
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'l_name' => 'مرعي',
             'age' => '21',
             'u_desc' => 'طالبة جامعية ',
-            'u_img' => 'personal_image.jpg',
+            'u_img' => 'assets/profile.jpg',
             'email' => 'hala@gmail.com',
             'username' => 'حلا',
             'password' => '123456',
@@ -163,7 +163,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>' اسرع و افضل التصاميم شعارنا رضى العميل',
                 's_duration'=>'شهر واحد',
                 'st_id'=>'7',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
         );
         DB::table('services')->insert(
@@ -174,7 +174,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>' اسرع و افضل التصاميم الوورد بريس ',
                 's_duration'=>'نصف شهر',
                 'st_id'=>'8',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -185,7 +185,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>' اسرع و افضل التصاميم رضى العميل من اولوياتنا ',
                 's_duration'=>'شهرين',
                 'st_id'=>'8',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -196,7 +196,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>' اسرع و افضل التصاميم شعارنا رضى العميل',
                 's_duration'=>'شهر و نص',
                 'st_id'=>'7',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -207,7 +207,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليم قواعد اللغة العربية لكافة المراحل التعليمية',
                 's_duration'=>'ساعة و نص',
                 'st_id'=>'1',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -218,7 +218,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليمة كتابة موضوع تعبير',
                 's_duration'=>'ساعة و نص',
                 'st_id'=>'1',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -229,7 +229,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليم قواعد اللغة الانكليزية لكافة المراحل التعليمية',
                 's_duration'=>'ساعة',
                 'st_id'=>'2',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -240,7 +240,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليم قواعد اللغة الانكليزية لصف التاسع و البكلوريا',
                 's_duration'=>'ساعة',
                 'st_id'=>'2',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -251,7 +251,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليم قواعد اللغة الفرنسية لكافة المراحل التعليمية',
                 's_duration'=>'ساعتين',
                 'st_id'=>'3',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('services')->insert(
@@ -262,7 +262,7 @@ class DatabaseSeeder extends Seeder
                 's_desc'=>'جلسة تعليم قواعد اللغة الفرنسية لكافة المراحل التعليمية',
                 's_duration'=>'ساعة',
                 'st_id'=>'3',
-                's_img'=>'personal_image.jpg',
+                's_img'=>'null.png',
             ]
             );
         DB::table('alt_services')->insert([
@@ -302,7 +302,7 @@ class DatabaseSeeder extends Seeder
             'c_name'=>'1 اسم كورس ',
             'c_desc'=> ' 1 وصف كورس',
             'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
+            'c_img'=>  'null.png',
             'u_id'=>   '1',
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
@@ -313,7 +313,7 @@ class DatabaseSeeder extends Seeder
             'c_name'=>' 2 اسم كورس ',
             'c_desc'=> 'وصف كورس 2',
             'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
+            'c_img'=>  'null.png',
             'u_id'=>   '2',
             'c_duration'=>'20',
             'pre_requisite'=>'cs',
@@ -322,9 +322,9 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 3',
-            'c_desc'=> 'وصف كورس 3',
+            'c_desc'=> 'وصف كورس 2',
             'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
+            'c_img'=>  'null.png',
             'u_id'=>   '2',
             'c_duration'=>'30',
             'pre_requisite'=>'lc',
@@ -335,66 +335,11 @@ class DatabaseSeeder extends Seeder
             'c_name'=>'اسم كورس 4',
             'c_desc'=> 'وصف كورس 4',
             'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
+            'c_img'=>  'null.png',
             'u_id'=>   '1',
             'c_duration'=>'40',
             'pre_requisite'=>'cl',
             'ct_id'=>'4',
-            
-            ]);
-            DB::table('courses')->insert([
-                'c_name'=>'5 اسم كورس ',
-                'c_desc'=> ' 5 وصف كورس',
-                'c_price'=>'100000',
-                'c_img'=>  'personal_image.jpg',
-                'u_id'=>   '1',
-                'c_duration'=>'10',
-                'pre_requisite'=>'pr',
-                'ct_id'=>'1',
-                
-            ]);
-            DB::table('courses')->insert([
-            'c_name'=>'6 اسم كورس ',
-            'c_desc'=> ' 6 وصف كورس',
-            'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
-            'u_id'=>   '1',
-            'c_duration'=>'10',
-            'pre_requisite'=>'pr',
-            'ct_id'=>'1',
-            
-        ]);
-        DB::table('courses')->insert([
-            'c_name'=>'7 اسم كورس ',
-            'c_desc'=> ' 7 وصف كورس',
-            'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
-            'u_id'=>   '1',
-            'c_duration'=>'10',
-            'pre_requisite'=>'pr',
-            'ct_id'=>'2',
-            
-        ]);
-        DB::table('courses')->insert([
-            'c_name'=>'8 اسم كورس ',
-            'c_desc'=> ' 8 وصف كورس',
-            'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
-            'u_id'=>   '1',
-            'c_duration'=>'10',
-            'pre_requisite'=>'pr',
-            'ct_id'=>'2',
-            
-        ]);
-        DB::table('courses')->insert([
-            'c_name'=>'9 اسم كورس ',
-            'c_desc'=> ' 9 وصف كورس',
-            'c_price'=>'100000',
-            'c_img'=>  'personal_image.jpg',
-            'u_id'=>   '1',
-            'c_duration'=>'10',
-            'pre_requisite'=>'pr',
-            'ct_id'=>'3',
             
         ]);
         DB::table('jobs')->insert([
@@ -531,12 +476,12 @@ class DatabaseSeeder extends Seeder
         
         DB::table('media')->insert([
             'm_name'=>'course1',
-            'm_path'=>'ll.mp4',
+            'm_path'=>'laravel',
             'c_id'=>'1'
         ]);
         DB::table('media')->insert([
             'm_name'=>'course2',
-            'm_path'=>'j2.mp4',
+            'm_path'=>'database',
             'c_id'=>'2'
         ]);
          

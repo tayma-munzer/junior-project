@@ -7,11 +7,10 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcastNow
+class MessageSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -28,11 +27,6 @@ class MessageSent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         return new Channel('chat');
-    }
-
-    public function broadcastWith()
-    {
-        return ['message' => $this->message];
     }
     /**
      * Get the channels the event should broadcast on.

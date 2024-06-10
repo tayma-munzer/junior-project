@@ -74,15 +74,7 @@ class gets extends Controller
     }
 
     static function get_home_page_services(){
-        $services = services::take(8)->get();
-        $path = storage_path('images\\');
-        foreach ($services as $service) {
-            $fullpath = $path.''.$service->s_img;
-            $image = file_get_contents($fullpath);
-            $base64image = base64_encode($image);
-            $service->image = $base64image;
-        }
-        return $services;
+        return services::all()->take(8);
     }
 
     static function get_home_page_jobs(){

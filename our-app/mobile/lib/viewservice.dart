@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +20,6 @@ class viewservice extends StatefulWidget {
 }
 
 Map<String, dynamic>? servicedetails;
-String? image;
 
 class _viewserviceState extends State<viewservice> {
   void fetchservice() async {
@@ -29,9 +28,7 @@ class _viewserviceState extends State<viewservice> {
         await http.post(Uri.parse(url), body: {"s_id": widget.s_id.toString()});
     setState(() {
       servicedetails = json.decode(res.body);
-      image = servicedetails!['image'];
       print(servicedetails);
-      print(image);
     });
   }
 
@@ -54,10 +51,7 @@ class _viewserviceState extends State<viewservice> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            Image.memory(
-              base64Decode(servicedetails!['image']),
-              height: 300,
-            ),
+            Image.asset('assets/workingbag.png', width: 200),
             SizedBox(height: 50),
             Text('${servicedetails!['s_name']} : اسم الوظيفة',
                 style: TextStyle(fontSize: 20)),

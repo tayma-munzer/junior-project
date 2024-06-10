@@ -22,33 +22,26 @@ class _CategoriesState extends State<Categories> {
   List<Map<String, dynamic>> data = [];
   Future<void> fetchData() async {
     var url = get_secondry_type_services;
-    var response = await http.post(Uri.parse(url), body: {
-      "st_id": widget.st_id.toString(),
-    });
-    print("data fetched ");
+    var response = await http
+        .post(Uri.parse(url), body: {"st_id": widget.st_id.toString()});
+
     if (response.statusCode == 200) {
-      print(200);
       var decodedData = json.decode(response.body);
-      //print(decodedData);
-      print("kkkkkk");
+
       if (decodedData is Map<String, dynamic>) {
-        print("lololool");
         setState(() {
           data = decodedData.values.toList().map((item) {
-            print(item["image"].toString().length);
-            print("lfllfl");
             return {
               "s_id": item["s_id"],
               "s_name": item["s_name"],
               "s_desc": item["s_desc"],
-              "image": item["image"],
+              "s_img": item["s_img"],
               "s_price": item["s_price"].toString(),
               "discount": item["discount"].toString(),
               "status": item["status"],
             };
           }).toList();
         });
-        //print(data); // Print the populated data list
       } else {
         print("Invalid response format: $decodedData");
       }
@@ -87,25 +80,6 @@ class _CategoriesState extends State<Categories> {
                   );
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoriesDetails(1),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10),
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text(
-                  'test read',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
             ],
           ),
         ),
@@ -115,6 +89,9 @@ class _CategoriesState extends State<Categories> {
   }
 
   Widget _buildItemWidget(dynamic item) {
+    final String imageUrl = item["s_img"] ??
+        "assets/job.png"; // Provide a default image asset or handle null
+
     return GestureDetector(
       onTap: () {
         Navigator.pop(context); // Close the drawer
@@ -129,7 +106,7 @@ class _CategoriesState extends State<Categories> {
       child: BuildItem(
         item["s_name"],
         item["s_desc"],
-        item["image"],
+        imageUrl,
         item["s_price"],
         item["discount"],
         item["status"],

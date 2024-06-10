@@ -202,10 +202,9 @@ class _MainHomePageState extends State<MainHomePage> {
                           borderRadius: BorderRadius.circular(10),
                           color: Color.fromARGB(255, 255, 227, 184),
                           image: DecorationImage(
-                            image: MemoryImage(
-                              base64Decode(
-                                  services[_currentServicesIndex]['image']),
-                            ),
+                            image: NetworkImage(services[_currentServicesIndex]
+                                    ['s_image']
+                                .toString()),
                             fit: BoxFit.cover,
                           ),
                         ),

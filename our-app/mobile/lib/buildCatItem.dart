@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:flutter/material.dart';
 class BuildItem extends StatelessWidget {
   final String s_name;
   final String s_desc;
-  final String? image;
+  final String image;
   final String s_price;
   final String? discount;
   final String? status;
@@ -36,28 +35,24 @@ class BuildItem extends StatelessWidget {
         discount ?? "0"; // Use 0 as default if discount is null
 
     Widget buildImageWidget() {
-      print('object');
-      print(image!.length);
-      if (image != null && image!.isNotEmpty) {
-        try {
-          // String paddedImage =
-          //     image!.padRight((image!.length + 3) ~/ 4 * 4, '=');
-          //Uint8List imageData = base64Url.decode(paddedImage);
-          print("print");
-          return Image.memory(
-            base64Decode(image!),
-            height: 300,
-          );
-        } catch (error) {
-          print("this page");
-          print('Error decoding base64 image: $error');
-        }
+      if (image.startsWith('assets/')) {
+        // Image is an asset image
+        return Image.asset(
+          image,
+          fit: BoxFit.cover,
+          height: 180.0,
+          width: double.infinity,
+        );
+      } else {
+        // Image is a base64-encoded image
+        final Uint8List imageData = base64Decode(image);
+        return Image.memory(
+          imageData,
+          fit: BoxFit.cover,
+          height: 180.0,
+          width: double.infinity,
+        );
       }
-      // Placeholder widget if image is null or empty, or if decoding fails
-      return Container(
-        height: 100,
-        color: Colors.grey,
-      );
     }
 
     return Directionality(

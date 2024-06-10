@@ -26,7 +26,7 @@ class _ListCoursesState extends State<ListCourses> {
     List<dynamic> data = json.decode(res.body);
     setState(() {
       Courses = data.map((item) => item).toList();
-      print('courses');
+      print('object');
       print(Courses);
     });
   }

@@ -106,115 +106,112 @@ class _EditCourseState extends State<EditCourse> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 50),
-                InkWell(
-                  onTap: _selectImage,
-                  child:
-                      _selectedImage != null && _selectedImage.path.isNotEmpty
-                          ? Image.file(
-                              _selectedImage,
-                              height: 300.0,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )
-                          : _currentImage.isNotEmpty
-                              ? Image.memory(
-                                  base64Decode(_currentImage),
-                                  height: 300.0,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(),
-                ),
-                SizedBox(height: 10),
-                IconButton(
-                  onPressed: _selectImage,
-                  icon: Icon(Icons.image),
-                  tooltip: 'اختر صورة',
-                ),
-                SizedBox(height: 50),
-                _buildItem('عنوان الدورة التعليمية', 'c_name', _titleController,
-                    (value) {
-                  courseDetails!['c_name'] = value;
-                }),
-                _buildItem('نوصيف الدورة', 'c_desc', _descController, (value) {
-                  courseDetails!['c_desc'] = value;
-                }),
-                _buildItem('السعر', 'c_price', _priceController, (value) {
-                  courseDetails!['c_price'] = value;
-                }, isInteger: true),
-                _buildItem('المدة', 'c_duration', _durationController, (value) {
-                  courseDetails!['c_duration'] = value;
-                }),
-                _buildItem('المتطلبات السابقة ', 'c_prerequisite',
-                    _prerequisiteController, (value) {
-                  courseDetails!['c_prerequisite'] = value;
-                }),
-                SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: isLoading
-                      ? CircularProgressIndicator()
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: videoData != null ? videoData!.length : 0,
-                          itemBuilder: (context, index) {
-                            var videoId = videoData!.keys.elementAt(index);
-                            var videoName = videoData![videoId];
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 50),
+              InkWell(
+                onTap: _selectImage,
+                child: _selectedImage != null && _selectedImage.path.isNotEmpty
+                    ? Image.file(
+                        _selectedImage,
+                        height: 300.0,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : _currentImage.isNotEmpty
+                        ? Image.memory(
+                            base64Decode(_currentImage),
+                            height: 300.0,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(),
+              ),
+              SizedBox(height: 10),
+              IconButton(
+                onPressed: _selectImage,
+                icon: Icon(Icons.image),
+                tooltip: 'اختر صورة',
+              ),
+              SizedBox(height: 50),
+              _buildItem('عنوان الدورة التعليمية', 'c_name', _titleController,
+                  (value) {
+                courseDetails!['c_name'] = value;
+              }),
+              _buildItem('نوصيف الدورة', 'c_desc', _descController, (value) {
+                courseDetails!['c_desc'] = value;
+              }),
+              _buildItem('السعر', 'c_price', _priceController, (value) {
+                courseDetails!['c_price'] = value;
+              }, isInteger: true),
+              _buildItem('المدة', 'c_duration', _durationController, (value) {
+                courseDetails!['c_duration'] = value;
+              }),
+              _buildItem('المتطلبات السابقة ', 'c_prerequisite',
+                  _prerequisiteController, (value) {
+                courseDetails!['c_prerequisite'] = value;
+              }),
+              SizedBox(height: 10),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: isLoading
+                    ? CircularProgressIndicator()
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: videoData != null ? videoData!.length : 0,
+                        itemBuilder: (context, index) {
+                          var videoId = videoData!.keys.elementAt(index);
+                          var videoName = videoData![videoId];
 
-                            // Create an instance of the VideoWidget class
-                            VideoWidget videoWidget = VideoWidget(
-                                videoId: videoId,
-                                videoName: videoName,
-                                canEdit: true,
-                                onPressedDelete: () async {
-                                  var url = delete_media;
-                                  var res = await http.post(Uri.parse(url),
-                                      body: {
-                                        'c_id': videoData!['c_id'].toString()
-                                      });
-                                  if (res.statusCode == 200) {
-                                    print('deleted seccessfully');
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ListCourses()),
-                                    );
-                                  }
-                                });
+                          // Create an instance of the VideoWidget class
+                          VideoWidget videoWidget = VideoWidget(
+                              videoId: videoId,
+                              videoName: videoName,
+                              canEdit: true,
+                              onPressedDelete: () async {
+                                var url = delete_media;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
+                                      'c_id': videoData!['c_id'].toString()
+                                    });
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ListCourses()),
+                                  );
+                                }
+                              });
 
-                            return videoWidget; // Replace videoWidget(videoId, videoName) with videoWidget
-                          },
-                        ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // if (_formKey.currentState!.validate()) {
-                    // }
+                          return videoWidget; // Replace videoWidget(videoId, videoName) with videoWidget
+                        },
+                      ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
                     _saveDetails();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    minimumSize: MaterialStateProperty.all(Size(200, 50)),
-                  ),
-                  child: Text(
-                    ' حفظ التغيريات',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                      fontSize: 18,
-                    ),
+                  }
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  minimumSize: MaterialStateProperty.all(Size(200, 50)),
+                ),
+                child: Text(
+                  ' حفظ التغيريات',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 18,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -272,22 +269,19 @@ class _EditCourseState extends State<EditCourse> {
   void _saveDetails() {
     courseDetails!['c_img'] = _selectedImagePath ?? _currentImage;
     print(courseDetails);
-    // AuthCont.editCourse(
-    //         courseDetails!['c_id'].toString(),
-    //         courseDetails!['c_name'],
-    //         courseDetails!['c_desc'],
-    //         courseDetails!['c_price'].toString(),
-    //         courseDetails!['c_img'],
-    //         courseDetails!['c_duration'],
-    //         courseDetails!['prerequisite'])
-    AuthCont.editCourse(1.toString(), "nnnn", "nnnnnnn", 5652262.toString(),
-            "hhhhhhh", "nn", "njjj")
+    AuthCont.editCourse(
+            courseDetails!['c_id'].toString(),
+            courseDetails!['c_name'],
+            courseDetails!['c_desc'],
+            courseDetails!['c_price'].toString(),
+            courseDetails!['c_img'],
+            courseDetails!['c_duration'],
+            courseDetails!['prerequisite'])
         .then((value) {
       if (value.statusCode == 200) {
         print('edited successfully');
       } else {
         print('something went wrong');
-        print(value.body);
       }
     });
   }

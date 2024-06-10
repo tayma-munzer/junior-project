@@ -37,22 +37,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var url = get_profile;
     var res = await http.post(Uri.parse(url), body: {'token': token});
     Map<String, dynamic> data = json.decode(res.body);
-    print(data);
+    print(res.body);
     userDetails = data;
-    // String imageUrl = data['u_img'].replaceAll(r'\/', '/');
-    // http.Response imageRes = await http.get(Uri.parse(imageUrl));
-    // String base64Image = base64Encode(imageRes.bodyBytes);
+    String imageUrl = data['u_img'].replaceAll(r'\/', '/');
+    http.Response imageRes = await http.get(Uri.parse(imageUrl));
+    String base64Image = base64Encode(imageRes.bodyBytes);
     setState(() {
       _ageController.text = userDetails!['age'].toString();
       _descController.text = userDetails!['u_desc'].toString();
-      // _currentImage = base64Image;
+      _currentImage = base64Image;
       _fNameController.text = userDetails!['f_name'].toString();
       _lNameController.text = userDetails!['l_name'].toString();
       _emailController.text = userDetails!['email'].toString();
       _passwordController.text = userDetails!['password'].toString();
       _usernameController.text = userDetails!['username'].toString();
-      print('object');
-      print(userDetails!['password'].toString());
     });
   }
 
@@ -188,10 +186,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           _saveDetails();
                         }
                       },
-                      style: ButtonStyle(
-                          // backgroundColor: WidgetStateProperty.all(Colors.blue),
-                          // minimumSize: WidgetStateProperty.all(Size(200, 50)),
-                          ),
+                      // style: ButtonStyle(
+                      //   backgroundColor: WidgetStateProperty.all(Colors.blue),
+                      //   minimumSize: WidgetStateProperty.all(Size(200, 50)),
+                      // ),
                       child: Text(
                         'حفظ التغيرات',
                         style: TextStyle(
@@ -265,9 +263,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     AuthCont.editProfile(
       userDetails!['age'].toString(),
       userDetails!['u_desc'],
-      "userDetails!['u_img']",
       userDetails!['f_name'],
-      userDetails!['l_name'],
+      userDetails!['l_name'].toString(),
+      userDetails!['u_img'],
       userDetails!['email'],
       userDetails!['password'],
       userDetails!['username'],
@@ -275,8 +273,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (value.statusCode == 200) {
         print('edited successfully');
       } else {
-        print(value.body);
-
         print('something went wrong');
       }
     });
