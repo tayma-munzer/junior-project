@@ -404,7 +404,7 @@ class authenticationController extends Controller
         ],200);
     }
     }
-    //done
+    //not done 
     public function add_media(add_media_request $request){
         //$data = json_decode($request->media, true);
         $validator = Validator::make($request->media, [
@@ -716,7 +716,8 @@ class authenticationController extends Controller
         $validator = Validator::make($request->all(), [
             'm_id' => 'required|exists:media,m_id',
             'm_name' => 'required|string',
-            'm_path'=> 'required|string',
+            'm_title'=> 'required|string',
+            'm_desc'=> 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
@@ -728,7 +729,8 @@ class authenticationController extends Controller
         }else{
         $effected_rows=media::where('m_id','=',$request->m_id)->update([
             'm_name'=>$request->m_name,
-            'm_path'=>$request->m_path,
+            'm_title'=>$request->m_title,
+            'm_desc'=>$request->m_desc,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -951,7 +953,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $media =media::where('c_id','=',$request->c_id);
-        return $media->first(); }
+        return $media->get(); }
     }
     //done
     public function get_service(edit_service_request $request){
