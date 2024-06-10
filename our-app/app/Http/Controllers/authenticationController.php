@@ -1729,154 +1729,13 @@ class authenticationController extends Controller
         }
     }
 
-    public function get_user_jobs(get_by_token $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $token = PersonalAccessToken::findToken($request->token);
-            $user_id = $token->tokenable_id;
-            $jobs = job::where('u_id', '=', $user_id);
-            return $jobs->get();
-        }
-    }
-
-//
-    public function get_courses_for_type(get_courses_type_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'ct_id' => 'required|integer',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'integer' => 'the :attribute field should be a number',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $courses_type = course::where('ct_id', '=', $request->ct_id);
-            return $courses_type->get();
-        }
-    }
-
-//
-    public function get_course_for_user(get_course_for_user $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'u_id' => 'required|exists:course,u_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $course = course::where('u_id', '=', $request->u_id);
-            return $course->get();
-        }
-    }
-
-//
-    public function get_course_detils(get_course_detils $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:course_detils,c_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $course_detils = course::where('c_id', '=', $request->c_id);
-            return $course_detils->get();
-        }
-    }
-
-    public function get_skill(get_skills_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            's_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $skill = skills::where('s_id', '=', $request->s_id)->first();
-            return $skill;
-        }
-    }
-
-    public function get_project(get_project_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'p_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $skill = projects::where('p_id', '=', $request->p_id)->first();
-            return $skill;
-        }
-    }
-
-    public function get_cv_lang(get_langs_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'cv_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $languages = DB::table('cv_langs')->join('languages', 'cv_langs.l_id', '=', 'languages.l_id')->select('language', 'cvl_id')->where('cv_id', '=', $request->cv_id)->get();
-            return ['languages' => $languages];
-        }
-    }
-
-    public function get_profile(get_by_token $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $token = PersonalAccessToken::findToken($request->token);
-            $personal_info = User::where('u_id', '=', $token->tokenable_id);
-            return $personal_info->first();
-        }
-    }
-
-    public function add_training_courses_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:user,u_id'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
-            'training_courses_id' => ['required', 'exists:training_courses,t_id'],
+            'course_id' => ['required', 'exists:courses,c_id'],
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -1887,7 +1746,7 @@ class authenticationController extends Controller
                 'rate' => $request->rate,
                 'review' => $request->review,
                 'ratable_id' => $request->course_id,
-                'ratable_type' => training_courses::class
+                'ratable_type' => course::class
             ]);
             return response([
                 'message' => 'added successfully'
@@ -1944,14 +1803,13 @@ class authenticationController extends Controller
             ], 200);
         }
     }
-
-    public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+   public function add_training_courses_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:user,u_id'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
-            'course_id' => ['required', 'exists:courses,c_id'],
+            'training_courses_id' => ['required', 'exists:training_courses,t_id'],
         ]);
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -1961,46 +1819,15 @@ class authenticationController extends Controller
                 'user_id' => $request->user_id,
                 'rate' => $request->rate,
                 'review' => $request->review,
-                'ratable_id' => $request->service_id,
-                'ratable_type' => course::class
+                'ratable_id' => $request->course_id,
+                'ratable_type' => training_courses::class
             ]);
             return response([
                 'message' => 'added successfully'
             ], 200);
         }
+ 
     }
-}
-<<<<<<< HEAD
-=======
-//
-public function get_education(edit_cv_education_request $request) {
-    $validator = Validator::make($request->all(), [
-        'e_id' =>'required|exists:education,e_id',
-    ], $messages = [
-        'required' => 'The :attribute field is required.',
-        'exists'=> 'the :attribute field should be exist',
-    ]);
-    if ($validator->fails()){
-        $errors = $validator->errors();
-        return response($errors,402);
-    }else{
-    $education=education::where('e_id','=',$request->e_id);
-    return $education->first(); }
-}
-public function check_job_owner(edit_education_request $request) {
-    $validator = Validator::make($request->all(), [
-        'e_id' =>'required|exists:education,e_id',
-    ], $messages = [
-        'required' => 'The :attribute field is required.',
-        'exists'=> 'the :attribute field should be exist',
-    ]);
-    if ($validator->fails()){
-        $errors = $validator->errors();
-        return response($errors,402);
-    }else{
-    $education=education::where('e_id','=',$request->e_id);
-    return $education->get(); }
-}
 
 public function get_user_jobs(get_by_token $request) {
     $validator = Validator::make($request->all(), [
@@ -2196,4 +2023,3 @@ public function  test_get_media(edit_media_request $request){
 
 
 }
->>>>>>> 391b65676a36c88db6196cb70bfd44cb6916e48d
