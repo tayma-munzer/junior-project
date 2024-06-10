@@ -1970,3 +1970,230 @@ class authenticationController extends Controller
         }
     }
 }
+<<<<<<< HEAD
+=======
+//
+public function get_education(edit_cv_education_request $request) {
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $education=education::where('e_id','=',$request->e_id);
+    return $education->first(); }
+}
+public function check_job_owner(edit_education_request $request) {
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $education=education::where('e_id','=',$request->e_id);
+    return $education->get(); }
+}
+
+public function get_user_jobs(get_by_token $request) {
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+        $jobs=job::where('u_id','=',$user_id);
+        return $jobs->get(); }
+    }
+//
+public function get_courses_for_type(get_courses_type_request $request){
+    $validator = Validator::make($request->all(), [
+        'ct_id' => 'required|integer',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'integer' => 'the :attribute field should be a number',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $courses_type=course::where('ct_id','=',$request->ct_id)->get();
+        $path = storage_path('images\\');
+        foreach ($courses_type as $course) {
+            $fullpath = $path.''.$course->c_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $course->image = $base64image;
+        }
+        return $courses_type; }
+    }
+
+//
+public function get_course_for_user(get_course_for_user $request){
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+    $course=course::where('u_id','=',$user_id);
+    return $course->get(); }
+}
+//
+public function get_course_detils(get_course_detils $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required|exists:courses,c_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $course_detils=course::where('c_id','=',$request->c_id)->first();
+    $path = storage_path('images\\');
+    $fullpath = $path.''.$course_detils->c_img;
+    $image = file_get_contents($fullpath);
+    $base64image = base64_encode($image);
+    $course_detils->image = $base64image;
+    return $course_detils; }
+}
+
+public function get_skill(get_skills_request $request){
+    $validator = Validator::make($request->all(), [
+        's_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=skills::where('s_id','=',$request->s_id)->first();
+    return $skill; }
+}
+public function get_project(get_project_request $request){
+    $validator = Validator::make($request->all(), [
+        'p_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=projects::where('p_id','=',$request->p_id)->first();
+    return $skill; }
+}
+public function get_cv_lang(get_langs_request $request){
+    $validator = Validator::make($request->all(), [
+        'cv_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$request->cv_id)->get();
+    return ['languages'=> $languages];
+    }
+}
+public function  get_profile(get_by_token $request){
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $personal_info=User::where('u_id','=',$token->tokenable_id)->first();
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$personal_info->u_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $personal_info->image = $base64image;
+        return $personal_info; }
+}
+
+
+public function  test_add_media(add_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required',
+        'm_name'=>'required',
+        'video_name'=>'required',
+        'm_data'=>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $video_data = $request ->m_data;
+        $decoded_video = base64_decode($video_data);
+        $path = storage_path('videos/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->video_name;
+        file_put_contents($fullpath,$decoded_video);
+        $media = media::create([ 
+        'c_id' =>$request->c_id,
+        'm_name'=>$request->m_name,
+        'm_path'=>$request->video_name,
+    ]);
+        return response([
+            'message'=> 'media add successfully'
+        ],200);
+    }
+} 
+public function  test_get_media(edit_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'm_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $media =media::where('m_id','=',$request->m_id)->first();
+        $path = storage_path('videos\\');
+        $fullpath = $path.''.$media->m_path;
+        $video = file_get_contents($fullpath);
+        $base64video = base64_encode($video);
+        $media->video = $base64video;
+        return $media ;
+    }
+} 
+
+
+}
+>>>>>>> 391b65676a36c88db6196cb70bfd44cb6916e48d
