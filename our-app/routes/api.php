@@ -4,6 +4,7 @@ use App\Events\ServiceCreated;
 use App\Http\Controllers\authenticationController;
 use App\Http\Controllers\gets;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\VideoUploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -91,7 +92,10 @@ Route::get('/get_home_page_services', [gets::class, 'get_home_page_services']);
 Route::get('/get_home_page_jobs', [gets::class, 'get_home_page_jobs']);
 Route::get('/get_home_page_courses', [gets::class, 'get_home_page_courses']);
 
-Route::post('/add_course_rating',[authenticationController::class, 'add_course_rating']);
-Route::post('/add_job_rating',[authenticationController::class, 'add_job_rating']);
-Route::post('/add_service_rating',[authenticationController::class, 'add_service_rating']);
-Route::post('/add_training_courses_rating',[authenticationController::class, 'add_training_courses_rating']);
+
+
+Route::post('/upload-chunk', [VideoUploadController::class, 'uploadChunk']);
+Route::post('/requestvideo', [VideoUploadController::class, 'sendVideoChunks']);
+
+Route::post('/test_add_media',[authenticationController::class,'test_add_media'] );
+Route::post('/test_get_media',[authenticationController::class,'test_get_media'] );

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\rates_reviews;
 use App\Events\{CourseCreated, JobCreated, ServiceCreated, StringEvent};
 use App\Http\Requests\addserviceRequest;
 use App\Http\Requests\loginRequest;
@@ -65,8 +64,8 @@ use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -75,40 +74,38 @@ use function PHPUnit\Framework\isEmpty;
 class authenticationController extends Controller
 {
     //done
-    public function login(loginRequest $request)
-    {
+    public function login(loginRequest $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required',//|email:rfc,dns
             'password' => 'required|min:5',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'min:5' => 'the :attribute field should be minimum 5 chars'
+            'min:5'=> 'the :attribute field should be minimum 5 chars'
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $user = User::where('email', '=', $request->email)->first();
-            if (empty($user) || !($request->password === $user->password)) {
-                return response([
-                    'message' => 'username or password are wrong'
-                ], 422);
-            } else
-                $token = $user->createToken('token')->plainTextToken;
-            $roles = DB::table('user_roles')->join('roles', 'roles.r_id', '=', 'user_roles.r_id')->select('role')->where('u_id', '=', $user->u_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
+            return response($errors,402);
+        }else{
+        $user = User::where('email','=', $request->email)->first();
+        if(empty($user) || !($request->password === $user->password)){
             return response([
-                'message' => 'logged in',
-                'token' => $token,
-                'roles' => $roles,
-            ], 200);
+                'message'=> 'username or password are wrong'
+            ],422);
         }
+        else
+        $token = $user->createToken('token')->plainTextToken;
+        $roles= DB::table('user_roles')->join('roles','roles.r_id','=','user_roles.r_id')->select('role')->where('u_id','=',$user->u_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
+        return response([
+            'message'=> 'logged in',
+            'token'=>$token,
+            'roles'=>$roles,
+        ],200);
     }
-
+    }
 //done
-    public function sec_types(getsectype $request)
-    {
-        $types = sec_type::where('t_id', '=', $request->t_id);
-        return $types->get();
+    public function sec_types (getsectype $request){
+        $types = sec_type::where('t_id','=',$request->t_id);
+        return $types->get() ;
     }
 
     // static public function getuser_id(string $token){
@@ -117,77 +114,74 @@ class authenticationController extends Controller
     // }
 
 // done
-    public function addservice(addserviceRequest $request)
-    {
+    public function addservice(addserviceRequest $request){
         $validator = Validator::make($request->all(), [
             'service_name' => 'required|string',
             'service_price' => 'required|gte:50000',
             'service_desc' => 'required|string',
             'service_duration' => 'required|string',
             'service_sec_type' => 'required',
-            'service_img',
-            'token' => 'required',
+            'service_img_data' => 'required',
+            'img_name' => 'required',
+            'token'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'gte:50000' => 'the :attribute field should be minimum 50000',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be exist',
-            'integer' => 'the :attribute field should be integer ',
+            'gte:50000'=> 'the :attribute field should be minimum 50000',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
+            'integer'=>'the :attribute field should be integer ',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
+            return response($errors,402);
+        }else{
 
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $img_data = $request->service_img;
-            $decoded_img = base64_decode($img_data);
-            $path = storage_path('images/');
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-            $fullpath = $path . '' . $request->img_name;
-            file_put_contents($fullpath, $decoded_img);
-            $service = services::create([
-                's_name' => $request->service_name,
-                's_price' => $request->service_price,
-                'num_of_buyers' => 0,
-                's_desc' => $request->service_desc,
-                's_duration' => $request->service_duration,
-                'u_id' => $user_token->tokenable_id,
-                'st_id' => gets::sec_service_type_id($request->service_sec_type),
-                's_img' => $fullpath,
-                'status' => 'pinding',
-                'discount' => 0,
-            ]);
-            event(new ServiceCreated($service->s_name));
-            return response([
-                'message' => 'added successfully'
-            ], 200);
+        $user_token = PersonalAccessToken::findToken($request->token);
+        $img_data = $request ->service_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
+        $fullpath = $path.''.$request->img_name;
+        file_put_contents($fullpath,$decoded_img);
+        $service = services::create([
+        's_name' => $request->service_name,
+        's_price' => $request->service_price,
+        'num_of_buyers' => 0,
+        's_desc' => $request->service_desc,
+        's_duration' => $request->service_duration,
+        'u_id'=> $user_token->tokenable_id ,
+        'st_id'=>gets::sec_service_type_id($request->service_sec_type),
+        's_img' => $request->img_name,
+        'status' => 'pinding',
+        'discount' => 0,
+        ]);
+            event(new ServiceCreated($service->s_name));
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     // done
-    public function addalt_service(addalt_serviceRequest $request)
-    {
+    public function addalt_service(addalt_serviceRequest $request){
         $validator = Validator::make($request->input('alt_service'), [
-            'alt_service' => [
-                'a_name' => 'required|string',
-                'a_price' => 'required|gte:5000',
-                'added_duration' => 'required|string']
+            'alt_service'=> [
+            'a_name' => 'required|string',
+            'a_price' => 'required|gte:5000',
+            'added_duration'=>'required|string' ]
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'gte:5000' => 'the :attribute field should be minimum 5000',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be exist',
+            'gte:5000'=> 'the :attribute field should be minimum 5000',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $data = $request->alt_service;
+            return response($errors,402);
+        }else{$data = $request->alt_service;
             $s_id = $request->s_id;
-            foreach ($data as $d) {
+            foreach ($data as $d){
                 $alt_service = alt_services::create([
                     's_id' => $s_id,
                     'a_name' => $d['a_name'],
@@ -195,253 +189,255 @@ class authenticationController extends Controller
                     'added_duration' => $d['added_duration'],
                 ]);
             }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
 // done
-    public function addjob(addjobRequest $request)
-    {
+    public function addjob (addjobRequest $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
             'j_name' => 'required|string',
             'j_desc' => 'required|string',
             'j_sal' => 'required|integer',
-            'j_req' => 'required|string',
+            'j_req'=>'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be exist',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'the :attribute field should be a number',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $job = job::create([
-                'u_id' => $user_token->tokenable_id,
-                'j_name' => $request->j_name,
-                'j_desc' => $request->j_desc,
-                'j_sal' => $request->j_sal,
-                'j_req' => $request->j_req,
-            ]);
-            event(new JobCreated($job->j_name));
-            return response([
-                'message' => 'added successfully',
-                'j_id' => $job->id
-            ], 200);
-        }
+            return response($errors,402);
+        }else{
+        $user_token =PersonalAccessToken::findToken($request->token);
+        $job = job::create([
+        'u_id' => $user_token->tokenable_id,
+        'j_name' => $request->j_name,
+        'j_desc' => $request->j_desc,
+        'j_sal' => $request->j_sal,
+        'j_req' => $request->j_req,
+        ]);
+        event(new JobCreated($job->j_name));
+        return response([
+            'message'=> 'added successfully',
+            'j_id' =>$job->id
+        ],200);
     }
-
+    }
 // not done yet
-    public function delete_account(deleteRequest $request)
-    {
+    public function delete_account(deleteRequest $request){
         $request->validated();
 
         // deleting process
     }
-
 // done
-    public function add_discount(discountRequest $request)
-    {
+    public function add_discount(discountRequest $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
             'discount' => 'required|integer|gt:0|lte:100',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'gt' => 'the :attribute field should be minimum 0.1',
-            'exists' => 'the :attribute field should be exist',
-            'lte' => 'the :attribute field should be maximum 100',
+            'gt'=> 'the :attribute field should be minimum 0.1',
+            'exists'=> 'the :attribute field should be exist',
+            'lte'=> 'the :attribute field should be maximum 100',
             'integer' => 'The :attribute field must be integer.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = services::where('s_id', '=', $request->s_id)->update(['discount' => $request->discount]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=services::where('s_id','=',$request->s_id)->update(['discount'=>$request->discount]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
 // done
-    public function delete_discount(discountRequest $request)
-    {
+    public function delete_discount(discountRequest $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = services::where('s_id', '=', $request->s_id)->update(['discount' => 0]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'discount deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=services::where('s_id','=',$request->s_id)->update(['discount'=>0]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'discount deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     // done
-    public function get_type_services(get_type_service_request $request)
-    {
+    public function get_type_services(get_type_service_request $request){
         $validator = Validator::make($request->all(), [
             'st_id' => 'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'integer' => 'the :attribute field should be a number',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $services = services::all()->where('st_id', '=', $request->st_id);
-            return response($services, 200);
+            return response($errors,402);
+        }else{
+            $services=services::all()->where('st_id','=',$request->st_id);
+            $path = storage_path('images\\');
+            foreach ($services as $service) {
+                $fullpath = $path.''.$service->s_img;
+                $image = file_get_contents($fullpath);
+                $base64image = base64_encode($image);
+                $service->image = $base64image;
+            }
+            return response($services,200);
         }
     }
-
     //done
-    public function edit_profile(edit_profile_request $request)
-    {
+    public function edit_profile(edit_profile_request $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
             'age' => 'required|integer|gte:10',
             'u_desc' => 'required|string',
-            'u_img' => 'required|string',
+            'u_img_data' => 'required',
+            'u_img_name' => 'required',
             'f_name' => 'required|string',
             'l_name' => 'required|string',
-            'email' => 'required|email:rfc,dns',
+            'email' => 'required',//|email:rfc,dns
             'password' => 'required|min:5',
             'username' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'integer' => 'the :attribute field should be a number',
-            'min:5' => 'the :attribute field should be minimum 5 chars',
-            'gte' => 'the :attribute field should be minimum 10',
-            'string' => 'the :attribute field should be string',
+            'min:5'=> 'the :attribute field should be minimum 5 chars',
+            'gte'=> 'the :attribute field should be minimum 10',
+            'string'=> 'the :attribute field should be string',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
+            return response($errors,402);
+        }else{
             $user_token = PersonalAccessToken::findToken($request->token);
-            $effected_rows = User::where('u_id', '=', $user_token->tokenable_id)->update(
-                ['age' => $request->age,
-                    'u_desc' => $request->u_desc,
-                    'u_img' => $request->u_img,
-                    'f_name' => $request->f_name,
-                    'l_name' => $request->l_name,
-                    'email' => $request->email,
-                    'password' => $request->password,
-                    'u_img' => $request->u_img,
-                    'username' => $request->username,
+            $user = User::where('u_id','=',$user_token->tokenable_id);
+            $user_image= $user->u_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$user_image;
+            File::delete($fullpath);
+            $img_data = $request ->u_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $fullpath = $path.''.$request->u_img_name;
+            file_put_contents($fullpath,$decoded_img);
+            $effected_rows=User::where('u_id','=',$user_token->tokenable_id)->update(
+                ['age'=>$request->age,
+                'u_desc'=>$request->u_desc,
+                'f_name'=>$request->f_name,
+                'l_name'=>$request->l_name,
+                'email'=>$request->email,
+                'password'=>$request->password,
+                'u_img'=>$request->u_img_name,
+                'username'=>$request->username,
                 ]
             );
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'edit profile successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is edited something went wrong'
-                ], 402);
-            }
+            if ($effected_rows!=0){
+            return response([
+                'message'=> 'edit profile successfully'
+            ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is edited something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function add_course(add_course_request $request)
-    {
+    public function add_course(add_course_request $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
             'c_name' => 'required|string',
             'c_price' => 'required|integer|gte:50000',
             'c_img' => 'required|string',
             'c_desc' => 'required|string',
-            'c_duration' => 'required|string',
-            'pre_requisite' => 'required|string',
+            'c_duration'=>'required|string',
+            'pre_requisite' =>'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'integer' => 'the :attribute field should be a number',
-            'gte' => 'the :attribute field should be minimum 50000',
-            'string' => 'the :attribute field should be string',
+            'gte'=> 'the :attribute field should be minimum 50000',
+            'string'=> 'the :attribute field should be string',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $course = course::create([
-                'u_id' => $user_token->tokenable_id,
-                'c_name' => $request->c_name,
-                'c_desc' => $request->c_desc,
-                'c_price' => $request->c_price,
-                'c_img' => $request->c_img,
-                'c_duration' => $request->c_duration,
-                'pre_requisite' => $request->pre_requisite,
-            ]);
-            event(new CourseCreated($course->c_name));
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+            return response($errors,402);
+        }else{
+        $user_token = PersonalAccessToken::findToken($request->token);
+        $course = course::create([
+        'u_id' => $user_token->tokenable_id,
+        'c_name' => $request->c_name,
+        'c_desc' => $request->c_desc,
+        'c_price' => $request->c_price,
+        'c_img' => $request->c_img,
+        'c_duration'=>$request->c_duration,
+        'pre_requisite' =>$request->pre_requisite,
+        ]);
+        event(new CourseCreated($course->c_name));
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     //done
-    public function add_media(add_media_request $request)
-    {
+    public function add_media(add_media_request $request){
         //$data = json_decode($request->media, true);
         $validator = Validator::make($request->media, [
             'media' => [
-                'c_id' => 'required|integer|exists:courses,c_id',
-                'm_name' => 'required|string',
-                'm_path' => 'required|string',
+            'c_id' => 'required|integer|exists:courses,c_id',
+            'm_name' => 'required|string',
+            'm_path' => 'required|string',
             ]
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
+            'string'=> 'the :attribute field should be string',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
+            return response($errors,402);
+        }else{
             $data = $request->media;
             $c_id = $request->c_id;
-            foreach ($data as $d) {
+            foreach ($data as $d){
                 $media = media::create([
-                    'c_id' => $c_id,
-                    'm_name' => $d['m_name'],
-                    'm_path' => $d['m_path'],
-                ]);
-            }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+                'c_id' => $c_id,
+                'm_name' => $d['m_name'],
+                'm_path' => $d['m_path'],
+        ]);
     }
-
+        return response([
+            'message'=> 'added successfully'
+        ],200);
+    }
+    }
     //done
-    public function add_cv(add_cv_request $request)
-    {
-        $validator = Validator::make($request->all(), [
+    public function add_cv(add_cv_request $request){
+        $validator = Validator::make($request->all(),[
             'token' => 'required',
             'email' => 'required',//|email:rfc,dns
             'phone' => 'required|numeric|min:10',
@@ -449,103 +445,96 @@ class authenticationController extends Controller
             'address' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
+            'string'=> 'the :attribute field should be string',
             'integer' => 'the :attribute field should be a number',
             'min' => 'the :attribute field should be minimun 10 digits',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $cv = cv::create([
-                'u_id' => $user_token->tokenable_id,
-                'email' => $request->email,
-                'address' => $request->address,
-                'phone' => $request->phone,
-                'career_obj' => $request->career_obj,
-            ]);
-            return response([
-                'message' => 'added successfully',
-                'cv_id' => $cv->id,
-            ], 200);
-        }
+            return response($errors,402);
+        }else{
+        $user_token = PersonalAccessToken::findToken($request->token);
+        $cv = cv::create([
+        'u_id' =>$user_token->tokenable_id,
+        'email' => $request->email,
+        'address' => $request->address,
+        'phone'=>$request->phone,
+        'career_obj'=>$request->career_obj,
+        ]);
+        return response([
+            'message'=> 'added successfully',
+            'cv_id'=>$cv->id,
+        ],200);
     }
-
+    }
     //done
-    public function add_skills(add_skill_request $request)
-    {
+    public function add_skills(add_skill_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'cv_id' => 'required',
+            'cv_id'=>'required',
             'skills' => 'required|array',
             'skills.*.s_name' => 'required|string',
             'skills.*.s_level' => 'required|string',
             'skills.*.years_of_exp' => 'required|integer'
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'integer' => 'the :attribute field should be integer',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = $requestData ['cv_id'];
+            return response($errors,402);
+        }else{
+            $cv_id= $requestData ['cv_id'];
             $skills = $requestData['skills'];
-            foreach ($skills as $d) {
+            foreach ($skills as $d){
                 $skill = skills::create([
-                    'cv_id' => $cv_id,
-                    's_name' => $d['s_name'],
-                    's_level' => $d['s_level'],
-                    'years_of_exp' => $d['years_of_exp'],
+                'cv_id' =>$cv_id,
+                's_name' => $d['s_name'],
+                's_level' => $d['s_level'],
+                'years_of_exp' => $d['years_of_exp'],
                 ]);
             }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+        return response([
+            'message'=> 'added successfully'
+        ],200);  }
     }
-
     //done
-    public function add_language(add_language_request $request)
-    {
+    public function add_language(add_language_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'cv_id' => 'required',
-            'languages' => 'required|array',
+            'cv_id'=>'required',
+            'languages'=>'required|array',
             'languages.*.l_id' => 'required|integer|exists:languages,l_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'integer' => 'the :attribute field should be integer',
-            'exists' => 'the :attribute field should be existed',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = $requestData['cv_id'];
-            $data = $requestData['languages'];
-            foreach ($data as $d) {
+            return response($errors,402);
+        }else{
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['languages'];
+            foreach ($data as $d){
                 $cv_lang = cv_lang::create([
-                    'cv_id' => $cv_id,
-                    'l_id' => $d['l_id'],
+                'cv_id' =>$cv_id,
+                'l_id' => $d['l_id'],
                 ]);
             }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     //done
-    public function add_projects(add_projects_request $request)
-    {
+    public function add_projects(add_projects_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'cv_id' => 'required|integer',
-            'projects' => 'required|array',
+            'cv_id'=>'required|integer',
+            'projects'=>'required|array',
             'projetcs.*.p_name' => 'required|string',
             'projetcs.*.p_desc' => 'required|string',
             'projetcs.*.start_date' => 'required|date',
@@ -553,40 +542,37 @@ class authenticationController extends Controller
             'projetcs.*.responsibilities' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
+            return response($errors,402);
 
-        } else {
-            $cv_id = $requestData['cv_id'];
-            $data = $requestData['projects'];
-            foreach ($data as $d) {
-                $project = projects::create([
-                    'cv_id' => $cv_id,
-                    'p_name' => $d['p_name'],
-                    'p_desc' => $d['p_desc'],
-                    'start_date' => date('Y-m-d', strtotime($d['start_date'])),
-                    'end_date' => date('Y-m-d', strtotime($d['end_date'])),
-                    'responsibilities' => $d['responsibilities'],
-                ]);
-            }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+        }else{
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['projects'];
+            foreach ($data as $d){
+        $project = projects::create([
+        'cv_id' =>$cv_id,
+        'p_name' => $d['p_name'],
+        'p_desc' => $d['p_desc'],
+        'start_date' =>date('Y-m-d' , strtotime($d['start_date'])),
+        'end_date' =>date('Y-m-d' , strtotime($d['end_date'])),
+        'responsibilities' =>$d['responsibilities'],
+        ]);}
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
 //done
-    public function add_exp(add_exp_request $request)
-    {
+    public function add_exp(add_exp_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'cv_id' => 'required|integer',
-            'experiences' => 'required|array',
+            'cv_id'=>'required|integer',
+            'experiences'=>'required|array',
             'experiences.*.position' => 'required|string',
             'experiences.*.company' => 'required|string',
             'experiences.*.start_date' => 'required|date',
@@ -594,75 +580,70 @@ class authenticationController extends Controller
             'experiences.*.responsibilities' => 'required|string'
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = $requestData['cv_id'];
-            $data = $requestData['experiences'];
-            foreach ($data as $d) {
+            return response($errors,402);
+        }else{
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['experiences'];
+            foreach ($data as $d){
                 $exp = experience::create([
-                    'cv_id' => $cv_id,
-                    'position' => $d['position'],
-                    'company' => $d['company'],
-                    'start_date' => date('Y-m-d', strtotime($d['start_date'])),
-                    'end_date' => date('Y-m-d', strtotime($d['end_date'])),
-                    'responsibilities' => $d['responsibilities'],
+                'cv_id' =>$cv_id,
+                'position' => $d['position'],
+                'company' => $d['company'],
+                'start_date' =>date('Y-m-d' , strtotime($d['start_date'])),
+                'end_date' =>date('Y-m-d' , strtotime($d['end_date'])),
+                'responsibilities' =>$d['responsibilities'],
                 ]);
             }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     //done
-    public function add_training_courses(add_training_request $request)
-    {
+    public function add_training_courses(add_training_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'cv_id' => 'required',
-            'training_courses' => 'required|array',
+            'cv_id'=>'required',
+            'training_courses'=>'required|array',
             'training_courses.*.course_name' => 'required|string',
             'training_courses.*.training_center' => 'required|string',
             'training_courses.*.completion_date' => 'required|date',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = $requestData['cv_id'];
-            $data = $requestData['training_courses'];
-            foreach ($data as $d) {
+            return response($errors,402);
+        }else{
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['training_courses'];
+            foreach ($data as $d){
                 $course = training_courses::create([
-                    'cv_id' => $cv_id,
-                    'course_name' => $d['course_name'],
-                    'training_center' => $d['training_center'],
-                    'completion_date' => date('Y-m-d', strtotime($d['completion_date'])),
-                ]);
-            }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+                'cv_id' =>$cv_id,
+                'course_name' => $d['course_name'],
+                'training_center' => $d['training_center'],
+                'completion_date' =>date('Y-m-d' , strtotime($d['completion_date'])),
+                ]);}
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     //done
-    public function add_education(add_education_request $request)
-    {
+    public function add_education(add_education_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            "cv_id" => 'required|integer',
-            'education' => 'required|array',
+            "cv_id"=>'required|integer',
+            'education'=>'required|array',
             'education.*.degree' => 'required|string',
             'education.*.uni' => 'required|string',
             'education.*.field_of_study' => 'required|string',
@@ -670,487 +651,470 @@ class authenticationController extends Controller
             'education.*.gba' => 'required|numeric|lte:100|gte:0'
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'integer' => 'the :attribute field should be integer',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = $requestData['cv_id'];
-            $data = $requestData['education'];
-            foreach ($data as $d) {
+            return response($errors,402);
+        }else{
+            $cv_id=$requestData['cv_id'];
+            $data=$requestData['education'];
+            foreach ($data as $d){
                 $education = education::create([
-                    'cv_id' => $cv_id,
-                    'degree' => $d['degree'],
-                    'uni' => $d['uni'],
-                    'grad_year' => $d['grad_year'],
-                    'field_of_study' => $d['field_of_study'],
-                    'gba' => $d['gba'],
-                ]);
-            }
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+                'cv_id' =>$cv_id,
+                'degree' => $d['degree'],
+                'uni' => $d['uni'],
+                'grad_year' =>$d['grad_year'],
+                'field_of_study' =>$d['field_of_study'],
+                'gba' =>$d['gba'],
+                ]);}
+        return response([
+            'message'=> 'added successfully'
+        ],200);
     }
-
+    }
     //done
-    public function edit_job(edit_job_request $request)
-    {
+    public function edit_job(edit_job_request $request){
         $validator = Validator::make($request->all(), [
             'j_id' => 'required|exists:jobs,j_id',
             'j_sal' => 'required|integer',
-            'j_name' => 'required|string',
-            'j_desc' => 'required|string',
+            'j_name'=> 'required|string',
+            'j_desc'=> 'required|string',
             'j_req' => 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = job::where('j_id', '=', $request->j_id)->update([
-                'j_sal' => $request->j_sal,
-                'j_name' => $request->j_name,
-                'j_desc' => $request->j_desc,
-                'j_req' => $request->j_req,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=job::where('j_id','=',$request->j_id)->update([
+            'j_sal'=>$request->j_sal,
+            'j_name'=>$request->j_name,
+            'j_desc'=>$request->j_desc,
+            'j_req'=>$request->j_req,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_media(edit_media_request $request)
-    {
+    public function edit_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
             'm_id' => 'required|exists:media,m_id',
             'm_name' => 'required|string',
-            'm_path' => 'required|string',
+            'm_path'=> 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = media::where('m_id', '=', $request->m_id)->update([
-                'm_name' => $request->m_name,
-                'm_path' => $request->m_path,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=media::where('m_id','=',$request->m_id)->update([
+            'm_name'=>$request->m_name,
+            'm_path'=>$request->m_path,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_service(edit_service_request $request)
-    {
+    public function edit_service(edit_service_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
             's_name' => 'required|string',
-            's_desc' => 'required|string',
-            's_price' => 'required|integer',
-            's_duration' => 'required|string',
-            's_img' => 'required|string',
-            's_video' => 'required|string',
+            's_desc'=> 'required|string',
+            's_price'=> 'required|integer',
+            's_duration'=> 'required|string',
+            's_img'=> 'required|string',
+            's_video'=> 'required|string',
+            's_img_data'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'string' => 'The :attribute field must be string.',
             'integer' => 'The :attribute field must be integer.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = services::where('s_id', '=', $request->s_id)->update([
-                's_name' => $request->s_name,
-                's_desc' => $request->s_desc,
-                's_price' => $request->s_price,
-                's_duration' => $request->s_duration,
-                's_img' => $request->s_img,
-                's_video' => $request->s_video,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
+            return response($errors,402);
+        }else{
+            $service = services::where('s_id','=',$request->s_id);
+            $service_img =$service ->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
+            $img_data = $request ->s_img_data;
+            $decoded_img = base64_decode($img_data);
+            $path = storage_path('images/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
             }
+            $fullpath = $path.''.$request->s_img;
+            file_put_contents($fullpath,$decoded_img);
+        $effected_rows=services::where('s_id','=',$request->s_id)->update([
+            's_name'=>$request->s_name,
+            's_desc'=>$request->s_desc,
+            's_price'=>$request->s_price,
+            's_duration'=>$request->s_duration,
+            's_img'=>$request->s_img,
+            's_video'=>$request->s_video,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_cv(edit_cv_request $request)
-    {
+    public function edit_cv(edit_cv_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|exists:cv,cv_id',
             'career_obj' => 'required|string',
-            'phone' => 'required|numeric',
-            'address' => 'required|string',
-            'email' => 'required|email:rfc,dns',
+            'phone'=> 'required|numeric',
+            'address'=> 'required|string',
+            'email'=> 'required|email:rfc,dns',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'string' => 'The :attribute field must be string.',
             'integer' => 'The :attribute field must be integer.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = cv::where('cv_id', '=', $request->cv_id)->update([
-                'career_obj' => $request->career_obj,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'email' => $request->email,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=cv::where('cv_id','=',$request->cv_id)->update([
+            'career_obj'=>$request->career_obj,
+            'phone'=>$request->phone,
+            'address'=>$request->address,
+            'email'=>$request->email,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_job(edit_job_request $request)
-    {
+    public function delete_job(edit_job_request $request){
         $validator = Validator::make($request->all(), [
             'j_id' => 'required|exists:jobs,j_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = job::where('j_id', '=', $request->j_id)->delete();
-            if ($effected_rows != 0) {
-                $jobs = job::all();
-                return response([
-                    'message' => 'deleted successfully',
-                    'jobs' => $jobs
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=job::where('j_id','=',$request->j_id)->delete();
+        if ($effected_rows!=0){
+            $jobs =job::all();
+        return response([
+            'message'=> 'deleted successfully',
+            'jobs'=>$jobs
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_service(edit_service_request $request)
-    {
+    public function delete_service(edit_service_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = services::where('s_id', '=', $request->s_id)->delete();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+            $service= services::where('s_id','=',$request->s_id);
+            $service_img= $service->s_img;
+            $path = storage_path('images\\');
+            $fullpath = $path.''.$service_img;
+            File::delete($fullpath);
+        $effected_rows=services::where('s_id','=',$request->s_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_media(edit_media_request $request)
-    {
+    public function delete_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
             'm_id' => 'required|exists:media,m_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = media::where('m_id', '=', $request->m_id)->delete();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=media::where('m_id','=',$request->m_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function get_job(edit_job_request $request)
-    {
+    public function get_job(edit_job_request $request){
         $validator = Validator::make($request->all(), [
             'j_id' => 'required|exists:jobs,j_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $job = job::where('j_id', '=', $request->j_id)->first();
-            return $job;
-        }
+            return response($errors,402);
+        }else{
+        $job =job::where('j_id','=',$request->j_id)->first();
+        return $job; }
     }
-
     //done
-    public function get_media(edit_media_request $request)
-    {
+    public function get_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
             'm_id' => 'required|exists:media,m_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $media = media::where('m_id', '=', $request->m_id);
-            return $media->get();
-        }
+            return response($errors,402);
+        }else{
+        $media =media::where('m_id','=',$request->m_id);
+        return $media->get(); }
     }
-
     //done
-    public function get_all_media(edit_media_request $request)
-    {
+    public function get_all_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
             'c_id' => 'required|exists:media,c_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $media = media::where('c_id', '=', $request->c_id);
-            return $media->get();
-        }
+            return response($errors,402);
+        }else{
+        $media =media::where('c_id','=',$request->c_id);
+        return $media->get(); }
     }
-
     //done
-    public function get_service(edit_service_request $request)
-    {
+    public function get_service(edit_service_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $service = services::where('s_id', '=', $request->s_id)->first();
-            $image = file_get_contents($service->s_img);
-            $base64image = base64_encode($image);
-            $service->image = $base64image;
-            return $service;
-        }
+            return response($errors,402);
+        }else{
+        $service =services::where('s_id','=',$request->s_id)->first();
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$service->s_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $service->image = $base64image;
+        return $service; }
     }
-
     //done
-    public function get_all_cv(get_all_cv $request)
-    {
+    public function get_all_cv (get_all_cv $request){
         $token = PersonalAccessToken::findToken($request->token);
         $user_id = $token->tokenable_id;
-        $cv = cv::where('u_id', '=', $user_id)->first();
+        $cv = cv::where('u_id','=',$user_id)->first();
         $cv_id = $cv->cv_id;
-        $skills = skills::where('cv_id', '=', $cv_id)->get();
-        $training_courses = training_courses::where('cv_id', '=', $cv_id)->get();
-        $experience = experience::where('cv_id', '=', $cv_id)->get();
-        $project = projects::where('cv_id', '=', $cv_id)->get();
-        $education = education::where('cv_id', '=', $cv_id)->get();
-        $languages = DB::table('cv_langs')->join('languages', 'cv_langs.l_id', '=', 'languages.l_id')->select('language', 'cvl_id')->where('cv_id', '=', $cv_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
+        $skills=skills::where('cv_id','=',$cv_id)->get();
+        $training_courses=training_courses::where('cv_id','=',$cv_id)->get();
+        $experience=experience::where('cv_id','=',$cv_id)->get();
+        $project=projects::where('cv_id','=',$cv_id)->get();
+        $education=education::where('cv_id','=',$cv_id)->get();
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$cv_id)->get();//cv_lang::where('cv_id','=',$cv_id)->get();
         return [
             'cv' => $cv,
             'skills' => $skills,
-            'training_courses' => $training_courses,
-            'experience' => $experience,
-            'projects' => $project,
-            'education' => $education,
-            'languages' => $languages,
+            'training_courses'=>$training_courses,
+            'experience'=>$experience,
+            'projects'=>$project,
+            'education'=>$education,
+            'languages'=>$languages,
         ];
     }
-
     //done
-    public function delete_all_cv(delete_all_cv $request)
-    {
+    public function delete_all_cv (delete_all_cv $request){
         $cv_id = $request->cv_id;
-        $cv = cv::where('cv_id', '=', $cv_id)->delete();
-        $skills = skills::where('cv_id', '=', $cv_id)->delete();
-        $training_courses = training_courses::where('cv_id', '=', $cv_id)->delete();
-        $experience = experience::where('cv_id', '=', $cv_id)->delete();
-        $project = projects::where('cv_id', '=', $cv_id)->delete();
-        $education = education::where('cv_id', '=', $cv_id)->delete();
-        $languages = cv_lang::where('cv_id', '=', $cv_id)->delete();
+        $cv =cv::where('cv_id','=',$cv_id)->delete();
+        $skills=skills::where('cv_id','=',$cv_id)->delete();
+        $training_courses=training_courses::where('cv_id','=',$cv_id)->delete();
+        $experience=experience::where('cv_id','=',$cv_id)->delete();
+        $project=projects::where('cv_id','=',$cv_id)->delete();
+        $education=education::where('cv_id','=',$cv_id)->delete();
+        $languages=cv_lang::where('cv_id','=',$cv_id)->delete();
         $effected_rows = $cv;
-        if ($effected_rows != 0) {
+        if ($effected_rows!=0){
             return response([
-                'message' => 'deleted successfully'
-            ], 200);
-        } else {
-            return response([
-                'message' => 'nothing is deleted something went wrong'
-            ], 402);
-        }
+                'message'=> 'deleted successfully'
+            ],200); }
+            else {
+                return response([
+                    'message'=> 'nothing is deleted something went wrong'
+                ],402);
+            }
     }
-
     //done
-    public function edit_alt_service(edit_alt_service_request $request)
-    {
+    public function edit_alt_service(edit_alt_service_request $request){
         $validator = Validator::make($request->all(), [
             'a_id' => 'required|exists:alt_services,a_id',
             'a_price' => 'required|integer',
-            'a_name' => 'required|string',
-            'added_duration' => 'required|string',
+            'a_name'=> 'required|string',
+            'added_duration'=> 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = alt_services::where('a_id', '=', $request->a_id)->update([
-                'a_price' => $request->a_price,
-                'a_name' => $request->a_name,
-                'added_duration' => $request->added_duration,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=alt_services::where('a_id','=',$request->a_id)->update([
+            'a_price'=>$request->a_price,
+            'a_name'=>$request->a_name,
+            'added_duration'=>$request->added_duration,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_skills(edit_skill_request $request)
-    {
+    public function edit_skills(edit_skill_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:skills,s_id',
             'years_of_exp' => 'required|integer',
-            's_name' => 'required|string',
-            's_level' => 'required|string',
+            's_name'=> 'required|string',
+            's_level'=> 'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = skills::where('s_id', '=', $request->s_id)->update([
-                's_level' => $request->s_level,
-                's_name' => $request->s_name,
-                'years_of_exp' => $request->years_of_exp,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=skills::where('s_id','=',$request->s_id)->update([
+            's_level'=>$request->s_level,
+            's_name'=>$request->s_name,
+            'years_of_exp'=>$request->years_of_exp,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
+    }
 
     }
 
     //done
-    public function edit_language(edit_language_request $request)
-    {
+    public function edit_language(edit_language_request $request){
         $validator = Validator::make($request->all(), [
             'cvl_id' => 'required|exists:cv_langs,cvl_id',
             'l_id' => 'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = cv_lang::where('cvl_id', '=', $request->cvl_id)->update([
-                'l_id' => $request->l_id,
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=cv_lang::where('cvl_id','=',$request->cvl_id)->update([
+            'l_id'=>$request->l_id,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_projects(edit_project_request $request)
-    {
+    public function edit_projects(edit_project_request $request){
         $validator = Validator::make($request->all(), [
             'p_id' => 'required|exists:projects,p_id',
             'p_name' => 'required|string',
@@ -1160,36 +1124,34 @@ class authenticationController extends Controller
             'end_date' => 'required|date',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = projects::where('p_id', '=', $request->p_id)->update([
-                'p_desc' => $request->p_desc,
-                'p_name' => $request->p_name,
-                'responsibilities' => $request->responsibilities,
-                'start_date' => date('Y-m-d', strtotime($request->start_date)),
-                'end_date' => date('Y-m-d', strtotime($request->end_date)),
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=projects::where('p_id','=',$request->p_id)->update([
+            'p_desc'=>$request->p_desc,
+            'p_name'=>$request->p_name,
+            'responsibilities'=>$request->responsibilities,
+            'start_date'=>date('Y-m-d' , strtotime($request->start_date)),
+            'end_date'=>date('Y-m-d' , strtotime($request->end_date)),
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function edit_experience(edit_exp_request $request)
-    {
+    public function edit_experience(edit_exp_request $request){
         $validator = Validator::make($request->all(), [
             'exp_id' => 'required|exists:experiences,exp_id',
             'company' => 'required|string',
@@ -1199,774 +1161,698 @@ class authenticationController extends Controller
             'end_date' => 'required|date',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
             'integer' => 'The :attribute field must be integer.',
             'string' => 'The :attribute field must be string.',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = experience::where('exp_id', '=', $request->exp_id)->update([
-                'company' => $request->company,
-                'position' => $request->position,
-                'responsibilities' => $request->responsibilities,
-                'start_date' => date('Y-m-d', strtotime($request->start_date)),
-                'end_date' => date('Y-m-d', strtotime($request->end_date)),
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=experience::where('exp_id','=',$request->exp_id)->update([
+            'company'=>$request->company,
+            'position'=>$request->position,
+            'responsibilities'=>$request->responsibilities,
+            'start_date'=>date('Y-m-d' , strtotime($request->start_date)),
+            'end_date'=>date('Y-m-d' , strtotime($request->end_date)),
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_alt_service(edit_alt_service_request $request)
-    {
+    public function delete_alt_service(edit_alt_service_request $request){
         $validator = Validator::make($request->all(), [
             'a_id' => 'required|exists:alt_services,a_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = alt_services::where('a_id', '=', $request->a_id)->delete();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=alt_services::where('a_id','=',$request->a_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_skill(edit_skill_request $request)
-    {
+    public function delete_skill(edit_skill_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:skills,s_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = skills::where('s_id', '=', $request->s_id)->delete();
-            $skills = skills::all();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'skills' => $skills,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=skills::where('s_id','=',$request->s_id)->delete();
+        $skills = skills::all();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'skills'=>$skills ,
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_cv_language(edit_language_request $request)
-    {
+    public function delete_cv_language(edit_language_request $request){
         $validator = Validator::make($request->all(), [
             'cvl_id' => 'required|exists:cv_langs,cvl_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $cv_id = cv_lang::where('cvl_id', '=', $request->cvl_id)->first()->cv_id;
-            $effected_rows = cv_lang::where('cvl_id', '=', $request->cvl_id)->delete();
-            $cv_langs = DB::table('cv_langs')->join('languages', 'cv_langs.l_id', '=', 'languages.l_id')->select('language', 'cvl_id')->where('cv_id', '=', $cv_id)->get();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'languages' => $cv_langs,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $cv_id = cv_lang::where('cvl_id','=',$request->cvl_id)->first()->cv_id;
+        $effected_rows=cv_lang::where('cvl_id','=',$request->cvl_id)->delete();
+        $cv_langs =DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$cv_id)->get();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'languages'=> $cv_langs,
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function delete_project(edit_project_request $request)
-    {
+    public function delete_project(edit_project_request $request){
         $validator = Validator::make($request->all(), [
             'p_id' => 'required|exists:projects,p_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = projects::where('p_id', '=', $request->p_id)->delete();
-            $projects = projects::all();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'projects' => $projects,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+            return response($errors,402);
+        }else{
+        $effected_rows=projects::where('p_id','=',$request->p_id)->delete();
+        $projects = projects ::all();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'projects'=>$projects,
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+    }
     //done
-    public function get_all_alt_services(get_all_alt_request $request)
-    {
+    public function get_all_alt_services(get_all_alt_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:alt_services,s_id',/////////////////
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $alt_services = alt_services::where('s_id', '=', $request->s_id);
-            return $alt_services->get();
-        }
+            return response($errors,402);
+        }else{
+        $alt_services =alt_services::where('s_id','=',$request->s_id);
+        return $alt_services->get(); }
     }
-
     //done
-    public function get_skills(get_skills_request $request)
-    {
+    public function get_skills(get_skills_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|exists:skills,cv_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $skills = skills::where('cv_id', '=', $request->cv_id);
-            return $skills->get();
-        }
+            return response($errors,402);
+        }else{
+        $skills =skills::where('cv_id','=',$request->cv_id);
+        return $skills->get(); }
     }
-
     //done
-    public function get_languages(get_langs_request $request)
-    {
+    public function get_languages(get_langs_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|exists:cv_langs,cv_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $langs = cv_lang::where('cv_id', '=', $request->cv_id);
-            return $langs->get();
-        }
+            return response($errors,402);
+        }else{
+        $langs =cv_lang::where('cv_id','=',$request->cv_id);
+        return $langs->get(); }
     }
-
     //done
-    public function get_projects(get_projects_request $request)
-    {
+    public function get_projects(get_projects_request $request){
         $validator = Validator::make($request->all(), [
             'cv_id' => 'required|exists:projects,cv_id',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
+            'exists'=> 'the :attribute field should be exist',
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()){
             $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $projects = projects::where('cv_id', '=', $request->cv_id);
-            return $projects->get();
+            return response($errors,402);
+        }else{
+        $projects =projects::where('cv_id','=',$request->cv_id);
+        return $projects->get(); }
+    }
+//
+public function delete_exp(edit_exp_request $request){
+    $validator = Validator::make($request->all(), [
+        'exp_id' =>'required|exists:experiences,exp_id',
+    ] , $message =[
+        'required'=> 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if($validator->fails()){
+        $errors =$validator->errors();
+        return response($errors,402);
+    }
+    else{
+        $effected_rows=experience::where('exp_id','=',$request->exp_id)->delete();
+        $experiences = experience::all();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'experiences' => $experiences,
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
+}
 
 //
-    public function delete_exp(edit_exp_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'exp_id' => 'required|exists:experiences,exp_id',
-        ], $message = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = experience::where('exp_id', '=', $request->exp_id)->delete();
-            $experiences = experience::all();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'experiences' => $experiences,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
+public function get_exp(edit_exp_request $request) {
+    $validator = Validator::make($request->all(), [
+        'exp_id' =>'required|exists:experiences,exp_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $experience=experience::where('exp_id','=',$request->exp_id);
+    return $experience->first(); }
+}
+//
+public function edit_course(edit_course_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id'=>'required|exists:courses,c_id',
+        'c_name'=>'required|string',
+        'c_desc'=>'required|string',
+        'c_price'=>'required|integer|gte:50000',
+        'c_img'=>'required|string',
+        'c_duration'=>'required|string',
+        'pre_requisite' =>'required|string',
+        'c_img_data'=>'required',
+    
+    ],$messages = [
+        'required' => 'The :attribute field is required.',
+        'integer' => 'the :attribute field should be a number',
+        'gte'=> 'the :attribute field should be minimum 50000',
+        'string'=> 'the :attribute field should be string',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $course = course::where('c_id','=',$request->c_id);
+        $course_image = $course->c_img;
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$course_image;
+        File::delete($fullpath);
+        $img_data = $request ->c_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->c_img;
+        file_put_contents($fullpath,$decoded_img);
+    $effected_rows=course::where('c_id','=',$request->c_id)->update([
+        'c_name'=>$request->c_name,
+        'c_desc'=>$request->c_desc,
+        'c_price'=>$request->c_price,
+        'c_img'=>$request->c_img ,
+        'c_duration'=>$request->c_duration,
+        'pre_requisite' =>$request->pre_requisite,
+
+    ]);
+    if ($effected_rows!=0){
+    return response([
+        'message'=> 'updated successfully'
+    ],200); }
+    else {
+        return response([
+            'message'=> 'nothing is updated something went wrong'
+        ],402);
+    }
+}
+}
+//
+public function delete_course(edit_course_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required|exists:courses,c_id',
+    ] , $message =[
+        'required'=> 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if($validator->fails()){
+        $errors =$validator->errors();
+        return response($errors,402);
+    }
+    else{
+        $effected_rows=course::where('c_id','=',$request->c_id)->delete();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+}
 //
-    public function get_exp(edit_exp_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'exp_id' => 'required|exists:experiences,exp_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $experience = experience::where('exp_id', '=', $request->exp_id);
-            return $experience->first();
-        }
+public function get_course(edit_course_request $request) {
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required|exists:courses,c_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $course=course::where('c_id','=',$request->c_id);
+    return $course->get();
     }
 
+}
 //
-    public function edit_course(edit_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:course,c_id',
-            'c_name' => 'required|string',
-            'c_desc' => 'required|string',
-            'c_price' => 'required|integer|gte:50000',
-            'c_img' => 'required|string',
-            'c_duration' => 'required|string',
-            'pre_requisite' => 'required|string',
+public function edit_training_courses(edit_training_course_request $request){
+    $validator = Validator::make($request->all(), [
+        't_id'=>'required|exists:training_courses,t_id',
+        'course_name' => 'required|string',
+        'training_center' => 'required|string',
+        'completion_date' => 'required|date',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'string'=> 'the :attribute field should be string',
+        'exists'=> 'the :attribute field should be existed',
+        'date' => 'the :attribute field should be date',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $effected_rows= training_courses::where('t_id','=',$request->t_id)->update([
+        'course_name'=>$request->course_name,
+        'training_center'=>$request->training_center,
+        'completion_date'=>date('Y-m-d' , strtotime($request->completion_date))
 
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'integer' => 'the :attribute field should be a number',
-            'gte' => 'the :attribute field should be minimum 50000',
-            'string' => 'the :attribute field should be string',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = course::where('c_id', '=', $request->c_id)->update([
-                'c_name' => $request->c_name,
-                'c_desc' => $request->c_desc,
-                'c_price' => $request->c_price,
-                'c_img' => $request->c_img,
-                'c_duration' => $request->c_duration,
-                'pre_requisite' => $request->pre_requisite,
-
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
+    ]);
+    if ($effected_rows!=0){
+    return response([
+        'message'=> 'updated successfully'
+    ],200); }
+    else {
+        return response([
+            'message'=> 'nothing is updated something went wrong'
+        ],402);
+    }
+}
+}
+//
+public function delete_training_courses(edit_training_course_request $request){
+    $validator = Validator::make($request->all(), [
+        't_id' =>'required|exists:training_courses,t_id',
+    ] , $message =[
+        'required'=> 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if($validator->fails()){
+        $errors =$validator->errors();
+        return response($errors,402);
+    }
+    else{
+        $effected_rows=training_courses::where('t_id','=',$request->t_id)->delete();
+        $courses = training_courses::all();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'courses'=>$courses,
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
     }
-
+}
 //
-    public function delete_course(edit_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:course,c_id',
-        ], $message = [
+public function get_training_courses(edit_training_course_request $request) {
+    $validator = Validator::make($request->all(), [
+        't_id' =>'required|exists:training_courses,t_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $training_courses=training_courses::where('t_id','=',$request->t_id);
+    return $training_courses->first(); }
+}
+ //
+ public function edit_education(edit_cv_education_request $request){
+    $validator = Validator::make($request->all(), [
+        'e_id'=>'required|exists:education,e_id',
+        'degree' => 'required|string',
+        'uni' => 'required|string',
+        'field_of_study' => 'required|string',
+        'grad_year' => 'required|integer',
+        'gba' => 'required|numeric|lte:100|gte:0'],
+        $messages = [
             'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = course::where('c_id', '=', $request->c_id)->delete();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
-        }
-    }
-
-//
-    public function get_course(edit_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:course,c_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $course = course::where('c_id', '=', $request->c_id);
-            return $course->get();
-        }
-
-    }
-
-//
-    public function edit_training_courses(edit_training_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            't_id' => 'required|exists:training_courses,t_id',
-            'course_name' => 'required|string',
-            'training_center' => 'required|string',
-            'completion_date' => 'required|date',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'string' => 'the :attribute field should be string',
-            'exists' => 'the :attribute field should be existed',
+            'string'=> 'the :attribute field should be string',
+            'integer'=> 'the :attribute field should be integer',
+            'exists'=> 'the :attribute field should be existed',
             'date' => 'the :attribute field should be date',
         ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = training_courses::where('t_id', '=', $request->t_id)->update([
-                'course_name' => $request->course_name,
-                'training_center' => $request->training_center,
-                'completion_date' => date('Y-m-d', strtotime($request->completion_date))
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $effected_rows=education::where('e_id','=',$request->e_id)->update([
+        'degree'=>$request->degree,
+        'uni'=>$request-> uni,
+        'field_of_study'=>$request->field_of_study,
+        'grad_year'=>$request->grad_year,
+        'gba' =>$request ->gba
 
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
-        }
+    ]);
+    if ($effected_rows!=0){
+    return response([
+        'message'=> 'updated successfully'
+    ],200); }
+    else {
+        return response([
+            'message'=> 'nothing is updated something went wrong'
+        ],402);
     }
-
+}
+}
 //
-    public function delete_training_courses(edit_training_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            't_id' => 'required|exists:training_courses,t_id',
-        ], $message = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = training_courses::where('t_id', '=', $request->t_id)->delete();
-            $courses = training_courses::all();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'courses' => $courses,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
-        }
+public function delete_education(edit_cv_education_request $request){
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ] , $message =[
+        'required'=> 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if($validator->fails()){
+        $errors =$validator->errors();
+        return response($errors,402);
     }
-
-//
-    public function get_training_courses(edit_training_course_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            't_id' => 'required|exists:training_courses,t_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $training_courses = training_courses::where('t_id', '=', $request->t_id);
-            return $training_courses->first();
-        }
-    }
-
-    //
-    public function edit_education(edit_cv_education_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'e_id' => 'required|exists:education,e_id',
-            'degree' => 'required|string',
-            'uni' => 'required|string',
-            'field_of_study' => 'required|string',
-            'grad_year' => 'required|integer',
-            'gba' => 'required|numeric|lte:100|gte:0'],
-            $messages = [
-                'required' => 'The :attribute field is required.',
-                'string' => 'the :attribute field should be string',
-                'integer' => 'the :attribute field should be integer',
-                'exists' => 'the :attribute field should be existed',
-                'date' => 'the :attribute field should be date',
-            ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = education::where('e_id', '=', $request->e_id)->update([
-                'degree' => $request->degree,
-                'uni' => $request->uni,
-                'field_of_study' => $request->field_of_study,
-                'grad_year' => $request->grad_year,
-                'gba' => $request->gba
-
-            ]);
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'updated successfully'
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is updated something went wrong'
-                ], 402);
-            }
-        }
-    }
-
-//
-    public function delete_education(edit_cv_education_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'e_id' => 'required|exists:education,e_id',
-        ], $message = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $effected_rows = education::where('e_id', '=', $request->e_id)->delete();
-            $educations = education::all();
-            if ($effected_rows != 0) {
-                return response([
-                    'message' => 'deleted successfully',
-                    'educations' => $educations,
-                ], 200);
-            } else {
-                return response([
-                    'message' => 'nothing is deleted something went wrong'
-                ], 402);
-            }
-        }
-    }
-
-//
-    public function get_education(edit_cv_education_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'e_id' => 'required|exists:education,e_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $education = education::where('e_id', '=', $request->e_id);
-            return $education->first();
-        }
-    }
-
-    public function check_job_owner(edit_education_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'e_id' => 'required|exists:education,e_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $education = education::where('e_id', '=', $request->e_id);
-            return $education->get();
-        }
-    }
-
-    public function get_user_jobs(get_by_token $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $token = PersonalAccessToken::findToken($request->token);
-            $user_id = $token->tokenable_id;
-            $jobs = job::where('u_id', '=', $user_id);
-            return $jobs->get();
-        }
-    }
-
-//
-    public function get_courses_for_type(get_courses_type_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'ct_id' => 'required|integer',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'integer' => 'the :attribute field should be a number',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $courses_type = course::where('ct_id', '=', $request->ct_id);
-            return $courses_type->get();
-        }
-    }
-
-//
-    public function get_course_for_user(get_course_for_user $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'u_id' => 'required|exists:course,u_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $course = course::where('u_id', '=', $request->u_id);
-            return $course->get();
-        }
-    }
-
-//
-    public function get_course_detils(get_course_detils $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:course_detils,c_id',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $course_detils = course::where('c_id', '=', $request->c_id);
-            return $course_detils->get();
-        }
-    }
-
-    public function get_skill(get_skills_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            's_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $skill = skills::where('s_id', '=', $request->s_id)->first();
-            return $skill;
-        }
-    }
-
-    public function get_project(get_project_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'p_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $skill = projects::where('p_id', '=', $request->p_id)->first();
-            return $skill;
-        }
-    }
-
-    public function get_cv_lang(get_langs_request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'cv_id' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $languages = DB::table('cv_langs')->join('languages', 'cv_langs.l_id', '=', 'languages.l_id')->select('language', 'cvl_id')->where('cv_id', '=', $request->cv_id)->get();
-            return ['languages' => $languages];
-        }
-    }
-
-    public function get_profile(get_by_token $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => 'required',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists' => 'the :attribute field should be exist',
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            $token = PersonalAccessToken::findToken($request->token);
-            $personal_info = User::where('u_id', '=', $token->tokenable_id);
-            return $personal_info->first();
-        }
-    }
-
-    public function add_training_courses_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'training_courses_id' => ['required', 'exists:training_courses,t_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->course_id,
-                'ratable_type' => training_courses::class
-            ]);
+    else{
+        $effected_rows=education::where('e_id','=',$request->e_id)->delete();
+        $educations = education::all();
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'deleted successfully',
+            'educations' => $educations,
+        ],200); }
+        else {
             return response([
-                'message' => 'added successfully'
-            ], 200);
+                'message'=> 'nothing is deleted something went wrong'
+            ],402);
         }
+    }
+}
+//
+public function get_education(edit_cv_education_request $request) {
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $education=education::where('e_id','=',$request->e_id);
+    return $education->first(); }
+}
+public function check_job_owner(edit_education_request $request) {
+    $validator = Validator::make($request->all(), [
+        'e_id' =>'required|exists:education,e_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $education=education::where('e_id','=',$request->e_id);
+    return $education->get(); }
+}
+
+public function get_user_jobs(get_by_token $request) {
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+        $jobs=job::where('u_id','=',$user_id);
+        return $jobs->get(); }
+    }
+//
+public function get_courses_for_type(get_courses_type_request $request){
+    $validator = Validator::make($request->all(), [
+        'ct_id' => 'required|integer',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'integer' => 'the :attribute field should be a number',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $courses_type=course::where('ct_id','=',$request->ct_id)->get();
+        $path = storage_path('images\\');
+        foreach ($courses_type as $course) {
+            $fullpath = $path.''.$course->c_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $course->image = $base64image;
+        }
+        return $courses_type; }
     }
 
-    public function add_service_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'service_id' => ['required', 'exists:services,s_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->service_id,
-                'ratable_type' => services::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
-    }
+//
+public function get_course_for_user(get_course_for_user $request){
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $user_id = $token->tokenable_id;
+    $course=course::where('u_id','=',$user_id);
+    return $course->get(); }
+}
+//
+public function get_course_detils(get_course_detils $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required|exists:courses,c_id',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $course_detils=course::where('c_id','=',$request->c_id)->first();
+    $path = storage_path('images\\');
+    $fullpath = $path.''.$course_detils->c_img;
+    $image = file_get_contents($fullpath);
+    $base64image = base64_encode($image);
+    $course_detils->image = $base64image;
+    return $course_detils; }
+}
 
-    public function add_job_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'job_id' => ['required', 'exists:jobs,j_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->job_id,
-                'ratable_type' => job::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
+public function get_skill(get_skills_request $request){
+    $validator = Validator::make($request->all(), [
+        's_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=skills::where('s_id','=',$request->s_id)->first();
+    return $skill; }
+}
+public function get_project(get_project_request $request){
+    $validator = Validator::make($request->all(), [
+        'p_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+    $skill=projects::where('p_id','=',$request->p_id)->first();
+    return $skill; }
+}
+public function get_cv_lang(get_langs_request $request){
+    $validator = Validator::make($request->all(), [
+        'cv_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $languages= DB::table('cv_langs')->join('languages','cv_langs.l_id','=','languages.l_id')->select('language','cvl_id')->where('cv_id','=',$request->cv_id)->get();
+    return ['languages'=> $languages];
     }
+}
+public function  get_profile(get_by_token $request){
+    $validator = Validator::make($request->all(), [
+        'token' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+        'exists'=> 'the :attribute field should be exist',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $token = PersonalAccessToken::findToken($request->token);
+        $personal_info=User::where('u_id','=',$token->tokenable_id);
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$personal_info->u_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $personal_info->image = $base64image;
+        return $personal_info->first(); }
+}
 
-    public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'course_id' => ['required', 'exists:courses,c_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->service_id,
-                'ratable_type' => course::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
+
+public function  test_add_media(add_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'c_id' =>'required',
+        'm_name'=>'required',
+        'video_name'=>'required',
+        'm_data'=>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $video_data = $request ->m_data;
+        $decoded_video = base64_decode($video_data);
+        $path = storage_path('videos/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
+        $fullpath = $path.''.$request->video_name;
+        file_put_contents($fullpath,$decoded_video);
+        $media = media::create([ 
+        'c_id' =>$request->c_id,
+        'm_name'=>$request->m_name,
+        'm_path'=>$request->video_name,
+    ]);
+        return response([
+            'message'=> 'media add successfully'
+        ],200);
     }
+} 
+public function  test_get_media(edit_media_request $request){
+    $validator = Validator::make($request->all(), [
+        'm_id' =>'required',
+    ], $messages = [
+        'required' => 'The :attribute field is required.',
+    ]);
+    if ($validator->fails()){
+        $errors = $validator->errors();
+        return response($errors,402);
+    }else{
+        $media =media::where('m_id','=',$request->m_id)->first();
+        $path = storage_path('videos\\');
+        $fullpath = $path.''.$media->m_path;
+        $video = file_get_contents($fullpath);
+        $base64video = base64_encode($video);
+        $media->video = $base64video;
+        return $media ;
+    }
+} 
+
+
 }

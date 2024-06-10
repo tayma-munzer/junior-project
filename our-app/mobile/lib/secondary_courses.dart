@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/addcourse.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/buildCatItem.dart';
-import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
@@ -28,17 +27,17 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-
+      print(decodedData);
       if (decodedData is List<dynamic>) {
         setState(() {
           data = decodedData.map((item) {
-            String imageUrl = item['c_img'].replaceAll(r'\/', '/');
+
             return {
               "c_id": item["c_id"],
               "c_name": item["c_name"],
               "c_desc": item["c_desc"],
               "c_img": item["c_img"],
-              "u_id": imageUrl,
+
             };
           }).toList();
         });
@@ -105,6 +104,25 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseDetailsPage(1),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text(
+                  'test read',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
