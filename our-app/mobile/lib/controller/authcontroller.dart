@@ -316,4 +316,31 @@ class AuthCont {
 
     return response;
   }
+
+  static Future<http.Response> addCourse(
+      String c_name,
+      String c_desc,
+      String c_price,
+      String c_img,
+      String c_img_data,
+      String c_duration,
+      String pre_requisite,
+      String category,
+      String num_of_free_videos) async {
+    final token = await AuthManager.getToken();
+    var url = add_course;
+    var res = await http.post(Uri.parse(url), body: {
+      'c_name': c_name,
+      'c_desc': c_desc,
+      'c_price': c_price,
+      'c_img': c_img,
+      'c_img_data': c_img_data,
+      'c_duration': c_duration,
+      'pre_requisite': pre_requisite,
+      'category': category,
+      'num_of_free_videos': num_of_free_videos,
+      'token': token
+    });
+    return res;
+  }
 }

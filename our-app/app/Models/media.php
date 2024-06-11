@@ -14,6 +14,7 @@ class media extends Model
         'c_id',
         'm_id',
         'm_name',
-        'm_path',
+        'm_title',
+        'm_desc',
     ];
 }

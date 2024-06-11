@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->increments('m_id');
-            $table->string('m_name');
-            $table->mediumText('m_path');
+            $table->string('m_title');
+            $table->mediumText('m_name');
+            $table->string('m_desc');
             $table->integer('c_id');
         
         });

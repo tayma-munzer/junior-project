@@ -530,16 +530,31 @@ class DatabaseSeeder extends Seeder
         ]);
         
         DB::table('media')->insert([
-            'm_name'=>'course1',
-            'm_path'=>'ll.mp4',
+            'm_title'=>'add job',
+            'm_name'=>'video1.mp4',
+            'm_desc'=>'short description about the video',
             'c_id'=>'1'
         ]);
         DB::table('media')->insert([
-            'm_name'=>'course2',
-            'm_path'=>'j2.mp4',
+            'm_title'=>'add service',
+            'm_name'=>'video2.mp4',
+            'm_desc'=>'short description about the video',
+            'c_id'=>'1'
+        ]);
+
+        DB::table('media')->insert([
+            'm_title'=>'add anything',
+            'm_name'=>'video3.mp4',
+            'm_desc'=>'short description about the video',
+            'c_id'=>'1'
+        ]);
+        
+        DB::table('media')->insert([
+            'm_title'=>'add something',
+            'm_name'=>'video4.mp4',
+            'm_desc'=>'short description about the video',
             'c_id'=>'2'
         ]);
-         
 
     }
 }

@@ -24,7 +24,8 @@ class edit_media_request extends FormRequest
         return [
             'm_id',
             'm_name',
-            'm_path',
+            'm_title',
+            'm_desc',
             //
         ];
     }
