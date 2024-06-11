@@ -376,9 +376,11 @@ class authenticationController extends Controller
             'c_name' => 'required|string',
             'c_price' => 'required|integer|gte:50000',
             'c_img' => 'required|string',
+            'c_img_data'=>'required|string',
             'c_desc' => 'required|string',
             'c_duration'=>'required|string',
             'pre_requisite' =>'required|string',
+            'num_of_free_videos'=>'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'integer' => 'the :attribute field should be a number',
@@ -390,6 +392,14 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $user_token = PersonalAccessToken::findToken($request->token);
+        $img_data = $request ->c_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->c_img;
+        file_put_contents($fullpath,$decoded_img);
         $course = course::create([
         'u_id' => $user_token->tokenable_id,
         'c_name' => $request->c_name,
@@ -398,22 +408,25 @@ class authenticationController extends Controller
         'c_img' => $request->c_img,
         'c_duration'=>$request->c_duration,
         'pre_requisite' =>$request->pre_requisite,
+        'num_of_free_videos'=>$request->num_of_free_videos,
+        'ct_id'=>gets::course_type_id($request->category),
         ]);
-        event(new CourseCreated($course->c_name));
+        //event(new CourseCreated($course->c_name));
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'course_id'=>$course->id,
         ],200);
     }
     }
     //not done 
     public function add_media(add_media_request $request){
-        //$data = json_decode($request->media, true);
-        $validator = Validator::make($request->media, [
-            'media' => [
-            'c_id' => 'required|integer|exists:courses,c_id',
-            'm_name' => 'required|string',
-            'm_path' => 'required|string',
-            ]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'c_id'=>'required|integer',
+            'medias' => 'required',
+            'medias.*.m_title' => 'required|string',
+            'medias.*.m_desc' => 'required|string',
+            'medias.*.m_name' => 'required|string'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
@@ -422,15 +435,16 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $data = $request->media;
+            //$data = $request->medias;
             $c_id = $request->c_id;
-            foreach ($data as $d){
-                $media = media::create([
-                'c_id' => $c_id,
-                'm_name' => $d['m_name'],
-                'm_path' => $d['m_path'],
-        ]);
-    }
+    //         foreach ($data as $d){
+    //             $media = media::create([
+    //             'c_id' => $c_id,
+    //             'm_name' => $d['m_name'],
+    //             'm_title' => $d['m_title'],
+    //             'm_desc' => $d['m_desc'],
+    //     ]);
+    // }
         return response([
             'message'=> 'added successfully'
         ],200);
@@ -1418,7 +1432,7 @@ public function edit_course(edit_course_request $request){
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-        $course = course::where('c_id','=',$request->c_id);
+        $course = course::where('c_id','=',$request->c_id)->first();
         $course_image = $course->c_img;
         $path = storage_path('images\\');
         $fullpath = $path.''.$course_image;
@@ -1796,13 +1810,13 @@ public function  get_profile(get_by_token $request){
         return response($errors,402);
     }else{
         $token = PersonalAccessToken::findToken($request->token);
-        $personal_info=User::where('u_id','=',$token->tokenable_id);
+        $personal_info=User::where('u_id','=',$token->tokenable_id)->first();
         $path = storage_path('images\\');
         $fullpath = $path.''.$personal_info->u_img;
         $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $personal_info->image = $base64image;
-        return $personal_info->first(); }
+        return $personal_info; }
 }
 
 
