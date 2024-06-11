@@ -435,16 +435,16 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            //$data = $request->medias;
+            $data = $request->medias;
             $c_id = $request->c_id;
-    //         foreach ($data as $d){
-    //             $media = media::create([
-    //             'c_id' => $c_id,
-    //             'm_name' => $d['m_name'],
-    //             'm_title' => $d['m_title'],
-    //             'm_desc' => $d['m_desc'],
-    //     ]);
-    // }
+            foreach ($data as $d){
+                $media = media::create([
+                'c_id' => $c_id,
+                'm_name' => $d['m_name'],
+                'm_title' => $d['m_title'],
+                'm_desc' => $d['m_desc'],
+        ]);
+    }
         return response([
             'message'=> 'added successfully'
         ],200);
@@ -958,7 +958,7 @@ class authenticationController extends Controller
     //done
     public function get_all_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:media,c_id',
+            'c_id' => 'required|exists:courses,c_id',///////////////////////exists:media,c_id
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
