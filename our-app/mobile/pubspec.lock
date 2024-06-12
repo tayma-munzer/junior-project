@@ -756,7 +756,11 @@ packages:
       sha256: "9955ae474176f7ac8ee4e989dadfb411a58c30415bcfb648fa04b2b8a03afa7f"
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
+    version: "0.6.1"
+=======
     version: "0.7.0"
+>>>>>>> 06ea2f3949a32ccce73aa5f9e5f3708d51b0466e
   timezone:
     dependency: transitive
     description:

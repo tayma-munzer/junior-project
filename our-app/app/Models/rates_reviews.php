@@ -11,7 +11,9 @@ class rates_reviews extends Model
     protected $table = 'rates_reviews';
     public $timestamps = false;
     protected $fillable = [
-        'sc_id',
+        'user_id',
+        'ratable_id',
+        'ratable_type',
         'rate',
         'review',
     ];
