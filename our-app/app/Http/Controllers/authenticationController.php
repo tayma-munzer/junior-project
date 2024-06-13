@@ -19,6 +19,7 @@ use App\Http\Requests\add_projects_request;
 use App\Http\Requests\add_skill_request;
 use App\Http\Requests\add_training_request;
 use App\Http\Requests\addalt_serviceRequest;
+use App\Http\Requests\course_enrollment_request;
 use App\Http\Requests\delete_all_cv;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
@@ -50,8 +51,10 @@ use App\Http\Requests\get_courses_type_request;
 use App\Http\Requests\get_course_for_user;
 use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
+use App\Http\Requests\job_application_request;
 use App\Models\alt_services;
 use App\Models\course;
+use App\Models\course_enrollment;
 use App\Models\cv;
 use App\Models\cv_lang;
 use App\Models\education;
@@ -64,6 +67,7 @@ use App\Models\token;
 use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
+use App\Models\job_application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -1952,6 +1956,55 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }
     }
 
+    //done without testking 
+    public function add_job_application (job_application_request $request){
+        $validator = Validator::make($request->all(), [
+            'j_id' => 'required|integer',
+            'token'=>'required|integer',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $user_token = PersonalAccessToken::findToken($request->token);
+            $job = job_application::create([
+            'j_id' => $request->j_id,
+            'u_id' => $user_token->tokenable_id,
+            ]);
+            return response([
+                'message'=> 'added successfully',
+            ],200);
+    }
+    }
+
+    //done without testking 
+    public function add_course_enrollment (course_enrollment_request $request){
+        $validator = Validator::make($request->all(), [
+            'c_id' => 'required|integer',
+            'u_id'=>'required|integer',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $user_token = PersonalAccessToken::findToken($request->token);
+            $course_enrollment = course_enrollment::create([
+            'c_id' => $request->c_id,
+            'u_id' => $request->$user_token->tokenable_id,
+            ]);
+            return response([
+                'message'=> 'added successfully',
+            ],200);
+    }
+    }
 
 
 }

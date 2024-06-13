@@ -92,6 +92,11 @@ class gets extends Controller
     static function get_home_page_courses(){
         return course::all()->take(8);
     }
+
+    static function course_type_id(string $type){
+        $type = DB::table('courses_types')->where('ct_type','=',$type)->first();
+        return $type->ct_id;
+    }
     
     
 }
