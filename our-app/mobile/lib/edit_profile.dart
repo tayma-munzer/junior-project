@@ -31,28 +31,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
+  TextEditingController _userimageController = TextEditingController();
 
   Future<void> fetch() async {
     String? token = await AuthManager.getToken();
     var url = get_profile;
     var res = await http.post(Uri.parse(url), body: {'token': token});
+    print(res.body);
     Map<String, dynamic> data = json.decode(res.body);
-    print(data);
+    print(res.body);
     userDetails = data;
-    // String imageUrl = data['u_img'].replaceAll(r'\/', '/');
-    // http.Response imageRes = await http.get(Uri.parse(imageUrl));
-    // String base64Image = base64Encode(imageRes.bodyBytes);
     setState(() {
       _ageController.text = userDetails!['age'].toString();
       _descController.text = userDetails!['u_desc'].toString();
-      // _currentImage = base64Image;
+       _currentImage = userDetails!['image'].toString();
+      _userimageController.text = userDetails!['u_img_name'].toString();
       _fNameController.text = userDetails!['f_name'].toString();
       _lNameController.text = userDetails!['l_name'].toString();
       _emailController.text = userDetails!['email'].toString();
       _passwordController.text = userDetails!['password'].toString();
       _usernameController.text = userDetails!['username'].toString();
       print('object');
-      print(userDetails!['password'].toString());
+      print(userDetails!['image'].toString());
     });
   }
 
@@ -67,6 +67,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         _selectedImage = File(pickedImage.path);
         _currentImage = base64Image;
+      });
+    } else {
+      setState(() {
+        // No new image selected, keep the existing image
+        _selectedImage = File('');
+        _currentImage = userDetails!['image'].toString();
       });
     }
   }
@@ -86,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       drawer: CustomDrawer(),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(top:30,bottom: 16,left: 16,right: 16),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -96,34 +102,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 50),
-                    InkWell(
-                      onTap: _selectImage,
+                    Container(
                       child: _selectedImage != null &&
                               _selectedImage.path.isNotEmpty
-                          ? Image.file(
-                              _selectedImage,
-                              height: 300.0,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )
+                          ? ClipOval(
+                            child: Image.file(
+                                _selectedImage,
+                                height: 200.0,
+                                width: 200.0,
+                                fit: BoxFit.cover,
+                              ),
+                          )
                           : _currentImage.isNotEmpty
-                              ? Image.memory(
+                              ? ClipOval(
+                          child:Image.memory(
                                   base64Decode(_currentImage),
-                                  height: 300.0,
-                                  width: double.infinity,
+                                  height: 200.0,
+                                  width: 200.0,
                                   fit: BoxFit.cover,
                                 )
-                              : Container(),
+                      )
+                              : ClipOval(
+                                child: Container(
+                                 height: 200,
+                                  width: 200.0,
+                                 color: Colors.grey,
+                                 ),
+                              ),
                     ),
                     SizedBox(height: 10),
                     IconButton(
                       onPressed: _selectImage,
-                      icon: Icon(Icons.image),
+                      icon: Icon(Icons.edit),
                       tooltip: 'اختر صورة',
                     ),
                     SizedBox(height: 50),
                     _buildItem(
-                      'السن',
+                      'العمر',
                       'age',
                       _ageController,
                       (value) {
@@ -189,13 +204,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         }
                       },
                       style: ButtonStyle(
-                          // backgroundColor: WidgetStateProperty.all(Colors.blue),
-                          // minimumSize: WidgetStateProperty.all(Size(200, 50)),
+                          backgroundColor: WidgetStateProperty.all(Colors.blue),
+                          minimumSize: WidgetStateProperty.all(Size(200, 50)),
                           ),
                       child: Text(
                         'حفظ التغيرات',
                         style: TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.white,
                           fontSize: 18,
                         ),
                       ),
@@ -259,34 +274,71 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _saveDetails() async {
-    userDetails!['u_img'] = _currentImage;
-
-    print(userDetails);
-    AuthCont.editProfile(
-      userDetails!['age'].toString(),
-      userDetails!['u_desc'],
-      "userDetails!['u_img']",
-      userDetails!['f_name'],
-      userDetails!['l_name'],
-      userDetails!['email'],
-      userDetails!['password'],
-      userDetails!['username'],
-    ).then((value) {
-      if (value.statusCode == 200) {
-        print('edited successfully');
-      } else {
-        print(value.body);
-
-        print('something went wrong');
+    final bool isNewImageSelected = _selectedImage.path.isNotEmpty;
+    if (isNewImageSelected) {
+      // Read the bytes from the selected image file
+      List<int> imageBytes = _selectedImage.readAsBytesSync();
+      // Convert the image bytes to base64 encoding
+      String base64Image = base64Encode(imageBytes);
+      // Update the 'image' field in the userDetails map with the new image
+      setState(() {
+        if (userDetails != null) {
+          userDetails!['image'] = base64Image;
+        }
+      });
+    } else {
+      if (userDetails != null) {
+        // Retrieve the current image from userDetails if it exists
+        _currentImage = userDetails!['image'];
       }
-    });
+    }
+print('object save');
+    print(_currentImage);
+    print('object2');
+    print(userDetails!['image']);
+    _updateField('age', _ageController.text);
+    _updateField('u_desc', _descController.text);
+    _updateField('f_name', _fNameController.text);
+    _updateField('l_name', _lNameController.text);
+    _updateField('email', _emailController.text);
+    _updateField('password', _passwordController.text);
+    _updateField('username', _usernameController.text);
+
+    if (userDetails != null) {
+
+      AuthCont.editProfile(
+        userDetails!['age'].toString(),// Convert 'age' to a string before passing it
+        userDetails!['u_desc'],
+        userDetails!['image'],
+        userDetails!['u_img_name'],
+        userDetails!['f_name'],
+        userDetails!['l_name'],
+        userDetails!['email'],
+        userDetails!['password'],
+        userDetails!['username'],
+      ).then((value) {
+        print(userDetails);
+        print('object save');
+        print(userDetails!['image']);
+        if (value.statusCode == 200) {
+          print('edited successfully');
+          print(userDetails);
+        } else {
+          print('something went wrong');
+          print(userDetails);
+        }
+      });
+    }
   }
 
   void _updateField(String key, String value) {
-    if (userDetails![key] != value) {
+    if (userDetails != null) {
       setState(() {
         userDetails![key] = value;
       });
+      print("Updated userDetails: $userDetails");
+      print("Keys in userDetails: ${userDetails!.keys.toList()}");
+      print("values in userDetails: ${userDetails!.values.toList()}");
     }
   }
 }

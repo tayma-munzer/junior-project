@@ -264,14 +264,15 @@ class AuthCont {
   }
 
   static Future<http.Response> editCourse(
-    String c_id,
-    String c_name,
-    String c_desc,
-    String c_price,
-    String c_img,
-    String c_duration,
-    String pre_requisite,
-  ) async {
+      String c_id,
+      String c_name,
+      String c_desc,
+      String c_price,
+      String c_img,
+      String c_duration,
+      String pre_requisite,
+      String image,
+      ) async {
     var url = edit_course;
 
     var response = await http.post(Uri.parse(url), body: {
@@ -282,21 +283,25 @@ class AuthCont {
       'c_img': c_img,
       'c_duration': c_duration,
       'pre_requisite': pre_requisite,
+      'image':image,
     });
 
     return response;
   }
 
+
+
   static Future<http.Response> editProfile(
-    String age,
-    String u_desc,
-    String u_img,
-    String f_name,
-    String l_name,
-    String email,
-    String password,
-    String username,
-  ) async {
+      String age,
+      String u_desc,
+      String image,
+      String u_img_name,
+      String f_name,
+      String l_name,
+      String email,
+      String password,
+      String username,
+      ) async {
     var url = edit_profile;
     final token = await AuthManager.getToken();
     var response = await http.post(
@@ -305,7 +310,8 @@ class AuthCont {
         'token': token,
         'age': age,
         'u_desc': u_desc,
-        'u_img': u_img,
+        'u_img': image,
+        'u_img_name':u_img_name,
         'f_name': f_name,
         'l_name': l_name,
         'email': email,
@@ -316,6 +322,7 @@ class AuthCont {
 
     return response;
   }
+
 
   static Future<http.Response> addCourse(
       String c_name,
