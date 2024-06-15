@@ -52,6 +52,7 @@ use App\Http\Requests\get_course_for_user;
 use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
 use App\Http\Requests\job_application_request;
+use App\Http\Requests\service_enrollment_request;
 use App\Models\alt_services;
 use App\Models\course;
 use App\Models\course_enrollment;
@@ -68,6 +69,7 @@ use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
 use App\Models\job_application;
+use App\Models\service_enrollment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -1824,187 +1826,6 @@ public function  get_profile(get_by_token $request){
 }
 
 
-public function  test_add_media(add_media_request $request){
-    $validator = Validator::make($request->all(), [
-        'c_id' =>'required',
-        'm_name'=>'required',
-        'video_name'=>'required',
-        'm_data'=>'required',
-    ], $messages = [
-        'required' => 'The :attribute field is required.',
-    ]);
-    if ($validator->fails()){
-        $errors = $validator->errors();
-        return response($errors,402);
-    }else{
-        $video_data = $request ->m_data;
-        $decoded_video = base64_decode($video_data);
-        $path = storage_path('videos/');
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        $fullpath = $path.''.$request->video_name;
-        file_put_contents($fullpath,$decoded_video);
-        $media = media::create([ 
-        'c_id' =>$request->c_id,
-        'm_name'=>$request->m_name,
-        'm_path'=>$request->video_name,
-    ]);
-        return response([
-            'message'=> 'media add successfully'
-        ],200);
-    }
-} 
-
-public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'course_id' => ['required', 'exists:courses,c_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->service_id,
-                'ratable_type' => course::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
-    }
-
-    public function add_service_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'service_id' => ['required', 'exists:services,s_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->service_id,
-                'ratable_type' => services::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
-    }
-
-    public function add_job_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'job_id' => ['required', 'exists:jobs,j_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->job_id,
-                'ratable_type' => job::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
-    }
-
-    public function add_training_courses_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-    {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
-            'rate' => ['required', 'numeric'],
-            'review' => ['required', 'string'],
-            'training_courses_id' => ['required', 'exists:training_courses,t_id'],
-        ]);
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response($errors, 402);
-        } else {
-            rates_reviews::create([
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'review' => $request->review,
-                'ratable_id' => $request->course_id,
-                'ratable_type' => training_courses::class
-            ]);
-            return response([
-                'message' => 'added successfully'
-            ], 200);
-        }
-    }
-
-    //done without testking 
-    public function add_job_application (job_application_request $request){
-        $validator = Validator::make($request->all(), [
-            'j_id' => 'required|integer',
-            'token'=>'required|integer',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists'=> 'the :attribute field should be exist',
-            'integer' => 'the :attribute field should be a number',
-        ]);
-        if ($validator->fails()){
-            $errors = $validator->errors();
-            return response($errors,402);
-        }else{
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $job = job_application::create([
-            'j_id' => $request->j_id,
-            'u_id' => $user_token->tokenable_id,
-            ]);
-            return response([
-                'message'=> 'added successfully',
-            ],200);
-    }
-    }
-
-    //done without testking 
-    public function add_course_enrollment (course_enrollment_request $request){
-        $validator = Validator::make($request->all(), [
-            'c_id' => 'required|integer',
-            'u_id'=>'required|integer',
-        ], $messages = [
-            'required' => 'The :attribute field is required.',
-            'exists'=> 'the :attribute field should be exist',
-            'integer' => 'the :attribute field should be a number',
-        ]);
-        if ($validator->fails()){
-            $errors = $validator->errors();
-            return response($errors,402);
-        }else{
-            $user_token = PersonalAccessToken::findToken($request->token);
-            $course_enrollment = course_enrollment::create([
-            'c_id' => $request->c_id,
-            'u_id' => $request->$user_token->tokenable_id,
-            ]);
-            return response([
-                'message'=> 'added successfully',
-            ],200);
-    }
-    }
 
 
 }
