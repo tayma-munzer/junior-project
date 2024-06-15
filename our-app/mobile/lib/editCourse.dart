@@ -280,15 +280,15 @@ class _EditCourseState extends State<EditCourse> {
     //         courseDetails!['c_img'],
     //         courseDetails!['c_duration'],
     //         courseDetails!['prerequisite'])
-    AuthCont.editCourse(1.toString(), "nnnn", "nnnnnnn", 5652262.toString(),
-            "hhhhhhh", "nn", "njjj")
-        .then((value) {
-      if (value.statusCode == 200) {
-        print('edited successfully');
-      } else {
-        print('something went wrong');
-        print(value.body);
-      }
-    });
+    // AuthCont.editCourse(1.toString(), "nnnn", "nnnnnnn", 5652262.toString(),
+    //         "hhhhhhh", "nn", "njjj")
+    //     .then((value) {
+    //   if (value.statusCode == 200) {
+    //     print('edited successfully');
+    //   } else {
+    //     print('something went wrong');
+    //     print(value.body);
+    //   }
+    // });
   }
 }
