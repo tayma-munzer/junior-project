@@ -44,15 +44,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       _ageController.text = userDetails!['age'].toString();
       _descController.text = userDetails!['u_desc'].toString();
-       _currentImage = userDetails!['image'].toString();
-      _userimageController.text = userDetails!['u_img_name'].toString();
+      _currentImage = userDetails!['image'].toString();
+      _userimageController.text = userDetails!['u_img'].toString();
       _fNameController.text = userDetails!['f_name'].toString();
       _lNameController.text = userDetails!['l_name'].toString();
       _emailController.text = userDetails!['email'].toString();
       _passwordController.text = userDetails!['password'].toString();
       _usernameController.text = userDetails!['username'].toString();
       print('object');
-      print(userDetails!['image'].toString());
+      print(userDetails!['u_img'].toString());
     });
   }
 
@@ -67,6 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         _selectedImage = File(pickedImage.path);
         _currentImage = base64Image;
+        userDetails!['u_img'] = pickedImage.name;
       });
     } else {
       setState(() {
@@ -92,7 +93,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       drawer: CustomDrawer(),
       body: Padding(
-        padding: EdgeInsets.only(top:30,bottom: 16,left: 16,right: 16),
+        padding: EdgeInsets.only(top: 30, bottom: 16, left: 16, right: 16),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -106,29 +107,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: _selectedImage != null &&
                               _selectedImage.path.isNotEmpty
                           ? ClipOval(
-                            child: Image.file(
+                              child: Image.file(
                                 _selectedImage,
                                 height: 200.0,
                                 width: 200.0,
                                 fit: BoxFit.cover,
                               ),
-                          )
+                            )
                           : _currentImage.isNotEmpty
                               ? ClipOval(
-                          child:Image.memory(
+                                  child: Image.memory(
                                   base64Decode(_currentImage),
                                   height: 200.0,
                                   width: 200.0,
                                   fit: BoxFit.cover,
-                                )
-                      )
+                                ))
                               : ClipOval(
-                                child: Container(
-                                 height: 200,
-                                  width: 200.0,
-                                 color: Colors.grey,
-                                 ),
-                              ),
+                                  child: Container(
+                                    height: 200,
+                                    width: 200.0,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                     ),
                     SizedBox(height: 10),
                     IconButton(
@@ -204,9 +204,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         }
                       },
                       style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(Colors.blue),
-                          minimumSize: WidgetStateProperty.all(Size(200, 50)),
-                          ),
+                        backgroundColor: WidgetStateProperty.all(Colors.blue),
+                        minimumSize: WidgetStateProperty.all(Size(200, 50)),
+                      ),
                       child: Text(
                         'حفظ التغيرات',
                         style: TextStyle(
@@ -292,10 +292,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _currentImage = userDetails!['image'];
       }
     }
-print('object save');
-    print(_currentImage);
-    print('object2');
-    print(userDetails!['image']);
+    // print('object save');
+    // print(_currentImage);
+    // print('object2');
+    // print(userDetails!['image']);
     _updateField('age', _ageController.text);
     _updateField('u_desc', _descController.text);
     _updateField('f_name', _fNameController.text);
@@ -305,25 +305,30 @@ print('object save');
     _updateField('username', _usernameController.text);
 
     if (userDetails != null) {
-
+      print("Updated : ");
+      print(userDetails!['image']);
+      print("Updated : ");
+      print(userDetails!['u_img']);
       AuthCont.editProfile(
-        userDetails!['age'].toString(),// Convert 'age' to a string before passing it
+        userDetails!['age']
+            .toString(), // Convert 'age' to a string before passing it
         userDetails!['u_desc'],
         userDetails!['image'],
-        userDetails!['u_img_name'],
+        userDetails!['u_img'],
         userDetails!['f_name'],
         userDetails!['l_name'],
         userDetails!['email'],
         userDetails!['password'],
         userDetails!['username'],
       ).then((value) {
-        print(userDetails);
         print('object save');
         print(userDetails!['image']);
         if (value.statusCode == 200) {
           print('edited successfully');
           print(userDetails);
         } else {
+          print(value.statusCode);
+          print(value.body);
           print('something went wrong');
           print(userDetails);
         }
@@ -336,9 +341,11 @@ print('object save');
       setState(() {
         userDetails![key] = value;
       });
-      print("Updated userDetails: $userDetails");
-      print("Keys in userDetails: ${userDetails!.keys.toList()}");
-      print("values in userDetails: ${userDetails!.values.toList()}");
+      print(key);
+      print("Updated userDetails: ");
+      print(userDetails![key]);
+      // print("Keys in userDetails: ${userDetails!.keys.toList()}");
+      // print("values in userDetails: ${userDetails!.values.toList()}");
     }
   }
 }

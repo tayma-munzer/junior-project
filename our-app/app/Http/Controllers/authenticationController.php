@@ -340,7 +340,7 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
             $user_token = PersonalAccessToken::findToken($request->token);
-            $user = User::where('u_id','=',$user_token->tokenable_id);
+            $user = User::where('u_id','=',$user_token->tokenable_id)->first();
             $user_image= $user->u_img;
             $path = storage_path('images\\');
             $fullpath = $path.''.$user_image;
