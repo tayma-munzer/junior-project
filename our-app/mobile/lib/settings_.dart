@@ -57,8 +57,8 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               children: [
                 const Text(
-                  "الاعدادات",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                  "الإعدادات",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(
                   height: 40,
@@ -75,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(
                       "الحساب",
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   height: 40,
                 ),
-                Row(
+               /* Row(
                   children: [
                     Icon(
                       Icons.volume_up_outlined,
@@ -193,13 +193,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(
+                ),*/
+               /* SizedBox(
                   height: 40,
                 ),
                 SizedBox(
                   height: 10,
-                ),
+                ),*/
                 Row(
                   children: [
                     Icon(
@@ -212,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(
                       "رأيك يهمنا",
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -262,14 +262,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     PopupType.Message, "ٍيتم الذهاب ألى صفحة تسجيل الدخول"),
                 buildAccountOptionRow(context, "تسجيل الخروج",
                     PopupType.Message, "هل انت متأكد أنك تريد تسجيل الخروج"),
+                SizedBox(height: 40,),
                 Divider(
                   height: 15,
                   thickness: 2,
                 ),
                 Text(
                   "الاصدار 1.0.0",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                 ),
+                SizedBox(height: 10,),
               ],
             ),
           ),

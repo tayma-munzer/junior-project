@@ -4,13 +4,13 @@ class VideoWidget extends StatefulWidget {
   final String videoId;
   final String videoName;
   final bool canEdit;
-  final VoidCallback? onPressedDelete; // New callback function
+  final VoidCallback? onPressedDelete;
 
   VideoWidget({
     required this.videoId,
     required this.videoName,
     required this.canEdit,
-    this.onPressedDelete, // Assign the callback function to the parameter
+    this.onPressedDelete,
   });
 
   @override
@@ -24,7 +24,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     setState(() {
       deleteButtonColor = Colors.red;
       if (widget.onPressedDelete != null) {
-        widget.onPressedDelete!(); // Call the callback function if provided
+        widget.onPressedDelete!();
       }
     });
   }
@@ -37,7 +37,14 @@ class _VideoWidgetState extends State<VideoWidget> {
         height: 70,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color.fromARGB(236, 250, 249, 249),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Row(
@@ -47,28 +54,30 @@ class _VideoWidgetState extends State<VideoWidget> {
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.grey,
+                color: Colors.blue,
               ),
               child: Icon(
-                Icons.play_arrow_outlined,
+                Icons.play_circle_fill,
                 color: Colors.white,
+                size: 30,
               ),
             ),
             SizedBox(width: 30),
-            Text(
-              widget.videoName,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                widget.videoName,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            Spacer(),
             if (widget.canEdit)
               IconButton(
                 onPressed: onPressed,
                 icon: Icon(Icons.delete),
                 color: deleteButtonColor,
-                iconSize: 15,
+                iconSize: 30,
               ),
           ],
         ),

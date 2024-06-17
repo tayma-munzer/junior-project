@@ -273,6 +273,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
+  bool _validateEmail(String email) {
+    if (email.isEmpty || email.length > 35 || !email.contains('@') || !email.contains('.')) {
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _saveDetails() async {
     final bool isNewImageSelected = _selectedImage.path.isNotEmpty;
     if (isNewImageSelected) {
@@ -292,10 +299,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _currentImage = userDetails!['image'];
       }
     }
-    // print('object save');
-    // print(_currentImage);
-    // print('object2');
-    // print(userDetails!['image']);
+
     _updateField('age', _ageController.text);
     _updateField('u_desc', _descController.text);
     _updateField('f_name', _fNameController.text);
@@ -303,6 +307,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _updateField('email', _emailController.text);
     _updateField('password', _passwordController.text);
     _updateField('username', _usernameController.text);
+
+    if (!_validateEmail(_emailController.text)) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: AlertDialog(
+              title: Text('خطأ في البريد الالكتروني '),
+              content: Text('الرجاء ادخال بريد الكتروني صحيح'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('تم'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      return;
+    }
+    if (_passwordController.text.length < 4 || _passwordController.text.length > 20) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: AlertDialog(
+              title: Text('خطأ في كلمة المرور'),
+              content: Text('يجب أن تكون كلمة المرور بين 4 و 20 حرفًا'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('تم'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      return;
+    }
 
     if (userDetails != null) {
       print("Updated : ");
@@ -344,8 +395,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       print(key);
       print("Updated userDetails: ");
       print(userDetails![key]);
-      // print("Keys in userDetails: ${userDetails!.keys.toList()}");
-      // print("values in userDetails: ${userDetails!.values.toList()}");
     }
   }
+
+
 }

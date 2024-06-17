@@ -271,7 +271,7 @@ class AuthCont {
     String c_img,
     String c_duration,
     String pre_requisite,
-    String image,
+    String c_img_data,
   ) async {
     var url = edit_course;
 
@@ -283,7 +283,7 @@ class AuthCont {
       'c_img': c_img,
       'c_duration': c_duration,
       'pre_requisite': pre_requisite,
-      'image': image,
+      'c_img_data': c_img_data,
     });
 
     return response;

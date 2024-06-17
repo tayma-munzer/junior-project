@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:mobile/BuidCourseItem.dart';
 import 'package:mobile/addcourse.dart';
 import 'package:mobile/appbar.dart';
-import 'package:mobile/buildCatItem.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/readcourse.dart';
+
+import 'bottombar.dart';
 
 class SecondaryCoursesPage extends StatefulWidget {
   final int ct_id;
@@ -27,20 +29,22 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-      print(decodedData);
+
       if (decodedData is List<dynamic>) {
         setState(() {
-          data = decodedData.map((item) {
-
+          data.addAll(decodedData.map((item) {
             return {
               "c_id": item["c_id"],
               "c_name": item["c_name"],
               "c_desc": item["c_desc"],
-              "c_img": item["c_img"],
-
+              "c_price":item["c_price"].toString(),
+              "image": item["image"],
+              "pre_requisite": item["pre_requisite"],
             };
-          }).toList();
+          }).toList());
+          print(data);
         });
+
       } else {
         print("Invalid response format: $decodedData");
         print(response.body);
@@ -80,95 +84,70 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              Image.asset('assets/book.webp', width: 100),
-              /* Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'ابحث',
-                    suffixIcon: Icon(Icons.search),
-                  ),
+      body: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+
+               // Image.asset('assets/book.webp', width:10 ),
+
+                /*Text(
+                  'الدورات التعليمية',
+                  style: TextStyle(fontSize: 40),
+                ),*/
+
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: _buildItemWidget(data[index]),
+                    );
+                  },
                 ),
-              ),*/
-              SizedBox(height: 40),
-              Text(
-                'الدورات التعليمية',
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CourseDetailsPage(1),
+                SizedBox(height: 30),
+                service == 'true'
+                    ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddCourse(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(10),
+                      backgroundColor: Colors.blue,
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10),
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text(
-                  'test read',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: _buildItemWidget(data[index]),
-                  );
-                },
-              ),
-              SizedBox(height: 30),
-              service == 'true'
-                  ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddCourse(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(10),
-                          backgroundColor: Colors.blue,
-                        ),
-                        child: Text(
-                          'أضف',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
-                    )
-                  : Container()
-            ],
+                    child: Text(
+                      'أضف',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                )
+                    : Container(),
+              ],
+            ),
           ),
         ),
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 
   Widget _buildItemWidget(dynamic item) {
-    final String imageUrl = item["image"] ??
-        ""; // Use an empty string as the default value if image is null
+    final String imageUrl = item["image"] ?? ""; // Use an empty string as the default value if image is null
 
     return GestureDetector(
       onTap: () {
@@ -181,11 +160,13 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
           ),
         );
       },
-      child: BuildItem.without2(
+      child: BuildCourseItem(
         item["c_name"],
         item["c_desc"],
-        imageUrl,
         item["c_price"],
+        imageUrl,
+        item['pre_requisite'],
+
       ),
     );
   }

@@ -25,23 +25,23 @@ class _CategoriesState extends State<Categories> {
     var response = await http.post(Uri.parse(url), body: {
       "st_id": widget.st_id.toString(),
     });
-    print("data fetched ");
+    print(response.body);
     if (response.statusCode == 200) {
-      print(200);
+
       var decodedData = json.decode(response.body);
-      //print(decodedData);
-      print("kkkkkk");
+      print(decodedData);
+
       if (decodedData is Map<String, dynamic>) {
-        print("lololool");
+
         setState(() {
           data = decodedData.values.toList().map((item) {
-            print(item["image"].toString().length);
-            print("lfllfl");
+           // print(item["image"].toString().length);
+
             return {
               "s_id": item["s_id"],
               "s_name": item["s_name"],
               "s_desc": item["s_desc"],
-              "image": item["image"],
+              //"image": item["image"],
               "s_price": item["s_price"].toString(),
               "discount": item["discount"].toString(),
               "status": item["status"],
@@ -76,36 +76,19 @@ class _CategoriesState extends State<Categories> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 20,),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.symmetric(horizontal: 40,vertical: 20),
                     child: _buildItemWidget(data[index]),
                   );
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoriesDetails(1),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10),
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text(
-                  'test read',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
+
             ],
           ),
         ),
@@ -129,7 +112,7 @@ class _CategoriesState extends State<Categories> {
       child: BuildItem(
         item["s_name"],
         item["s_desc"],
-        item["image"],
+        //item["image"],
         item["s_price"],
         item["discount"],
         item["status"],

@@ -15,7 +15,7 @@ class AllCategories extends StatelessWidget {
       ),
       drawer: CustomDrawer(),
       body: Padding(
-        padding: EdgeInsets.only(top: 100, bottom: 100, right: 50, left: 50),
+        padding: EdgeInsets.all(50.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -29,7 +29,11 @@ class AllCategories extends StatelessWidget {
                     ),
                   );
                 },
-                child: box("الخدمات"),
+                child: buildCategoryBox(
+                  text: "الخدمات",
+                  icon: Icons.work,
+                  color: Color(0xFF4E80FF),
+                ),
               ),
             ),
             SizedBox(height: 40),
@@ -43,7 +47,11 @@ class AllCategories extends StatelessWidget {
                     ),
                   );
                 },
-                child: box("الدورات التدريبية"),
+                child: buildCategoryBox(
+                  text: "الدورات التدريبية",
+                  icon: Icons.school,
+                  color: Color(0xFF3465FF),
+                ),
               ),
             ),
           ],
@@ -53,20 +61,38 @@ class AllCategories extends StatelessWidget {
     );
   }
 
-  Container box(String text) {
+  Container buildCategoryBox({required String text, required IconData icon, required Color color}) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
-        color: Colors.blue,
+        color: color,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: Offset(0, 4),
+            blurRadius: 8.0,
+          ),
+        ],
       ),
       child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: Colors.white,
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );

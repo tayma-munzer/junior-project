@@ -19,21 +19,48 @@ class SecondaryCategories extends StatefulWidget {
 }
 
 class _SecondaryCategoriesState extends State<SecondaryCategories> {
+  bool isLoading = true;
+  bool hasError = false;
   List data = [];
 
   void fetch() async {
-    var url = services_second_type;
-    var res =
-        await http.post(Uri.parse(url), body: {"t_id": widget.t_id.toString()});
-    setState(() {
-      List<dynamic> fetchedData = json.decode(res.body);
-      data = fetchedData.map((item) {
-        return {
-          "st_id": item["st_id"],
-          "sec_type": item["sec_type"],
-        };
-      }).toList();
-    });
+    try {
+      var url = services_second_type;
+      var res =
+      await http.post(Uri.parse(url), body: {"t_id": widget.t_id.toString()});
+      setState(() {
+        List<dynamic> fetchedData = json.decode(res.body);
+        data = fetchedData.map((item) {
+          return {
+            "st_id": item["st_id"],
+            "sec_type": item["sec_type"],
+          };
+        }).toList();
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        hasError = true;
+        isLoading = false;
+      });
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('تنبيه'),
+            content: Text('حصل خطأ ما حاول لاحقا'),
+            actions: [
+              TextButton(
+                child: Text('تم'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -53,27 +80,35 @@ class _SecondaryCategoriesState extends State<SecondaryCategories> {
           child: CustomAppBar(),
         ),
         drawer: CustomDrawer(),
-        body: Padding(
-          padding: EdgeInsets.all(40.0),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount:
-                  screenWidth ~/ 300, // Adjust the width based on screen size
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              childAspectRatio: screenWidth /
-                  (300 *
-                      0.4), // Calculate the aspect ratio based on screen width and desired height
+        body: Directionality(
+
+          textDirection: TextDirection.rtl,
+          child: Padding(
+            padding: EdgeInsets.all(40.0),
+             child: isLoading
+              ? Center(
+              child: CircularProgressIndicator(), // Show a loading indicator
+                )
+            : GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount:
+                    screenWidth ~/ 300, // Adjust the width based on screen size
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 40,
+                childAspectRatio: screenWidth /
+                    (300 *
+                        0.4), // Calculate the aspect ratio based on screen width and desired height
+              ),
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (data.isEmpty) {
+                  return Center(
+                    child: Text('No items to show'),
+                  );
+                }
+                return _buildCategoryWidget(data[index]);
+              },
             ),
-            itemCount: data.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (data.isEmpty) {
-                return Center(
-                  child: Text('No items to show'),
-                );
-              }
-              return _buildCategoryWidget(data[index]);
-            },
           ),
         ),
         bottomNavigationBar: BottomBar(),
@@ -93,20 +128,35 @@ class _SecondaryCategoriesState extends State<SecondaryCategories> {
           ),
         );
       },
-      child: Container(
-        padding: EdgeInsets.all(15.0),
-        decoration: BoxDecoration(
-          color: AppColors.appColor,
+      child: Card(
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
           children: [
-            Expanded(
+            Positioned(
+              top: 20,
+              left: 10, // Updated position to the left side
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(25.0),
               child: Text(
                 category["sec_type"],
                 style: TextStyle(
-                  color: AppColors.appiconColor,
+                  color: Colors.blue,
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),

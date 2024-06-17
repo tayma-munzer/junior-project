@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -33,6 +32,7 @@ class _EditCourseState extends State<EditCourse> {
   TextEditingController _priceController = TextEditingController();
   TextEditingController _durationController = TextEditingController();
   TextEditingController _prerequisiteController = TextEditingController();
+  TextEditingController _imageController = TextEditingController();
 
   void fetchCourse() async {
     var url = get_course_detils;
@@ -40,19 +40,21 @@ class _EditCourseState extends State<EditCourse> {
         await http.post(Uri.parse(url), body: {'c_id': widget.c_id.toString()});
     var responseData = json.decode(res.body);
     print(res.body);
+    courseDetails = json.decode(res.body);
     setState(() {
-      courseDetails = json.decode(res.body);
       _titleController.text = courseDetails!['c_name'].toString();
       _descController.text = courseDetails!['c_desc'].toString();
       _priceController.text = courseDetails!['c_price'].toString();
+      _imageController.text = courseDetails!['c_img'].toString();
       _durationController.text = courseDetails!['c_duration'].toString();
       _prerequisiteController.text =
-          courseDetails!['c_prerequisite'].toString();
-      _currentImage = responseData['c_img'];
+          courseDetails!['pre_requisite'].toString();
+      _currentImage = courseDetails!['image'].toString();
+      print(courseDetails!['image'].toString());
+      print('object');
+      print(_currentImage);
     });
   }
-
-  late String _selectedImagePath = ''; // Selected image path
 
   Future<void> _selectImage() async {
     final pickedImage = await ImagePicker().pickImage(
@@ -65,37 +67,51 @@ class _EditCourseState extends State<EditCourse> {
       setState(() {
         _selectedImage = File(pickedImage.path);
         _currentImage = base64Image;
+        courseDetails!['c_img'] = pickedImage.name;
+      });
+    } else {
+      setState(() {
+        // No new image selected, keep the existing image
+        _selectedImage = File('');
+        _currentImage = courseDetails!['image'].toString();
       });
     }
   }
 
-  void fetchVideos() async {
-    var url = get_media;
-    var res =
-        await http.post(Uri.parse(url), body: {"c_id": widget.c_id.toString});
-    print(res.body);
-    if (res.statusCode == 200) {
-      var decodedData = json.decode(res.body);
+  Future<void> fetchVideoData() async {
+    var url = get_all_media; // Replace with your video API URL
+    var response = await http.post(Uri.parse(url), body: {
+      'c_id': courseDetails!['c_id'].toString(),
+    });
+    print('video fetch');
+    print(courseDetails!['c_id']);
+    print(response.body);
+    if (response.statusCode == 200) {
+      var decodedData = json.decode(response.body);
 
-      if (decodedData is Map<String, dynamic>) {
+      if (decodedData is List<dynamic>) {
+        // Check if the decoded data is a list
         setState(() {
-          videoData = decodedData;
+          videoData = {
+            for (var video in decodedData)
+              video["m_id"].toString(): video["m_name"]
+          };
           isLoading = false;
         });
       } else {
         print("Invalid response format: $decodedData");
       }
     } else {
-      print("Request failed with status: ${res.statusCode}");
+      print("hello Request failed with status: ${response.body}");
+      print(response.statusCode);
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchCourse();
-    fetchVideos();
+    fetchVideoData();
   }
 
   @override
@@ -114,29 +130,32 @@ class _EditCourseState extends State<EditCourse> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 50),
-                InkWell(
-                  onTap: _selectImage,
+                Container(
                   child:
                       _selectedImage != null && _selectedImage.path.isNotEmpty
                           ? Image.file(
                               _selectedImage,
-                              height: 300.0,
-                              width: double.infinity,
+                              height: 200.0,
+                              width: 200.0,
                               fit: BoxFit.cover,
                             )
                           : _currentImage.isNotEmpty
                               ? Image.memory(
                                   base64Decode(_currentImage),
-                                  height: 300.0,
-                                  width: double.infinity,
+                                  height: 200.0,
+                                  width: 200.0,
                                   fit: BoxFit.cover,
                                 )
-                              : Container(),
+                              : Container(
+                                  height: 200,
+                                  width: 200.0,
+                                  color: Colors.grey,
+                                ),
                 ),
                 SizedBox(height: 10),
                 IconButton(
                   onPressed: _selectImage,
-                  icon: Icon(Icons.image),
+                  icon: Icon(Icons.edit),
                   tooltip: 'اختر صورة',
                 ),
                 SizedBox(height: 50),
@@ -158,52 +177,50 @@ class _EditCourseState extends State<EditCourse> {
                   courseDetails!['c_prerequisite'] = value;
                 }),
                 SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: isLoading
-                      ? CircularProgressIndicator()
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: videoData != null ? videoData!.length : 0,
-                          itemBuilder: (context, index) {
-                            var videoId = videoData!.keys.elementAt(index);
-                            var videoName = videoData![videoId];
+                isLoading
+                    ? CircularProgressIndicator()
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: videoData != null ? videoData!.length : 0,
+                        itemBuilder: (context, index) {
+                          var videoId = videoData!.keys.elementAt(index);
+                          var videoName = videoData![videoId];
 
-                            // Create an instance of the VideoWidget class
-                            VideoWidget videoWidget = VideoWidget(
-                                videoId: videoId,
-                                videoName: videoName,
-                                canEdit: true,
-                                onPressedDelete: () async {
-                                  var url = delete_media;
-                                  var res = await http.post(Uri.parse(url),
-                                      body: {
-                                        'c_id': videoData!['c_id'].toString()
-                                      });
-                                  if (res.statusCode == 200) {
-                                    print('deleted seccessfully');
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ListCourses()),
-                                    );
-                                  }
-                                });
+                          // Create an instance of the VideoWidget class
+                          VideoWidget videoWidget = VideoWidget(
+                              videoId: videoId,
+                              videoName: videoName,
+                              canEdit: true,
+                              onPressedDelete: () async {
+                                var url = delete_media;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
+                                      'c_id': videoData!['c_id'].toString()
+                                    });
+                                print('hello');
+                                if (res.statusCode == 200) {
+                                  print('deleted seccessfully');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ListCourses()),
+                                  );
+                                }
+                              });
 
-                            return videoWidget; // Replace videoWidget(videoId, videoName) with videoWidget
-                          },
-                        ),
-                ),
+                          return videoWidget;
+                        },
+                      ),
                 ElevatedButton(
                   onPressed: () {
-                    // if (_formKey.currentState!.validate()) {
-                    // }
-                    _saveDetails();
+                    if (_formKey.currentState!.validate()) {
+                      _saveDetails();
+                    }
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    minimumSize: MaterialStateProperty.all(Size(200, 50)),
+                    backgroundColor: WidgetStateProperty.all(Colors.blue),
+                    minimumSize: WidgetStateProperty.all(Size(200, 50)),
                   ),
                   child: Text(
                     ' حفظ التغيريات',
@@ -269,26 +286,68 @@ class _EditCourseState extends State<EditCourse> {
     );
   }
 
-  void _saveDetails() {
-    courseDetails!['c_img'] = _selectedImagePath ?? _currentImage;
-    print(courseDetails);
-    // AuthCont.editCourse(
-    //         courseDetails!['c_id'].toString(),
-    //         courseDetails!['c_name'],
-    //         courseDetails!['c_desc'],
-    //         courseDetails!['c_price'].toString(),
-    //         courseDetails!['c_img'],
-    //         courseDetails!['c_duration'],
-    //         courseDetails!['prerequisite'])
-    // AuthCont.editCourse(1.toString(), "nnnn", "nnnnnnn", 5652262.toString(),
-    //         "hhhhhhh", "nn", "njjj")
-    //     .then((value) {
-    //   if (value.statusCode == 200) {
-    //     print('edited successfully');
-    //   } else {
-    //     print('something went wrong');
-    //     print(value.body);
-    //   }
-    // });
+  Future<void> _saveDetails() async {
+    final bool isNewImageSelected = _selectedImage.path.isNotEmpty;
+    if (isNewImageSelected) {
+      List<int> imageBytes = _selectedImage.readAsBytesSync();
+      String base64Image = base64Encode(imageBytes);
+      setState(() {
+        if (courseDetails != null) {
+          courseDetails!['image'] = base64Image;
+        }
+      });
+    } else {
+      if (courseDetails != null) {
+        _currentImage = courseDetails!['image'];
+      }
+    }
+
+
+    _updateField('c_name',  _titleController.text);
+    _updateField('c_desc', _descController.text);
+    _updateField('c_price', _priceController.text);
+    _updateField('c_duration', _durationController.text);
+    _updateField('prerequisite', _prerequisiteController.text);
+
+
+    if (courseDetails != null) {
+      print("Updated : ");
+      print(courseDetails!['image']);
+      AuthCont.editCourse(
+        courseDetails!['c_id'].toString(),
+        courseDetails!['c_name'],
+        courseDetails!['c_desc'],
+        courseDetails!['c_price'].toString(),
+        courseDetails!['c_img'],
+        courseDetails!['c_duration'].toString(),
+        courseDetails!['pre_requisite'],
+        courseDetails!['image'].toString(),
+      ).then((value) {
+        print('object save');
+        print(courseDetails!['image']);
+        if (value.statusCode == 200) {
+          print('edited successfully');
+          print(courseDetails);
+        } else {
+          print('something went wrong');
+          print(value.body);
+          print(courseDetails);
+        }
+      });
+    }
   }
-}
+
+    void _updateField(String key, String value) {
+      if (courseDetails!= null) {
+        setState(() {
+          courseDetails![key] = value;
+        });
+        print(key);
+        print("Updated userDetails: ");
+        print(courseDetails![key]);
+        // print("Keys in userDetails: ${userDetails!.keys.toList()}");
+        // print("values in userDetails: ${userDetails!.values.toList()}");
+      }
+    }
+  }
+

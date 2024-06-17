@@ -25,6 +25,7 @@ class _Course_typesState extends State<Course_types> {
     setState(() {
       data = json.decode(res.body);
     });
+    print(data);
   }
 
   @override
@@ -41,37 +42,31 @@ class _Course_typesState extends State<Course_types> {
       ),
       drawer: CustomDrawer(),
       body: Container(
-        color: AppColors.appiconColor,
+
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Column(
-              children: [
-                Text(
-                  "الاقسام",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          child: Column(
+            children: [
+
+              SizedBox(height: 30),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.8),
                 ),
-                SizedBox(height: 20),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 2),
-                  ),
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (data.isEmpty) {
-                      return Center(
-                        child: Text('No items to show'),
-                      );
-                    }
-                    return buildCircleItem(context, index);
-                  },
-                ),
-              ],
-            ),
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (data.isEmpty) {
+                    return Center(
+                      child: Text('No items to show'),
+                    );
+                  }
+                  return buildCircleItem(context, index);
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -93,6 +88,7 @@ class _Course_typesState extends State<Course_types> {
         );
       },
       iconKey: "ct_icon",
+      title:data[index]["ct_type"],
     );
   }
 }

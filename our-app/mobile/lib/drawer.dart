@@ -69,7 +69,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               " ",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 28,
               ),
             ),
           ),

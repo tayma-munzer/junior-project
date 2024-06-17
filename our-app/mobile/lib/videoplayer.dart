@@ -7,10 +7,12 @@ import 'package:video_player/video_player.dart';
 
 class VideoPlayerPage extends StatefulWidget {
   final String videoId;
-  final String vidoeName;
+  final String videoName;
 
-  VideoPlayerPage(this.videoId, this.vidoeName);
-
+  VideoPlayerPage({
+    required this.videoId,
+    required this.videoName,
+  });
   @override
   _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
@@ -20,6 +22,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   bool _isVideoLoaded = false;
   bool _isDragging = false;
   double _currentSliderValue = 0.0;
+
 
   @override
   void initState() {

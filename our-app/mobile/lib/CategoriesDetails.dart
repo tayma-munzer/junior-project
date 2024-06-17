@@ -107,29 +107,70 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
   Widget _buildBuyButton() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20.0),
-      child: TextButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BuyPage(widget.s_id),
-            ),
-          );
-        },
-        child: Text(
-          'اشتري',
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuyPage(widget.s_id),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'تواصل',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-          padding: MaterialStateProperty.all<EdgeInsets>(
-            EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+          SizedBox(height: 16,),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuyPage(widget.s_id),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'اشتري',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+        ],
       ),
     );
   }

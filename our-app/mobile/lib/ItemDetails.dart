@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mobile/colors.dart';
+import 'package:mobile/rating.dart';
 
 class ItemDetails extends StatelessWidget {
   final String image;
@@ -31,13 +32,13 @@ class ItemDetails extends StatelessWidget {
     Widget imageWidget;
 
     // Assuming you have the image data available
-    if (image != null && image!.isNotEmpty) {
+    if (image != null && image.isNotEmpty) {
       try {
-        print("try");
-        Uint8List imageData = base64Decode(image!);
+        Uint8List imageData = base64Decode(image);
         imageWidget = Image.memory(
-          base64Decode(image!),
+          imageData,
           height: 300,
+          width: double.infinity,
         );
       } catch (error) {
         print('Error decoding base64 image: $error');
@@ -61,230 +62,207 @@ class ItemDetails extends StatelessWidget {
         padding: EdgeInsets.only(top: 5),
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: imageWidget,
-            ),
-            Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  color: AppColors.appiconColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
+            imageWidget,
+            SizedBox(height: 10),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RatingWidget2(),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 60, bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RatingBar.builder(
-                                initialRating: 5,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                itemCount: 5,
-                                itemSize: 18,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: AppColors.appbarColor,
-                                ),
-                                onRatingUpdate: (index) {},
-                              ),
-                              Text(
-                                price,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
+                        Expanded(
+                          child: Text(
+                            serviceTitle,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    serviceTitle,
-                                    style: TextStyle(
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                        /**/
+
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              color: Colors.grey[700],
+                              size: 16,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'احصل على الخدمة خلال',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 18,
+                                color: Colors.black,
                               ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 90,
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: AppColors.appbarColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(2),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "تواصل ",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: AppColors.appiconColor,
-                                        ),
-                                      ),
-                                      Icon(
-                                        CupertinoIcons.chat_bubble,
-                                        color: AppColors.appiconColor,
-                                        size: 20,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                " احصل على الخدمة خلال",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 16,
-                                ),
-                                textAlign: TextAlign.justify,
-                              ),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(
-                                      CupertinoIcons.clock,
-                                      color: AppColors.appbarColor,
-                                    ),
-                                  ),
-                                  Text(
-                                    duration,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                " عدد المشترين",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 16,
-                                ),
-                                textAlign: TextAlign.justify,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    numberOfBuyers,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "الخصم",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 16,
-                                ),
-                                textAlign: TextAlign.justify,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    discount,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                ],
-                              ),
-                            ],
+                        Spacer(),
+                        Text(
+                          duration,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
+                            color: Colors.grey[700],
                           ),
                         ),
                       ],
                     ),
-                  ),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.attach_money,
+                          color: Colors.grey[700],
+                          size: 16,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "السعر",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Spacer(),
+                        Text(
+                          price,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    if (discount != '0')
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.discount_outlined,
+                                color: Colors.grey[700],
+                                size: 16,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "الخصم",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle:FontStyle.italic,
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Spacer(),
+                              Text(
+                                discount,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 16,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10,),
+                        ],
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.person_2_outlined,
+                          color: Colors.grey[700],
+                          size: 16,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "عدد المشترين",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          numberOfBuyers,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                  ],
                 ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
               ),
-              child: Column(
-                children: [
-                  Text(
-                    "التوصيف",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+            ),
+            SizedBox(height: 20),
+
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "التوصيف",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 16,
+                    SizedBox(height: 5),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
-                    textAlign: TextAlign.justify,
-                  ),
-                ],
+                    SizedBox(height: 10,),
+                  ],
+                ),
               ),
             ),
           ],
