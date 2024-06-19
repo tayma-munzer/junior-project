@@ -109,3 +109,17 @@ Route::get('/get_all_services',[gets::class, 'services']);
 Route::get('/get_all_courses',[gets::class, 'courses']);
 Route::get('/get_all_jobs',[gets::class, 'jobs']);
 
+
+Route::post('/get_user_services',[authenticationController::class,'get_user_services'] );//added
+Route::post('/add_service_enrollment',[authenticationController::class,'add_service_enrollment'] );//added
+Route::post('/add_not_found_service',[authenticationController::class,'add_not_found_service'] );//added
+Route::post('/register',[authenticationController::class,'register'] );//added
+Route::get('/get_common_questions',[gets::class,'common_questions'] );//added
+Route::post('/delete_work',[authenticationController::class,'delete_work'] );//
+Route::post('/add_work',[authenticationController::class,'add_work'] );//
+Route::post('/get_works',[authenticationController::class,'get_works'] );//
+Route::post('/edit_work',[authenticationController::class,'edit_work'] );//
+
+
+
+
