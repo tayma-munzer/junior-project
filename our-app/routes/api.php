@@ -12,6 +12,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::post('/login',[authenticationController::class,'login']);//added
+Route::post('/switch_account',[authenticationController::class,'switch_account']);
+Route::post('/logout',[authenticationController::class,'logout'])->middleware('auth:sanctum');
+Route::post('/delete_account',[authenticationController::class,'delete_account'])->middleware('auth:sanctum');
 Route::get('/getservices',[gets::class,'services']);
 Route::get('/getfirst_type',[gets::class,'first_types']);//added
 Route::post('/getsec_type',[authenticationController::class,'sec_types']);//added
@@ -120,6 +123,28 @@ Route::post('/add_work',[authenticationController::class,'add_work'] );//
 Route::post('/get_works',[authenticationController::class,'get_works'] );//
 Route::post('/edit_work',[authenticationController::class,'edit_work'] );//
 
+Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){
+    Route::get('/get_profiles', 'get_profiles');
+    Route::get('/get_profile/{id}', 'get_profile');
+    Route::get('/get_complaints', 'get_complaints');
+    Route::get('/get_profits', 'get_profits');
+
+    Route::post('/add_complaint', 'add_complaint');
+    Route::post('/accept_job/{id}', 'accept_job');
+    Route::post('/reject_job/{id}', 'reject_job');
+    Route::post('/accept_course/{id}', 'accept_course');
+    Route::post('/reject_course/{id}', 'reject_course');
+    Route::post('/accept_training_course/{id}', 'accept_training_course');
+    Route::post('/reject_training_course/{id}', 'reject_training_course');
+    Route::post('/accept_service/{id}', 'accept_service');
+    Route::post('/reject_service/{id}', 'reject_service');
+
+    Route::post('/delete_course/{id}', 'delete_course');
+    Route::post('/delete_training_course/{id}', 'delete_training_course');
+    Route::post('/delete_job/{id}', 'delete_job');
+    Route::post('/delete_service/{id}', 'delete_service');
+    Route::post('/delete_user/{id}', 'delete_user');
+});
 
 
 

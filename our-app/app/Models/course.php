@@ -19,12 +19,12 @@ class course extends Model
         'c_duration',
         'pre_requisite',
         'ct_id',
-    
+        'is_accepted',
     ];
 
     public function courses_type(){
-        return 
+        return
         $this->belongsTo(courses_type::class,'ct_id','c_id');
     }
-    
+
 }

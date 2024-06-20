@@ -16,5 +16,6 @@ class job extends Model
         'j_desc',
         'j_sal',
         'j_req',
+        'is_accepted',
     ];
 }
