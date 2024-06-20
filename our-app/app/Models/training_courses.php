@@ -15,5 +15,6 @@ class training_courses extends Model
         'course_name',
         'training_center',
         'completion_date',
+        'is_accepted',
     ];
 }

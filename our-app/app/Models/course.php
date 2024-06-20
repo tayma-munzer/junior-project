@@ -20,12 +20,12 @@ class course extends Model
         'pre_requisite',
         'num_of_free_videos',
         'ct_id',
-    
+        'is_accepted',
     ];
 
     public function courses_type(){
-        return 
+        return
         $this->belongsTo(courses_type::class,'ct_id','c_id');
     }
-    
+
 }

@@ -22,5 +22,6 @@ class services extends Model
         'status',
         's_img',
         's_video',
+        'is_accepted',
     ];
 }

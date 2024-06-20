@@ -77,6 +77,7 @@ use App\Models\job_application;
 use App\Models\not_found_services;
 use App\Models\role;
 use App\Models\service_enrollment;
+use Illuminate\Support\Facades\Auth;
 use App\Models\user_role;
 use App\Models\works_gallery;
 use Illuminate\Support\Facades\DB;
@@ -117,6 +118,24 @@ class authenticationController extends Controller
             'roles'=>$roles,
         ],200);
     }
+    }
+    public function switch_account(loginRequest $request)
+    {
+        Auth::user()->tokens()->delete();
+        return $this->login($request);
+    }
+
+    public function logout(): \Illuminate\Http\JsonResponse
+    {
+        Auth::user()->tokens()->delete();
+        return response()->json(['message'=>'logged out successfully']);
+    }
+
+    public function delete_account(): \Illuminate\Http\JsonResponse
+    {
+        $id = Auth::id();
+        User::find($id)->delete();
+        return response()->json(['message'=>'account deleted successfully']);
     }
 //done
     public function sec_types (getsectype $request){
@@ -242,12 +261,6 @@ class authenticationController extends Controller
             'j_id' =>$job->id
         ],200);
     }
-    }
-// not done yet
-    public function delete_account(deleteRequest $request){
-        $request->validated();
-
-        // deleting process
     }
 // done
     public function add_discount(discountRequest $request){
