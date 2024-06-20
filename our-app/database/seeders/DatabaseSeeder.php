@@ -307,6 +307,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
             'ct_id'=>'1',
+            'num_of_free_videos'=>'1',
             
         ]);
         DB::table('courses')->insert([
@@ -318,7 +319,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'20',
             'pre_requisite'=>'cs',
             'ct_id'=>'2',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 3',
@@ -329,7 +330,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'30',
             'pre_requisite'=>'lc',
             'ct_id'=>'3',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('courses')->insert([
             'c_name'=>'اسم كورس 4',
@@ -340,7 +341,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'40',
             'pre_requisite'=>'cl',
             'ct_id'=>'4',
-            
+            'num_of_free_videos'=>'0',
             ]);
             DB::table('courses')->insert([
                 'c_name'=>'5 اسم كورس ',
@@ -351,7 +352,7 @@ class DatabaseSeeder extends Seeder
                 'c_duration'=>'10',
                 'pre_requisite'=>'pr',
                 'ct_id'=>'1',
-                
+                'num_of_free_videos'=>'0',
             ]);
             DB::table('courses')->insert([
             'c_name'=>'6 اسم كورس ',
@@ -362,7 +363,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
             'ct_id'=>'1',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('courses')->insert([
             'c_name'=>'7 اسم كورس ',
@@ -373,7 +374,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
             'ct_id'=>'2',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('courses')->insert([
             'c_name'=>'8 اسم كورس ',
@@ -384,7 +385,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
             'ct_id'=>'2',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('courses')->insert([
             'c_name'=>'9 اسم كورس ',
@@ -395,7 +396,7 @@ class DatabaseSeeder extends Seeder
             'c_duration'=>'10',
             'pre_requisite'=>'pr',
             'ct_id'=>'3',
-            
+            'num_of_free_videos'=>'0',
         ]);
         DB::table('jobs')->insert([
             'j_name'=>'اسم الوظيفة 1',

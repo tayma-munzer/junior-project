@@ -22,6 +22,7 @@ class edit_media_request extends FormRequest
     public function rules(): array
     {
         return [
+            'c_id',
             'm_id',
             'm_name',
             'm_title',

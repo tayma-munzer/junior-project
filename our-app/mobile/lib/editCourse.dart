@@ -47,8 +47,7 @@ class _EditCourseState extends State<EditCourse> {
       _priceController.text = courseDetails!['c_price'].toString();
       _imageController.text = courseDetails!['c_img'].toString();
       _durationController.text = courseDetails!['c_duration'].toString();
-      _prerequisiteController.text =
-          courseDetails!['pre_requisite'].toString();
+      _prerequisiteController.text = courseDetails!['pre_requisite'].toString();
       _currentImage = courseDetails!['image'].toString();
       print(courseDetails!['image'].toString());
       print('object');
@@ -80,8 +79,9 @@ class _EditCourseState extends State<EditCourse> {
 
   Future<void> fetchVideoData() async {
     var url = get_all_media; // Replace with your video API URL
+    print(courseDetails!['c_id'].toString());
     var response = await http.post(Uri.parse(url), body: {
-      'c_id': courseDetails!['c_id'].toString(),
+      'c_id': widget.c_id.toString(),
     });
     print('video fetch');
     print(courseDetails!['c_id']);
@@ -302,13 +302,11 @@ class _EditCourseState extends State<EditCourse> {
       }
     }
 
-
-    _updateField('c_name',  _titleController.text);
+    _updateField('c_name', _titleController.text);
     _updateField('c_desc', _descController.text);
     _updateField('c_price', _priceController.text);
     _updateField('c_duration', _durationController.text);
     _updateField('prerequisite', _prerequisiteController.text);
-
 
     if (courseDetails != null) {
       print("Updated : ");
@@ -337,17 +335,16 @@ class _EditCourseState extends State<EditCourse> {
     }
   }
 
-    void _updateField(String key, String value) {
-      if (courseDetails!= null) {
-        setState(() {
-          courseDetails![key] = value;
-        });
-        print(key);
-        print("Updated userDetails: ");
-        print(courseDetails![key]);
-        // print("Keys in userDetails: ${userDetails!.keys.toList()}");
-        // print("values in userDetails: ${userDetails!.values.toList()}");
-      }
+  void _updateField(String key, String value) {
+    if (courseDetails != null) {
+      setState(() {
+        courseDetails![key] = value;
+      });
+      print(key);
+      print("Updated userDetails: ");
+      print(courseDetails![key]);
+      // print("Keys in userDetails: ${userDetails!.keys.toList()}");
+      // print("values in userDetails: ${userDetails!.values.toList()}");
     }
   }
-
+}

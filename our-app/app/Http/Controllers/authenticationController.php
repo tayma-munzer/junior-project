@@ -18,9 +18,11 @@ use App\Http\Requests\add_media_request;
 use App\Http\Requests\add_projects_request;
 use App\Http\Requests\add_skill_request;
 use App\Http\Requests\add_training_request;
+use App\Http\Requests\add_work_request;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\course_enrollment_request;
 use App\Http\Requests\delete_all_cv;
+use App\Http\Requests\delete_work_request;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
 use App\Http\Requests\edit_alt_service_request;
@@ -51,7 +53,10 @@ use App\Http\Requests\get_courses_type_request;
 use App\Http\Requests\get_course_for_user;
 use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
+use App\Http\Requests\get_works_request;
 use App\Http\Requests\job_application_request;
+use App\Http\Requests\not_found_services_request;
+use App\Http\Requests\register_request;
 use App\Http\Requests\service_enrollment_request;
 use App\Models\alt_services;
 use App\Models\course;
@@ -69,7 +74,11 @@ use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
 use App\Models\job_application;
+use App\Models\not_found_services;
+use App\Models\role;
 use App\Models\service_enrollment;
+use App\Models\user_role;
+use App\Models\works_gallery;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -964,7 +973,7 @@ class authenticationController extends Controller
     //done
     public function get_all_media(edit_media_request $request){
         $validator = Validator::make($request->all(), [
-            'c_id' => 'required|exists:courses,c_id',///////////////////////exists:media,c_id
+            'c_id' => 'required',///////////////////////exists:media,c_id
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
@@ -2008,7 +2017,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
     }
 
-    //done without testking 
+    //done 
     public function add_service_enrollment (service_enrollment_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|integer',
@@ -2024,14 +2033,221 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }else{
             $user_token = PersonalAccessToken::findToken($request->token);
             $service_enrollment = service_enrollment::create([
-            's_id' => $request->c_id,
-            'u_id' => $request->$user_token->tokenable_id,
+            's_id' => $request->s_id,
+            'u_id' => $user_token->tokenable_id,
             ]);
+            $service = services::where('s_id','=',$request->s_id)->first();
+            $num_of_buyers = $service->num_of_buyers;
+            services::where('s_id','=',$request->s_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
             return response([
                 'message'=> 'added successfully',
             ],200);
     }
     }
 
+    //done 
+    public function get_user_services (get_by_token $request){
+        $validator = Validator::make($request->all(), [
+            'token'=>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $user_token = PersonalAccessToken::findToken($request->token);
+            $services = services::where('u_id','=',$user_token->tokenable_id);
+            return $services->get();
+    }
+    }
+
+    // done without testing 
+    public function add_not_found_service (not_found_services_request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'service_desc' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $user_token =PersonalAccessToken::findToken($request->token);
+        $not_found_service = not_found_services::create([
+        'u_id' => $user_token->tokenable_id,
+        'service_desc' => $request->service_desc,
+        ]);
+        return response([
+            'message'=> 'added successfully',
+        ],200);
+    }
+    }
+
+
+    // done
+    public function register(register_request $request){
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            'f_name' => 'required|string',
+            'l_name' => 'required|string',
+            'age' => 'required|integer',
+            'u_desc' => 'required|string',
+            'u_img_name' => 'required|string',
+            'u_img_data' => 'required',
+            'email' => 'required',
+            'username'=>'required|string',
+            'password'=>'required|min:5',
+            'gender'=>'required|string',
+            'preservation'=>'required|string',
+            'roles'=>'required|array',
+            'roles.*.role'=>'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'gte:50000'=> 'the :attribute field should be minimum 50000',
+            'string'=> 'the :attribute field should be string',
+            'exists'=> 'the :attribute field should be exist',
+            'integer'=>'the :attribute field should be integer ',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $img_data = $request -> u_img_data;
+        $decoded_img = base64_decode($img_data);
+        $path = storage_path('images/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        $fullpath = $path.''.$request->u_img_name;
+        file_put_contents($fullpath,$decoded_img);
+        $user = User::create([
+        'f_name' => $request->f_name,
+        'l_name' => $request->l_name,
+        'age' => $request->age,
+        'u_desc' => $request->u_desc,
+        'email' => $request->email,
+        'username'=> $request->username ,
+        'password'=>$request->password,
+        'u_img' => $request->u_img_name,
+        'gender' => $request->gender,
+        'p_id'=>gets::preservation_id($request->preservation),
+        ]);
+        $user_id = $user->u_id;
+        $roles = $requestData['roles'];
+        foreach ($roles as $role){
+            $r_id = gets::role_id($role['role']);
+            $role = user_role::create([
+            'u_id' =>$user_id,
+            'r_id' => $r_id,
+            ]);
+        }
+        return response([
+            'message'=> 'added successfully'
+        ],200);
+    }
+    }
+
+    //done
+    public function delete_work(delete_work_request $request){
+        $validator = Validator::make($request->all(), [
+            'w_id' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $work = works_gallery::where('w_id','=',$request->w_id)->first();
+            $s_id = $work -> s_id ;
+            $effected_rows=works_gallery::where('w_id','=',$request->w_id)->delete();
+            if ($effected_rows!=0){
+                $works =works_gallery::where('s_id','=',$s_id)->get();
+            return response([
+                'message'=> 'deleted successfully',
+                'works'=>$works,
+            ],200); }
+            else {
+                return response([
+                    'message'=> 'nothing is deleted something went wrong'
+                ],402);
+            }
+        }
+    }
+
+    //done
+    public function add_work(add_work_request $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required',
+            'w_name' => 'required|string',
+            'w_desc' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $work = works_gallery::create([
+                's_id' => $request->s_id,
+                'w_name' => $request->w_name,
+                'w_desc' => $request->w_desc,
+                ]);
+            return response([
+                'message'=> 'added successfully',
+            ],200); 
+            
+        }
+    }
+
+
+    //done
+    public function get_works(get_works_request $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $media =works_gallery::where('s_id','=',$request->s_id);
+        return $media->get(); }
+    }
+
+    //done
+    public function edit_work(edit_job_request $request){
+        $validator = Validator::make($request->all(), [
+            'w_id' => 'required',
+            'w_desc' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+            'integer' => 'The :attribute field must be integer.',
+            'string' => 'The :attribute field must be string.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $effected_rows=works_gallery::where('w_id','=',$request->w_id)->update([
+            'w_desc'=>$request->w_desc,
+        ]);
+        if ($effected_rows!=0){
+        return response([
+            'message'=> 'updated successfully'
+        ],200); }
+        else {
+            return response([
+                'message'=> 'nothing is updated something went wrong'
+            ],402);
+        }
+    }
+    }
 
 }

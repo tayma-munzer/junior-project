@@ -23,10 +23,7 @@ class add_media_request extends FormRequest
     {
         return [
             'c_id',
-            'm_title',
-            'm_name',
-            'm_desc',
-            'm_path',
+            'medias'
             
             //
         ];

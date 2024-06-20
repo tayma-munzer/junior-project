@@ -15,6 +15,9 @@ use App\Models\courses_type;
 use App\Models\job;
 use App\Models\languages;
 use App\Models\media;
+use App\Models\preservations;
+use App\Models\rates_reviews;
+use App\Models\role;
 use Illuminate\Queue\Jobs\Job as JobsJob;
 
 class gets extends Controller
@@ -64,25 +67,34 @@ class gets extends Controller
         return $type->st_id;
     }
 
-    function get_all_jobs(){
-        $jobs = job::all();
-        return $jobs;
+    function jobs(){
+        return job::all();
     }
 
     static function get_course_types () {
         return courses_type::all();
     }
-
     static function get_home_page_services(){
-        $services = services::take(8)->get();
-        $path = storage_path('images\\');
-        foreach ($services as $service) {
-            $fullpath = $path.''.$service->s_img;
-            $image = file_get_contents($fullpath);
-            $base64image = base64_encode($image);
-            $service->image = $base64image;
-        }
-        return $services;
+        $minimum_high_rate = 4;
+        $top_services = rates_reviews::where('ratable_type','=', 'service')
+        ->selectRaw('ratable_id, COUNT(CASE WHEN rate >= ? THEN 1 END) as high_rate_count, MAX(rate) as max_rate', [$minimum_high_rate])
+                        ->groupBy('ratable_id')
+                        ->orderBy('high_rate_count', 'desc')
+                        ->orderBy('max_rate', 'desc')
+                        ->get();
+                        $path = storage_path('images\\');
+                        $serviceData = [];
+                        foreach ($top_services as $rating) {
+                            $service = services::where('s_id', $rating->ratable_id)->first();
+                            if ($service) {
+                                $fullpath = $path.''.$service->s_img;
+                                $image = file_get_contents($fullpath);
+                                $base64image = base64_encode($image);
+                                $service->image = $base64image;
+                                array_push($serviceData, $service);
+                            }
+                        }
+        return $serviceData;
     }
 
     static function get_home_page_jobs(){
@@ -90,12 +102,45 @@ class gets extends Controller
     }
 
     static function get_home_page_courses(){
-        return course::all()->take(8);
+        $minimum_high_rate = 4;
+        $top_courses = rates_reviews::where('ratable_type','=', 'course')
+        ->selectRaw('ratable_id, COUNT(CASE WHEN rate >= ? THEN 1 END) as high_rate_count, MAX(rate) as max_rate', [$minimum_high_rate])
+                        ->groupBy('ratable_id')
+                        ->orderBy('high_rate_count', 'desc')
+                        ->orderBy('max_rate', 'desc')
+                        ->get();
+                        $path = storage_path('images\\');
+                        $courseData = [];
+                        foreach ($top_courses as $rating) {
+                            $course = course::where('c_id', $rating->ratable_id)->first();
+                            if ($course) {
+                                $fullpath = $path.''.$course->c_img;
+                                $image = file_get_contents($fullpath);
+                                $base64image = base64_encode($image);
+                                $course->image = $base64image;
+                                array_push($courseData, $course);
+                            }
+                        }
+        return $courseData;
     }
 
     static function course_type_id(string $type){
         $type = DB::table('courses_types')->where('ct_type','=',$type)->first();
         return $type->ct_id;
+    }
+
+    function courses (){
+        return course::all();
+    }
+
+    static function preservation_id(string $preservation){
+        $preservation = preservations::where('p_name','=',$preservation)->first();
+        return $preservation->p_id;
+    }
+
+    static function role_id(string $role){
+        $role = role::where('role','=',$role)->first();
+        return $role->r_id;
     }
     
     

@@ -18,6 +18,7 @@ class course extends Model
         'u_id',
         'c_duration',
         'pre_requisite',
+        'num_of_free_videos',
         'ct_id',
     
     ];

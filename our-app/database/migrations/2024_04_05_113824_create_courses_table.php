@@ -20,9 +20,10 @@ return new class extends Migration
             $table->integer('c_price');
             $table->mediumText('c_img');
             $table->integer('u_id');
+            $table->integer('num_of_free_videos');
 
         
-          
+        
 
         
         });
