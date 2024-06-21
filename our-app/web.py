@@ -11,6 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 VIDEO_DIR = 'storage/videos/'
 IMAGE_DIR = 'storage/images/'
+WORK_DIR = 'storage/works/'
 async def add_medias(websocket):
     async for message in websocket:
         data = json.loads(message)
@@ -131,6 +132,62 @@ async def search(websocket):
         await websocket.send(json.dumps(response))
         print("done sending")
 
+        
+async def add_works(websocket):
+    async for message in websocket:
+        data = json.loads(message)
+        s_id = data['s_id']
+        w_name = data['w_name']
+        w_data = data['w_data']
+        w_desc = data['w_desc']
+        w_bytes = base64.b64decode(w_data)
+        work_path = os.path.join(WORK_DIR, w_name)
+        if not os.path.exists(WORK_DIR):
+            os.makedirs(WORK_DIR)
+        with open(work_path, 'wb') as file:
+            file.write(w_bytes)
+        print(f"Saved video: {w_name}")
+        msg = {'w_name':w_name,'w_desc':w_desc,'s_id':s_id}
+        print(msg)
+        headers = {
+        "Content-Type": "application/json"
+        }
+        response = requests.post('http://127.0.0.1:8000/api/add_work', data=json.dumps(msg),headers=headers)
+        print(response.text)
+        await websocket.send(response.text)
+
+async def get_works(websocket):
+    async for message in websocket:
+        data = json.loads(message)
+        s_id = data['s_id']
+        print("recieve : ")
+        print(message)
+        data = {'s_id': s_id}
+        response = requests.post('http://127.0.0.1:8000/api/get_works', data=data)
+        print(response.text)
+        data = json.loads(response.text)
+        works = []
+        for work in data :
+            s_id = work['s_id']
+            w_name = work['w_name']
+            w_desc = work['w_desc']
+            work_path = os.path.join(WORK_DIR, w_name)
+            if os.path.exists(work_path):
+                with open(work_path, 'rb') as work_file:
+                    work_bytes = work_file.read()
+                w = {'w_name':w_name,'w_desc':w_desc,'s_id':s_id , 'w_bytes':list(work_bytes)}
+                works.append(w)
+            else:
+                print(f"work file '{w_name}' not found.")
+        print(works)
+        msg = {'works':works}
+        print("start sending")
+        await websocket.send(json.dumps(msg))
+        print("done sending")
+    
+
+
+
 
 
 
@@ -138,7 +195,9 @@ async def main():
     async with websockets.serve(get_course_video,"localhost",8765,max_size=1 * 1024 * 1024 * 1024):
         async with websockets.serve(add_medias,"localhost",8766,max_size=64 * 1024 * 1024 * 1024):
             async with websockets.serve(search,"localhost",8767):    
-                await asyncio.Future()
+                async with websockets.serve(add_works,"localhost",8768,max_size=1 * 1024 * 1024 * 1024):
+                    async with websockets.serve(get_works,"localhost",8769,max_size=32 * 1024 * 1024 * 1024):
+                        await asyncio.Future()
 
 if __name__ == "__main__":
     asyncio.run(main())
