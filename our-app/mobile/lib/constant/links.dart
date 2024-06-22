@@ -52,7 +52,7 @@ const get_cv_skills =
 const get_all_alt_services =
     URL + "get_all_alt_services"; // بجيب كل الخدمات الملحقة التابعة لخدمة ميعنة
 const delete_project = URL + "delete_project"; //حذف مشروع من سيرة ذاتية
-const delete_cv_language = URL + "delete_cv_language"; // حذف لغة من سيرة ذاتية
+const _cv_language = URL + "delete_cv_language"; // حذف لغة من سيرة ذاتية
 const delete_skill = URL + "delete_skill"; // حذف مهارة من سيرة ذاتية
 const delete_alt_service =
     URL + "delete_alt_service"; // حذف خدمة ملحقة لخدمة معينة
@@ -102,3 +102,26 @@ const get_user_services = URL + "get_user_services";
 const add_not_found_service = URL + "add_not_found_service";
 const register = URL + "register";
 const get_common_questions = URL + "get_common_questions";
+
+const switch_account = URL + "switch_account";
+const logout = URL + "logout";
+const delete_account = URL + "delete_account"; // حذف المستخدم الحساب بنفسه
+const get_profiles = URL + "get_profiles"; //جلب بروفايلات المتسخدمين
+const get_complaints = URL + "get_complaints";
+const get_profits = URL + "get_profits"; // مراقبة ارباح الخدمات
+const get_service_requests = URL + "get_service_requests";
+const add_job_complaint = URL + "add_job_complaint";
+const add_service_complaint = URL + "add_service_complaint";
+const add_course_complaint = URL + "add_course_complaint";
+int? id;
+var accept_course =
+    URL + "accept_course /${id}"; //الموافقة على كورس من قبل الادمن
+var reject_course = URL + "reject_course /${id}"; // رفض الكورس من قبل الادمن
+var accept_service = URL + "accept_service /${id}";
+var reject_service = URL + "reject_service /${id}";
+var accept_job = URL + "accept_job/${id}";
+var reject_job = URL + "reject_job/${id}";
+var delete_user = URL + "delete_user/${id}"; // حذف الحساب من قبل الادمن
+var get_courses_count = URL + "get_courses_count/${id}";
+var get_services_count = URL + "get_services_count/${id}";
+var get_jobs_count = URL + "get_jobs_count/${id}";

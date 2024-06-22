@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Complaint;
 use App\Models\rates_reviews;
 use App\Events\{CourseCreated, JobCreated, ServiceCreated, StringEvent};
 use App\Http\Requests\addserviceRequest;
@@ -446,7 +447,7 @@ class authenticationController extends Controller
         ],200);
     }
     }
-    //not done 
+    //not done
     public function add_media(add_media_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
@@ -1449,7 +1450,7 @@ public function edit_course(edit_course_request $request){
         'c_duration'=>'required|string',
         'pre_requisite' =>'required|string',
         'c_img_data'=>'required',
-    
+
     ],$messages = [
         'required' => 'The :attribute field is required.',
         'integer' => 'the :attribute field should be a number',
@@ -1869,7 +1870,7 @@ public function  test_add_media(add_media_request $request){
         }
         $fullpath = $path.''.$request->video_name;
         file_put_contents($fullpath,$decoded_video);
-        $media = media::create([ 
+        $media = media::create([
         'c_id' =>$request->c_id,
         'm_name'=>$request->m_name,
         'm_path'=>$request->video_name,
@@ -1878,7 +1879,7 @@ public function  test_add_media(add_media_request $request){
             'message'=> 'media add successfully'
         ],200);
     }
-} 
+}
 
 public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
@@ -1980,7 +1981,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }
     }
 
-    //done without testking 
+    //done without testking
     public function add_job_application (job_application_request $request){
         $validator = Validator::make($request->all(), [
             'j_id' => 'required|integer',
@@ -2005,7 +2006,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
     }
 
-    //done without testking 
+    //done without testking
     public function add_course_enrollment (course_enrollment_request $request){
         $validator = Validator::make($request->all(), [
             'c_id' => 'required|integer',
@@ -2030,7 +2031,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
     }
 
-    //done 
+    //done
     public function add_service_enrollment (service_enrollment_request $request){
         $validator = Validator::make($request->all(), [
             's_id' => 'required|integer',
@@ -2058,7 +2059,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
     }
 
-    //done 
+    //done
     public function get_user_services (get_by_token $request){
         $validator = Validator::make($request->all(), [
             'token'=>'required',
@@ -2075,7 +2076,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
     }
 
-    // done without testing 
+    // done without testing
     public function add_not_found_service (not_found_services_request $request){
         $validator = Validator::make($request->all(), [
             'token' => 'required',
@@ -2211,8 +2212,8 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
                 ]);
             return response([
                 'message'=> 'added successfully',
-            ],200); 
-            
+            ],200);
+
         }
     }
 
@@ -2262,5 +2263,96 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }
     }
     }
+    public function add_job_complaint(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'u_id'=>'required',
+            'j_id'=>'required',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            Complaint::create([
+                'description' => $request->description,
+                'u_id'=>$request->u_id,
+                'complainable_id'=>$request->j_id,
+                'complainable_type'=> job::class,
+            ]);
+            return response([
+                'message'=> 'complaint added successfully',
+            ],200);
+        }
+    }
+    public function add_course_complaint(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'u_id'=>'required',
+            'c_id'=>'required',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            Complaint::create([
+                'description' => $request->description,
+                'u_id'=>$request->u_id,
+                'complainable_id'=>$request->c_id,
+                'complainable_type'=> course::class,
+            ]);
+            return response([
+                'message'=> 'complaint added successfully',
+            ],200);
+        }
+    }
 
+    public function add_service_complaint(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'u_id'=>'required',
+            's_id'=>'required',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            Complaint::create([
+                'description' => $request->description,
+                'u_id'=>$request->u_id,
+                'complainable_id'=>$request->s_id,
+                'complainable_type'=> services::class,
+            ]);
+            return response([
+                'message'=> 'complaint added successfully',
+            ],200);
+        }
+    }
+
+    public function get_course_rating($id): \Illuminate\Http\JsonResponse
+    {
+        $course = course::findOrFail($id);
+        $ratings = $course->ratings;
+        return response()->json(['ratings'=>$ratings]);
+    }
+    public function get_training_course_rating($id): \Illuminate\Http\JsonResponse
+    {
+        $training_course = training_courses::findOrFail($id);
+        $ratings = $training_course->ratings;
+        return response()->json(['ratings'=>$ratings]);
+    }
+    public function get_job_rating($id): \Illuminate\Http\JsonResponse
+    {
+        $job = job::findOrFail($id);
+        $ratings = $job->ratings()->with('user')->get();
+        return response()->json(['ratings'=>$ratings]);
+    }
+    public function get_service_rating($id): \Illuminate\Http\JsonResponse
+    {
+        $service = services::findOrFail($id);
+        $ratings = $service->ratings;
+        return response()->json(['ratings'=>$ratings]);
+    }
 }

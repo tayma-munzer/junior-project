@@ -17,12 +17,12 @@ return new class extends Migration
         Schema::table('courses', function (Blueprint $table) {
             $table->boolean('is_accepted')->default(false);
         });
-        Schema::table('training_courses', function (Blueprint $table) {
-            $table->boolean('is_accepted')->default(false);
-        });
-        Schema::table('services', function (Blueprint $table) {
-            $table->boolean('is_accepted')->default(false);
-        });
+//        Schema::table('training_courses', function (Blueprint $table) {
+//            $table->boolean('is_accepted')->default(false);
+//        });
+//        Schema::table('services', function (Blueprint $table) {
+//            $table->boolean('is_accepted')->default(false);
+//        });
     }
 
     /**
@@ -36,11 +36,11 @@ return new class extends Migration
         Schema::table('courses', function (Blueprint $table) {
             $table->dropColumn('is_accepted');
         });
-        Schema::table('training_courses', function (Blueprint $table) {
-            $table->dropColumn('is_accepted');
-        });
-        Schema::table('services', function (Blueprint $table) {
-            $table->dropColumn('is_accepted');
-        });
+//        Schema::table('training_courses', function (Blueprint $table) {
+//            $table->dropColumn('is_accepted');
+//        });
+//        Schema::table('services', function (Blueprint $table) {
+//            $table->dropColumn('is_accepted');
+//        });
     }
 };

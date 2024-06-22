@@ -9,6 +9,7 @@ class course extends Model
 {
     use HasFactory;
     protected $table = 'courses';
+    protected  $primaryKey = 'c_id';
     public $timestamps = false;
     protected $fillable = [
         'c_name',
@@ -26,6 +27,17 @@ class course extends Model
     public function courses_type(){
         return
         $this->belongsTo(courses_type::class,'ct_id','c_id');
+    }
+
+
+    public function complaints()
+    {
+        return $this->morphMany(Complaint::class, 'complainable');
+    }
+
+    public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(rates_reviews::class, 'ratable');
     }
 
 }
