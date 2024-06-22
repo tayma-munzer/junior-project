@@ -102,6 +102,8 @@ const get_user_services = URL + "get_user_services";
 const add_not_found_service = URL + "add_not_found_service";
 const register = URL + "register";
 const get_common_questions = URL + "get_common_questions";
+const edit_work = URL + "edit_work";
+const delete_work = URL + "delete_work";
 
 const switch_account = URL + "switch_account";
 const logout = URL + "logout";

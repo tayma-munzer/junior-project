@@ -120,17 +120,17 @@ class authenticationController extends Controller
         ],200);
     }
     }
-    public function switch_account(loginRequest $request)
-    {
-        Auth::user()->tokens()->delete();
-        return $this->login($request);
-    }
+    // public function switch_account(loginRequest $request)
+    // {
+    //     Auth::user()->tokens()->delete();
+    //     return $this->login($request);
+    // }
 
-    public function logout(): \Illuminate\Http\JsonResponse
-    {
-        Auth::user()->tokens()->delete();
-        return response()->json(['message'=>'logged out successfully']);
-    }
+    // public function logout(): \Illuminate\Http\JsonResponse
+    // {
+    //     Auth::user()->tokens()->delete();
+    //     return response()->json(['message'=>'logged out successfully']);
+    // }
 
     public function delete_account(): \Illuminate\Http\JsonResponse
     {
@@ -942,17 +942,22 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $effected_rows=media::where('m_id','=',$request->m_id)->delete();
-        if ($effected_rows!=0){
-        return response([
-            'message'=> 'deleted successfully'
-        ],200); }
-        else {
+            $media = media::where('m_id','=',$request->m_id)->first();
+            $media_name= $media->m_name;
+            $path = storage_path('videos\\');
+            $fullpath = $path.''.$media_name;
+            File::delete($fullpath);
+            $effected_rows=media::where('m_id','=',$request->m_id)->delete();
+            if ($effected_rows!=0){
             return response([
-                'message'=> 'nothing is deleted something went wrong'
-            ],402);
+                'message'=> 'deleted successfully'
+            ],200); }
+            else {
+                return response([
+                    'message'=> 'nothing is deleted something went wrong'
+                ],402);
+            }
         }
-    }
     }
     //done
     public function get_job(edit_job_request $request){
@@ -2177,6 +2182,10 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }else{
             $work = works_gallery::where('w_id','=',$request->w_id)->first();
             $s_id = $work -> s_id ;
+            $work_name= $work->w_name;
+            $path = storage_path('works\\');
+            $fullpath = $path.''.$work_name;
+            File::delete($fullpath);
             $effected_rows=works_gallery::where('w_id','=',$request->w_id)->delete();
             if ($effected_rows!=0){
                 $works =works_gallery::where('s_id','=',$s_id)->get();
