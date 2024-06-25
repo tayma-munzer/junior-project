@@ -140,13 +140,17 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
     Route::get('/get_courses_count/{id}', 'get_courses_count');
     Route::get('/get_services_count/{id}', 'get_services_count');
     Route::get('/get_jobs_count/{id}', 'get_jobs_count');
-     Route::post('/accept_job/{id}', 'accept_job');
-     Route::post('/reject_job/{id}', 'reject_job');
+    Route::post('/accept_job/{id}', 'accept_job');
+    Route::post('/reject_job/{id}', 'reject_job');
     Route::post('/accept_course/{id}', 'accept_course');
     Route::post('/reject_course/{id}', 'reject_course');
-   Route::post('/accept_service/{id}', 'accept_service');
-   Route::post('/reject_service/{id}', 'reject_service');
+    Route::post('/accept_service/{id}', 'accept_service');
+    Route::post('/reject_service/{id}', 'reject_service');
     Route::post('/delete_user/{id}', 'delete_user');
+
+    Route::get('/get_service_user/{id}', 'get_service_user');
+    Route::get('/get_course_user/{id}', 'get_course_user');
+    Route::get('/get_job_user/{id}', 'get_job_user');
 });
 
 

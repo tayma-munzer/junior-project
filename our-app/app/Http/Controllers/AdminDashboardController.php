@@ -127,4 +127,26 @@ class AdminDashboardController extends Controller
         $services = services::with('user')->where('status', 'pinding')->get();
         return response()->json(['services'=>$services]);
     }
+    
+    public function get_course_user($id): JsonResponse
+    {
+        $user = User::findOrFail($id);
+        $courses=$user->courses;
+        return response()->json ($courses) ;
+    }
+
+    public function get_service_user($id): JsonResponse
+    {
+        $user = User::findOrFail($id);
+        $services=$user->services;
+        return response()->json ($services) ;
+    }
+
+    public function get_job_user($id): JsonResponse
+    {
+        $user = User::findOrFail($id);
+        $jobs=$user->jobs;
+        return response()->json ($jobs) ;
+    }
+    
 }

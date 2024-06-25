@@ -115,6 +115,7 @@ const get_service_requests = URL + "get_service_requests";
 const add_job_complaint = URL + "add_job_complaint";
 const add_service_complaint = URL + "add_service_complaint";
 const add_course_complaint = URL + "add_course_complaint";
+
 int? id;
 var accept_course =
     URL + "accept_course /${id}"; //الموافقة على كورس من قبل الادمن
@@ -127,3 +128,6 @@ var delete_user = URL + "delete_user/${id}"; // حذف الحساب من قبل 
 var get_courses_count = URL + "get_courses_count/${id}";
 var get_services_count = URL + "get_services_count/${id}";
 var get_jobs_count = URL + "get_jobs_count/${id}";
+var get_service_user = URL + "get_service_user/${id}";
+var get_course_user = URL + "get_course_user/${id}";
+var get_job_user = URL + "get_job_user/${id}";
