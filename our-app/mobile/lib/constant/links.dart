@@ -131,3 +131,5 @@ var get_jobs_count = URL + "get_jobs_count/${id}";
 var get_service_user = URL + "get_service_user/${id}";
 var get_course_user = URL + "get_course_user/${id}";
 var get_job_user = URL + "get_job_user/${id}";
+
+const delete_cv_language = URL + "delete_cv_language";
