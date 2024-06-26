@@ -17,4 +17,14 @@ class rates_reviews extends Model
         'rate',
         'review',
     ];
+
+    public function ratable()
+    {
+        return $this->morphTo('ratable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

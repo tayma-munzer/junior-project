@@ -9,6 +9,7 @@ class services extends Model
 {
     use HasFactory;
     protected $table = 'services';
+    protected $primaryKey = 's_id';
     public $timestamps = false;
     protected $fillable = [
         'u_id',
@@ -22,6 +23,19 @@ class services extends Model
         'status',
         's_img',
         's_video',
-        'is_accepted',
     ];
+
+
+    public function complaints()
+    {
+        return $this->morphMany(Complaint::class, 'complainable');
+    }
+    public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(rates_reviews::class, 'ratable');
+    }
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'u_id');
+    }
 }

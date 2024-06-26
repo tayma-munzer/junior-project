@@ -49,4 +49,18 @@ class User extends Authenticatable
     {
         return $this->hasOne(cv::class, 'u_id');
     }
+
+    public function courses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(course::class,'u_id');
+    }
+
+    public function services(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(services::class, 'u_id');
+    }
+    public function jobs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(job::class, 'u_id');
+    }
 }

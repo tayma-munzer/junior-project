@@ -123,27 +123,34 @@ Route::post('/add_work',[authenticationController::class,'add_work'] );//
 Route::post('/get_works',[authenticationController::class,'get_works'] );//
 Route::post('/edit_work',[authenticationController::class,'edit_work'] );//
 
+Route::post('/add_job_complaint', [authenticationController::class, 'add_job_complaint']);
+Route::post('/add_service_complaint', [authenticationController::class, 'add_service_complaint']);
+Route::post('/add_course_complaint', [authenticationController::class, 'add_course_complaint']);
+
+Route::get('/get_course_ratings/{id}', [authenticationController::class, 'get_course_rating']);
+Route::get('/get_training_course_rating/{id}', [authenticationController::class, 'get_training_course_rating']);
+Route::get('/get_job_ratings/{id}', [authenticationController::class, 'get_job_rating']);
+Route::get('/get_service_ratings/{id}', [authenticationController::class, 'get_service_rating']);
+
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){
     Route::get('/get_profiles', 'get_profiles');
-    Route::get('/get_profile/{id}', 'get_profile');
     Route::get('/get_complaints', 'get_complaints');
     Route::get('/get_profits', 'get_profits');
-
-    Route::post('/add_complaint', 'add_complaint');
+    Route::get('/get_service_requests', 'get_service_requests');
+    Route::get('/get_courses_count/{id}', 'get_courses_count');
+    Route::get('/get_services_count/{id}', 'get_services_count');
+    Route::get('/get_jobs_count/{id}', 'get_jobs_count');
     Route::post('/accept_job/{id}', 'accept_job');
     Route::post('/reject_job/{id}', 'reject_job');
     Route::post('/accept_course/{id}', 'accept_course');
     Route::post('/reject_course/{id}', 'reject_course');
-    Route::post('/accept_training_course/{id}', 'accept_training_course');
-    Route::post('/reject_training_course/{id}', 'reject_training_course');
     Route::post('/accept_service/{id}', 'accept_service');
     Route::post('/reject_service/{id}', 'reject_service');
-
-    Route::post('/delete_course/{id}', 'delete_course');
-    Route::post('/delete_training_course/{id}', 'delete_training_course');
-    Route::post('/delete_job/{id}', 'delete_job');
-    Route::post('/delete_service/{id}', 'delete_service');
     Route::post('/delete_user/{id}', 'delete_user');
+
+    Route::get('/get_service_user/{id}', 'get_service_user');
+    Route::get('/get_course_user/{id}', 'get_course_user');
+    Route::get('/get_job_user/{id}', 'get_job_user');
 });
 
 
