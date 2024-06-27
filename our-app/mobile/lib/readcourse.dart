@@ -6,6 +6,7 @@ import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editCourse.dart';
 import 'package:mobile/listCourses.dart';
@@ -93,6 +94,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       print("Request failed with status: ${response.statusCode}");
     }
   }
+
   Future<void> deleteCourse() async {
     var url = delete_course;
     var response = await http.post(Uri.parse(url), body: {
@@ -145,7 +147,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     super.initState();
     fetchCourseData();
     fetchRoles();
-
   }
 
   @override
@@ -158,268 +159,278 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       drawer: CustomDrawer(),
       backgroundColor: AppColors.appiconColor,
       body: Directionality(
-
         textDirection: TextDirection.rtl,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: 8,),
-                  Container(
-
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(2),
-                      child:
-                      Row(
-
-                        children: [
-                          Icon(
-                            Icons.check_circle_outline,
-                            size: 20,
-                            color: Colors.white,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: 8,
+                ),
+                Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(2),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            courseData != null
+                                ? courseData["pre_requisite"].toString()
+                                : "",
+                            style: TextStyle(fontSize: 18),
                           ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              courseData != null ? courseData["pre_requisite"].toString() : "",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ],
-                      ),
-
+                        ),
+                      ],
                     ),
                   ),
+                ),
                 SizedBox(height: 15),
-                  AnimatedOpacity(
-                    opacity: isLoading ? 0.0 : 1.0,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeIn,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.memory(
-                        base64Decode(courseData["image"]),
-                        height: 300,
-                        fit: BoxFit.cover,
-                      ),
+                AnimatedOpacity(
+                  opacity: isLoading ? 0.0 : 1.0,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.memory(
+                      base64Decode(courseData["image"]),
+                      height: 300,
+                      fit: BoxFit.cover,
                     ),
                   ),
-            SizedBox(height: 16),
-                  Column(
-                    children: [
-
-
-                      Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                courseData != null ? courseData["c_name"].toString() : "",
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(height: 16),
+                Column(
+                  children: [
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              courseData != null
+                                  ? courseData["c_name"].toString()
+                                  : "",
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.description,
+                                  size: 20,
+                                  color: Colors.blue,
                                 ),
-                              ),
-                              SizedBox(height: 10,),
-                              Row(
-
-                                children: [
-                                  Icon(
-                                    Icons.description,
-                                    size: 20,
-                                    color: Colors.blue,
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    courseData != null
+                                        ? courseData["c_desc"].toString()
+                                        : "",
+                                    style: TextStyle(fontSize: 18),
                                   ),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      courseData != null ? courseData["c_desc"].toString() : "",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('التفاصيل:',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                              SizedBox(height: 10,),
-                              Row(
-
-                                children: [
-
-                                  Icon(
-                                    Icons.attach_money,
-                                    size: 20,
-                                    color: Colors.green,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'السعر:',
-                                      style: TextStyle(fontSize: 18),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    courseData != null ? courseData["c_price"].toString() : "",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'ل.س',
-                                    style: TextStyle(
-                                      fontSize: 18,
-
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 16),
-
-                              Row(
-
-                                children: [
-
-                                  Icon(
-                                    Icons.schedule,
-                                    size: 20,
-                                    color: Colors.orange,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'المدة:',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    courseData != null ? courseData["c_duration"].toString() : "",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 16),
-
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-
-
-                    ],
+                    ),
+                    SizedBox(height: 8),
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'التفاصيل:',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.attach_money,
+                                  size: 20,
+                                  color: Colors.green,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'السعر:',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  courseData != null
+                                      ? courseData["c_price"].toString()
+                                      : "",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'ل.س',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.schedule,
+                                  size: 20,
+                                  color: Colors.orange,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'المدة:',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  courseData != null
+                                      ? courseData["c_duration"].toString()
+                                      : "",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-            SizedBox(height: 8),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Container(
-                padding: EdgeInsets.all(16),
-
-                  child:Column(
-                    children: [
-                      Text(
-                      'محتوى الدورة',
-                      style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      ),
-                      ),
-                      SizedBox(height: 16),
-                      isLoading
-                      ? Center(child: CircularProgressIndicator())
-                                : videoData != null && videoData!.isNotEmpty
-                      ?  isLoading
-                                ? SizedBox(
-                              width: 24, // Set the desired width
-                              height: 24, // Set the desired height
-                              child: CircularProgressIndicator(),
-                      )
-                                : ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: videoData != null ? videoData!.length : 0,
-                              itemBuilder: (context, index) {
-                                var videoId = videoData!.keys.elementAt(index);
-                                var videoName = videoData![videoId];
-
-                                // Create an instance of the VideoWidget class
-                                VideoWidget videoWidget = VideoWidget(
-                      videoId: videoId,
-                      videoName: videoName,
-                      canEdit: false,
-                      onPressedDelete: () {
-                        // Handle onPressedDelete callback
-                      },
-                                );
-
-                                return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VideoPlayerPage(videoId: videoId, videoName: videoName),
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Text(
+                          'محتوى الدورة',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      },
-                      child: videoWidget,
-                                );
-                              },
-                      )
-                      : Text(
-                      'لا يوجد محتوى متاح حاليًا',
-                      style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
+                        ),
+                        SizedBox(height: 16),
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : videoData != null && videoData!.isNotEmpty
+                                ? isLoading
+                                    ? SizedBox(
+                                        width: 24, // Set the desired width
+                                        height: 24, // Set the desired height
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: videoData != null
+                                            ? videoData!.length
+                                            : 0,
+                                        itemBuilder: (context, index) {
+                                          var videoId =
+                                              videoData!.keys.elementAt(index);
+                                          var videoName = videoData![videoId];
 
-              ),
-            ),
-                  SizedBox(height: 20,),
-                  service == 'true'
-                      ? Row(
+                                          // Create an instance of the VideoWidget class
+                                          VideoWidget videoWidget = VideoWidget(
+                                            videoId: videoId,
+                                            videoName: videoName,
+                                            canEdit: false,
+                                            onPressedDelete: () {
+                                              // Handle onPressedDelete callback
+                                            },
+                                          );
+
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      VideoPlayerPage(
+                                                          videoId: videoId,
+                                                          videoName: videoName),
+                                                ),
+                                              );
+                                            },
+                                            child: videoWidget,
+                                          );
+                                        },
+                                      )
+                                : Text(
+                                    'لا يوجد محتوى متاح حاليًا',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                service == 'true'
+                    ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => EditCourse(widget.c_id)),
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditCourse(widget.c_id)),
                               );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               minimumSize: Size(150, 40),
                             ),
-                            child: Text('تعديل الدورة', style: TextStyle(color: Colors.white,fontSize: 18)),
+                            child: Text('تعديل الدورة',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18)),
                           ),
                           ElevatedButton(
                             onPressed: () {
@@ -429,30 +440,44 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                               backgroundColor: Colors.red,
                               minimumSize: Size(150, 40),
                             ),
-                            child: Text('حذف الدورة', style: TextStyle(color: Colors.white,fontSize: 18)),
+                            child: Text('حذف الدورة',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18)),
                           ),
                         ],
-                  ): Container(),
-                  SizedBox(height: 20,),
-
-                  user == 'true'
-                      ? ElevatedButton(
-                    onPressed: () {
-                     //
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      minimumSize: Size(150, 40),
-                    ),
-                    child: Text('اشتري', style: TextStyle(color: Colors.white,fontSize: 18)),
-                  ):Container(),
-                ],
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 20,
+                ),
+                user == 'true'
+                    ? ElevatedButton(
+                        onPressed: () {
+                          AuthCont.course_enrollment(widget.c_id.toString())
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              print("you are now enroll in this course");
+                            } else {
+                              print("error");
+                              print(value.body);
+                            }
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          minimumSize: Size(150, 40),
+                        ),
+                        child: Text('اشتري',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 18)),
+                      )
+                    : Container(),
+              ],
             ),
           ),
         ),
-
       ),
-    bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }

@@ -2028,7 +2028,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $user_token = PersonalAccessToken::findToken($request->token);
             $course_enrollment = course_enrollment::create([
             'c_id' => $request->c_id,
-            'u_id' => $request->$user_token->tokenable_id,
+            'u_id' => $user_token->tokenable_id,
             ]);
             return response([
                 'message'=> 'added successfully',

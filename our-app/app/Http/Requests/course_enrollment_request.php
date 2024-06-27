@@ -22,9 +22,8 @@ class course_enrollment_request extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'c_id',
-            'u_id',
+            'token',
         ];
     }
 }

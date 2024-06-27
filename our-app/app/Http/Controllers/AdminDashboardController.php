@@ -127,6 +127,18 @@ class AdminDashboardController extends Controller
         $services = services::with('user')->where('status', 'pinding')->get();
         return response()->json(['services'=>$services]);
     }
+
+    public function get_courses_requests(): JsonResponse
+    {
+        $courses = course::where('is_accepted', 'false')->get();
+        return response()->json(['courses'=>$courses]);
+    }
+
+    public function get_jobs_requests(): JsonResponse
+    {
+        $jobs = job::where('is_accepted', 'false')->get();
+        return response()->json(['jobs'=>$jobs]);
+    }
     
     public function get_course_user($id): JsonResponse
     {
