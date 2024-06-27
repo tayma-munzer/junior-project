@@ -347,4 +347,26 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> service_enrollment(String s_id) async {
+    var url = add_service_enrollment;
+    final token = await AuthManager.getToken();
+    print(token);
+    var res = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+      'token': token,
+    });
+    return res;
+  }
+
+  static Future<http.Response> course_enrollment(String c_id) async {
+    var url = add_course_enrollment;
+    final token = await AuthManager.getToken();
+    print(token);
+    var res = await http.post(Uri.parse(url), body: {
+      'c_id': c_id,
+      'token': token,
+    });
+    return res;
+  }
 }

@@ -133,3 +133,4 @@ var get_course_user = URL + "get_course_user/${id}";
 var get_job_user = URL + "get_job_user/${id}";
 
 const delete_cv_language = URL + "delete_cv_language";
+const add_course_enrollment = URL + "add_course_enrollment";

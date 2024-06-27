@@ -151,6 +151,9 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
     Route::get('/get_service_user/{id}', 'get_service_user');
     Route::get('/get_course_user/{id}', 'get_course_user');
     Route::get('/get_job_user/{id}', 'get_job_user');
+
+
+    Route::post('/add_course_enrollment',[authenticationController::class,'add_course_enrollment']); //added    
 });
 
 
