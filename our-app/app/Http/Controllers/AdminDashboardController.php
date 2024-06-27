@@ -124,13 +124,28 @@ class AdminDashboardController extends Controller
     }
     public function get_service_requests(): JsonResponse
     {
-        $services = services::with('user')->where('status', 'pinding')->get();
+        //$services = services::with('user')->where('status', 'pinding')->get();
+        $services=services::all()->where('status', 'pinding');
+        $path = storage_path('images\\');
+        foreach ($services as $service){
+            $fullpath = $path.''.$service->s_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $service->image = $base64image;
+        }
         return response()->json(['services'=>$services]);
     }
 
     public function get_courses_requests(): JsonResponse
     {
         $courses = course::where('is_accepted', 'false')->get();
+        $path = storage_path('images\\');
+        foreach ($courses as $course){
+            $fullpath = $path.''.$course->c_img;
+            $image = file_get_contents($fullpath);
+            $base64image = base64_encode($image);
+            $course->image = $base64image;
+        }
         return response()->json(['courses'=>$courses]);
     }
 
