@@ -564,5 +564,41 @@ class DatabaseSeeder extends Seeder
             'complainable_type'=>services::class
         ]);
         
+        DB::table('complaints')->insert([
+            'description'=>'desc desc 1',
+            'u_id'=>'1',
+            'complainable_type'=>'App\Models\job',
+            'complainable_id'=>'2',
+            'created_at'=>'2024-06-28 07:17:14',
+            'updated_at'=>'2024-06-28 07:17:14',
+
+        ]);
+        DB::table('complaints')->insert([
+            'description'=>'desc desc 2',
+            'u_id'=>'1',
+            'complainable_type'=>'App\Models\job',
+            'complainable_id'=>'2',
+            'created_at'=>'2024-06-28 07:17:14',
+            'updated_at'=>'2024-06-28 07:17:14',
+        ]);
+        DB::table('complaints')->insert([
+            'description'=>'desc desc 3',
+            'u_id'=>'2',
+            'complainable_type'=>'App\Models\course',
+            'complainable_id'=>'1',
+            'created_at'=>'2024-06-28 07:17:14',
+            'updated_at'=>'2024-06-28 07:17:14',
+        ]);
+
+        DB::table('complaints')->insert([
+            'description'=>'desc desc 3',
+            'u_id'=>'2',
+            'complainable_type'=>'App\Models\services',
+            'complainable_id'=>'1',
+            'created_at'=>'2024-06-28 07:17:14',
+            'updated_at'=>'2024-06-28 07:17:14',
+        ]);
+        
+
     }
 }

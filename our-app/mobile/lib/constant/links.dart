@@ -136,3 +136,6 @@ var get_job_user = URL + "get_job_user/${id}";
 var delete_coursee = URL + "delete_coursee/${id}";
 var delete_jobb = URL + "delete_jobb/${id}";
 var delete_servicee = URL + "delete_servicee/${id}";
+
+const delete_cv_language = URL + "delete_cv_language";
+const add_course_enrollment = URL + "add_course_enrollment";

@@ -115,6 +115,7 @@ Route::get('/get_all_jobs',[gets::class, 'jobs']);
 
 Route::post('/get_user_services',[authenticationController::class,'get_user_services'] );//added
 Route::post('/add_service_enrollment',[authenticationController::class,'add_service_enrollment'] );//added
+Route::post('/add_course_enrollment',[authenticationController::class,'add_course_enrollment']); //added    
 Route::post('/add_not_found_service',[authenticationController::class,'add_not_found_service'] );//added
 Route::post('/register',[authenticationController::class,'register'] );//added
 Route::get('/get_common_questions',[gets::class,'common_questions'] );//added
@@ -155,7 +156,9 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
     Route::get('/get_service_user/{id}', 'get_service_user');
     Route::get('/get_course_user/{id}', 'get_course_user');
     Route::get('/get_job_user/{id}', 'get_job_user');
-  
+
+    Route::get('/get_courses_requests', 'get_courses_requests');
+    Route::get('/get_jobs_requests', 'get_jobs_requests');
 });
 
 

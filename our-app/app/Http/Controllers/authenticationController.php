@@ -2028,7 +2028,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $user_token = PersonalAccessToken::findToken($request->token);
             $course_enrollment = course_enrollment::create([
             'c_id' => $request->c_id,
-            'u_id' => $request->$user_token->tokenable_id,
+            'u_id' => $user_token->tokenable_id,
             ]);
             return response([
                 'message'=> 'added successfully',
@@ -2055,9 +2055,9 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             's_id' => $request->s_id,
             'u_id' => $user_token->tokenable_id,
             ]);
-            $service = services::where('s_id','=',$request->s_id)->first();
-            $num_of_buyers = $service->num_of_buyers;
-            services::where('s_id','=',$request->s_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
+            // $service = services::where('s_id','=',$request->s_id)->first();
+            // $num_of_buyers = $service->num_of_buyers;
+            // services::where('s_id','=',$request->s_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
             return response([
                 'message'=> 'added successfully',
             ],200);

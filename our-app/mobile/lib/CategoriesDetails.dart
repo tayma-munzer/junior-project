@@ -7,6 +7,7 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/buy.dart';
 import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class CategoriesDetails extends StatefulWidget {
@@ -60,6 +61,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
   @override
   void initState() {
     super.initState();
+    print("hilo");
     fetchData();
   }
 
@@ -114,12 +116,13 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BuyPage(widget.s_id),
-                      ),
-                    );
+                    print("chatting");
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => BuyPage(widget.s_id),
+                    //   ),
+                    // );
                   },
                   child: Text(
                     'تواصل',
@@ -130,7 +133,8 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.blue),
                     padding: WidgetStateProperty.all<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
                     ),
@@ -139,18 +143,22 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
               ),
             ],
           ),
-          SizedBox(height: 16,),
+          SizedBox(
+            height: 16,
+          ),
           Row(
             children: [
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BuyPage(widget.s_id),
-                      ),
-                    );
+                    AuthCont.service_enrollment(widget.s_id.toString())
+                        .then((value) {
+                      if (value.statusCode == 200) {
+                        print("enroll request have been sent");
+                      } else {
+                        print("error");
+                      }
+                    });
                   },
                   child: Text(
                     'اشتري',
@@ -161,7 +169,8 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.blue),
                     padding: WidgetStateProperty.all<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
                     ),
