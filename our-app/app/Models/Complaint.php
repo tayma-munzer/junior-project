@@ -23,6 +23,6 @@ class Complaint extends Model
 
     public function complainable(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo("complainable");
     }
 }

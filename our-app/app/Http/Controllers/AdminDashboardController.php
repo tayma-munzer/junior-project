@@ -97,6 +97,26 @@ class AdminDashboardController extends Controller
             "total_profit" => $totalProfitServices
         ]);
     }
+
+    public function delete_coursee($id): JsonResponse
+    {
+        $course = course::findOrFail($id);
+        $course->delete();
+        return response()->json(['message'=>"deleted course successfully"]);
+    }
+    public function delete_jobb($id): JsonResponse
+    {
+        $job = job::findOrFail($id);
+        $job->delete();
+        return response()->json(['message'=>"deleted job successfully"]);
+    }
+    public function delete_servicee($id): JsonResponse
+    {
+        $service = services::findOrFail($id);
+        $service->delete();
+        return response()->json(['message'=>"deleted service successfully"]);
+    }
+
     public function delete_user($id): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -149,4 +169,5 @@ class AdminDashboardController extends Controller
         return response()->json ($jobs) ;
     }
     
+   
 }

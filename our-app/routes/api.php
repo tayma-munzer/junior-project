@@ -148,9 +148,14 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
     Route::post('/reject_service/{id}', 'reject_service');
     Route::post('/delete_user/{id}', 'delete_user');
 
+    Route::post('/delete_coursee/{id}', 'delete_coursee');
+    Route::post('/delete_jobb/{id}', 'delete_jobb');
+    Route::post('/delete_servicee/{id}', 'delete_servicee');
+
     Route::get('/get_service_user/{id}', 'get_service_user');
     Route::get('/get_course_user/{id}', 'get_course_user');
     Route::get('/get_job_user/{id}', 'get_job_user');
+  
 });
 
 

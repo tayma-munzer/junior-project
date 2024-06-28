@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\role;
+use App\Models\services;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -556,6 +557,12 @@ class DatabaseSeeder extends Seeder
             'm_desc'=>'short description about the video',
             'c_id'=>'2'
         ]);
-
+        DB::table('complaints')->insert([
+            'description'=>"adasdsadsads",
+            'u_id'=>1,
+            'complainable_id'=>1,
+            'complainable_type'=>services::class
+        ]);
+        
     }
 }

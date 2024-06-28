@@ -111,7 +111,8 @@ const delete_account = URL + "delete_account"; // حذف المستخدم الح
 const get_profiles = URL + "get_profiles"; //جلب بروفايلات المتسخدمين
 const get_complaints = URL + "get_complaints";
 const get_profits = URL + "get_profits"; // مراقبة ارباح الخدمات
-const get_service_requests = URL + "get_service_requests";
+const get_service_requests =
+    URL + "get_service_requests"; //بيجيب الخدمات  يلي حالتها pindding
 const add_job_complaint = URL + "add_job_complaint";
 const add_service_complaint = URL + "add_service_complaint";
 const add_course_complaint = URL + "add_course_complaint";
@@ -131,3 +132,7 @@ var get_jobs_count = URL + "get_jobs_count/${id}";
 var get_service_user = URL + "get_service_user/${id}";
 var get_course_user = URL + "get_course_user/${id}";
 var get_job_user = URL + "get_job_user/${id}";
+
+var delete_coursee = URL + "delete_coursee/${id}";
+var delete_jobb = URL + "delete_jobb/${id}";
+var delete_servicee = URL + "delete_servicee/${id}";
