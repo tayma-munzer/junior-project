@@ -2,6 +2,8 @@ import React from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
+
+
 const userData = [
   {
     value: '123456',
@@ -45,6 +47,10 @@ function CustomCard() {
 }
 
 function Management() {
+
+ 
+
+
   const userImageObj = userData.find((data) => data.name === 'صورة المستخدم');
   const userImage = userImageObj ? userImageObj.value : '';
 
@@ -82,7 +88,7 @@ function Management() {
             <strong>اسم المستخدم:</strong> {userData[6].value}
           </div>
           <div>
-            <strong>كلمة المرور:</strong> {userData[7].value}
+            
           </div>
           <div>
             <strong>الجنس:</strong> {userData[8].value}
@@ -123,10 +129,10 @@ function Management() {
       </div>
       <div className='works'>
         <CustomCard />
-      </div>
-      {/* Button */}
+    {/* </div>
+      
       <div className='button-container'>
-        <button className='custom-button'>حذف الحساب</button>
+        <button className='custom-button'>حذف الحساب</button>*/}
       </div>
     </div>
    

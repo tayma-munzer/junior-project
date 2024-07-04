@@ -11,6 +11,7 @@ import Users from './Users';
 import Services from './Services';
 import Jobs from './Jobs';
 import Courses from './Courses';
+import Addcategory from './Addcategory';
 
 function App() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -33,6 +34,7 @@ function App() {
           <Route path='/Services' element={<Services />} />
           <Route path='/Courses' element={<Courses />} />
           <Route path='/Jobs' element={<Jobs />} />
+          <Route path='/Addcategory' element={<Addcategory/>} />
           {/* Add other routes here */}
         </Routes>
       </div>

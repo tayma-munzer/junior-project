@@ -1,46 +1,94 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 function Services() {
-  // Sample data for services
-  const services = [
-    {
-      id: 1,
-      title: 'العنوان 1',
-      description: 'التوصيف 1',
-      price: 'السعر 1',
-      buyers: 'عدد المشترين 1',
-      duration: 'مدة التسليم 1',
-    },
-    {
-      id: 2,
-      title: 'العنوان 2',
-      description: 'التوصيف 2',
-      price: 'السعر 2',
-      buyers: 'عدد المشترين 2',
-      duration: 'مدة التسليم 2',
-    },
-    // Add more services here
-  ];
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('http://127.0.0.1:8000/api/admin/get_service_requests')
+      .then(res => {
+        console.log(res.data);
+        const servicesArray = Object.values(res.data.services); // Convert object to array
+        if (servicesArray.length > 0) {
+          setServices(servicesArray);
+        } else {
+          console.error('Invalid API response format');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  const deleteService = (e, id) => {
+    e.preventDefault();
+    const thisClicked = e.currentTarget;
+    thisClicked.innerText = "...يتم الرفض";
+    axios
+      .post(`http://127.0.0.1:8000/api/admin/reject_service/${id}`)
+      .then((res) => {
+        alert(res.data.message);
+        const updatedServices = services.filter(service => service.s_id !== id);
+        setServices(updatedServices);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.status === 404) {
+            alert(error.response.data.message);
+            thisClicked.innerText = "رفض";
+          }
+          if (error.response.status === 500) {
+            alert(error.response.data);
+          }
+        }
+      });
+  };
+
+  const acceptService = (e, id) => {
+    e.preventDefault();
+    const thisClicked = e.currentTarget;
+    thisClicked.innerText = "...يتم القبول";
+    axios
+      .post(`http://127.0.0.1:8000/api/admin/accept_service/${id}`)
+      .then((res) => {
+        alert(res.data.message);
+        const updatedServices = services.filter(service => service.s_id !== id);
+        setServices(updatedServices);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          if (error.response.status === 404) {
+            alert(error.response.data.message);
+            thisClicked.innerText = "قبول";
+          }
+          if (error.response.status === 500) {
+            alert(error.response.data);
+          }
+        }
+      });
+  };
 
   return (
     <div className="services-container">
-      {services.map((service) => (
-        <div className="card-services" key={service.id}>
+      {services.map(service => (
+        <div className="card-services" key={service.s_id}>
           <img className="service-image" src="path/to/s_img.jpg" alt="Service" />
           <div className="card-content">
-            <h2 className="service-title">{service.title}</h2>
-            <p className="service-description">{service.description}</p>
+            <h2 className="service-title">{service.s_name}</h2>
+            <p className="service-description">{service.s_desc}</p>
             <div className="service-details">
-              <p>{service.price}</p>
-              <p>{service.buyers}</p>
-              <p>{service.duration}</p>
+              <p>{service.s_duration}</p>
             </div>
             <div className="button-container">
-              <button className="accept-button">رفض</button>
-              <button className="delete-button">قبول</button>
+            <button type="button" onClick={(e) => acceptService(e, service.s_id)} className="accept-button">
+              قبول
+            </button>
+            <button type="button" onClick={(e) => deleteService(e, service.s_id)} className="delete-button">
+              رفض
+            </button>
             </div>
           </div>
-          
         </div>
       ))}
     </div>
