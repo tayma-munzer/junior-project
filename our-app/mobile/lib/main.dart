@@ -3,13 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/homepage.dart';
 import 'package:mobile/login.dart';
-import 'package:mobile/services/LocalNotificationsService.dart';
 import 'package:mobile/signup.dart';
 import 'package:mobile/firstpage.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService().init();
+void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: HomePage(),
@@ -26,7 +23,6 @@ class HomePage extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
           child: Column(
-            // even space distribution
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -86,7 +82,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MainHomePage()));
+                              builder: (context) => SignUpPage()));
                     },
                     color: Color(0xff0095FF),
                     shape: RoundedRectangleBorder(

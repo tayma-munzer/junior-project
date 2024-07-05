@@ -39,6 +39,7 @@ class _AddServiceState extends State<AddService> {
   int durationInDays = 0;
   String? image_name;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late String couponValue;
 
   List first_type = [];
   List sec_type = [];
@@ -258,7 +259,6 @@ class _AddServiceState extends State<AddService> {
                   textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -302,7 +302,6 @@ class _AddServiceState extends State<AddService> {
                     ),
                   ],
                 ),
-
                 if (durationOrCalendar == 'calendar')
                   ElevatedButton(
                     onPressed: () async {
@@ -342,7 +341,6 @@ class _AddServiceState extends State<AddService> {
                     ),
                     textAlign: TextAlign.right,
                   ),
-// عرض التاريخ المتاح
                 if (selectedDate != null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -391,7 +389,6 @@ class _AddServiceState extends State<AddService> {
                           ? Image.memory(base64Decode(base64Image!))
                           : Text('لا يوجد صور للعرض')),
                 ),
-
                 Center(
                   child: Column(
                     children: [
@@ -407,6 +404,27 @@ class _AddServiceState extends State<AddService> {
                         ),
                         child: Text(
                           'اضف صورة',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _showCouponDialog();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 255, 227, 184)),
+                          minimumSize: MaterialStateProperty.all<Size>(
+                              Size(double.infinity, 50)),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                        ),
+                        child: Text(
+                          'اضف كوبون',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -439,9 +457,8 @@ class _AddServiceState extends State<AddService> {
                                       builder: (context) => services_types()),
                                 );
                               } else {
-                                // Error response
                                 print(
-                                    'Failed to add service. Error: ${value.body}'); //${value.body}
+                                    'Failed to add service. Error: ${value.body}');
                               }
                             });
                           }
@@ -469,6 +486,39 @@ class _AddServiceState extends State<AddService> {
         ),
       ),
       bottomNavigationBar: BottomBar(),
+    );
+  }
+
+  Future<void> _showCouponDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('ادخل رمز الكوبون'),
+          content: TextField(
+            decoration: InputDecoration(hintText: 'ادخل رمز الكوبون'),
+            onChanged: (value) {
+              couponValue = value;
+            },
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                if (int.tryParse(couponValue) != null &&
+                    int.parse(couponValue) > 0 &&
+                    int.parse(couponValue) <= 100) {
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('الرجاء إدخال رقم صالح بين 1 و 100'),
+                  ));
+                }
+              },
+              child: Text('حفظ'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
