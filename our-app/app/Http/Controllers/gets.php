@@ -76,7 +76,7 @@ class gets extends Controller
     }
     static function get_home_page_services(){
         $minimum_high_rate = 4;
-        $top_services = rates_reviews::where('ratable_type','=', 'service')
+        $top_services = rates_reviews::where('ratable_type','=', 'App\Models\services')
         ->selectRaw('ratable_id, COUNT(CASE WHEN rate >= ? THEN 1 END) as high_rate_count, MAX(rate) as max_rate', [$minimum_high_rate])
                         ->groupBy('ratable_id')
                         ->orderBy('high_rate_count', 'desc')
@@ -103,7 +103,7 @@ class gets extends Controller
 
     static function get_home_page_courses(){
         $minimum_high_rate = 4;
-        $top_courses = rates_reviews::where('ratable_type','=', 'course')
+        $top_courses = rates_reviews::where('ratable_type','=', 'App\Models\course')
         ->selectRaw('ratable_id, COUNT(CASE WHEN rate >= ? THEN 1 END) as high_rate_count, MAX(rate) as max_rate', [$minimum_high_rate])
                         ->groupBy('ratable_id')
                         ->orderBy('high_rate_count', 'desc')
