@@ -12,6 +12,7 @@ import 'package:mobile/editCourse.dart';
 import 'package:mobile/listCourses.dart';
 import 'package:mobile/videoWidget.dart';
 import 'package:mobile/videoplayer.dart';
+import 'package:mobile/view_media_new.dart';
 
 import 'controller/authManager.dart';
 
@@ -62,6 +63,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
           "image": decodedData["image"],
           "c_duration": decodedData["c_duration"].toString(),
           "pre_requisite": decodedData["pre_requisite"],
+          "num_of_free_videos": decodedData["num_of_free_videos"].toString(),
         };
       });
       fetchVideoData();
@@ -93,6 +95,19 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     } else {
       print("Request failed with status: ${response.statusCode}");
     }
+  }
+
+  Future<void> fetch_is_student() async {
+    var url = is_user_course_enrolled;
+    String? token = await AuthManager.getToken();
+    print('object');
+    print(token);
+    print(widget.c_id);
+    var response = await http.post(Uri.parse(url),
+        body: {'token': token, 'c_id': widget.c_id.toString()});
+    print("This is the response:");
+    print(response.body);
+    print(response.statusCode);
   }
 
   Future<void> deleteCourse() async {
@@ -147,6 +162,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     super.initState();
     fetchCourseData();
     fetchRoles();
+    fetch_is_student();
   }
 
   @override
@@ -169,34 +185,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 SizedBox(
                   height: 8,
                 ),
-                Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade300,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(2),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            courseData != null
-                                ? courseData["pre_requisite"].toString()
-                                : "",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 SizedBox(height: 15),
                 AnimatedOpacity(
                   opacity: isLoading ? 0.0 : 1.0,
@@ -214,6 +202,37 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 SizedBox(height: 16),
                 Column(
                   children: [
+                    Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(2),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                courseData != null
+                                    ? courseData["pre_requisite"].toString()
+                                    : "",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -359,16 +378,17 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             : videoData != null && videoData!.isNotEmpty
                                 ? isLoading
                                     ? SizedBox(
-                                        width: 24, // Set the desired width
-                                        height: 24, // Set the desired height
+                                        width: 24,
+                                        height: 24,
                                         child: CircularProgressIndicator(),
                                       )
                                     : ListView.builder(
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
-                                        itemCount: videoData != null
-                                            ? videoData!.length
-                                            : 0,
+                                        itemCount: int.tryParse(
+                                                courseData['num_of_free_videos']
+                                                    .toString()) ??
+                                            0,
                                         itemBuilder: (context, index) {
                                           var videoId =
                                               videoData!.keys.elementAt(index);
@@ -390,9 +410,10 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      VideoPlayerPage(
-                                                          videoId: videoId,
-                                                          videoName: videoName),
+                                                      view_media_new(
+                                                    videoId: videoId,
+                                                    videoName: videoName,
+                                                  ),
                                                 ),
                                               );
                                             },
@@ -456,7 +477,27 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           AuthCont.course_enrollment(widget.c_id.toString())
                               .then((value) {
                             if (value.statusCode == 200) {
-                              print("you are now enroll in this course");
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Directionality(
+                                    textDirection: TextDirection.rtl,
+                                    child: AlertDialog(
+                                      title: Text('تم التسجيل بنجاح'),
+                                      content:
+                                          Text('أنت الآن مسجل في هذا الكورس'),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('تم'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             } else {
                               print("error");
                               print(value.body);
@@ -467,9 +508,10 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                           backgroundColor: Colors.blue,
                           minimumSize: Size(150, 40),
                         ),
-                        child: Text('اشتري',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)),
+                        child: Text(
+                          'اشتري',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       )
                     : Container(),
               ],

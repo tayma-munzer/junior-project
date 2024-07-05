@@ -41,7 +41,7 @@ class _CategoriesState extends State<Categories> {
               "s_id": item["s_id"],
               "s_name": item["s_name"],
               "s_desc": item["s_desc"],
-              //"image": item["image"],
+              "image": item["image"],
               "s_price": item["s_price"].toString(),
               "discount": item["discount"].toString(),
               "status": item["status"],
@@ -112,7 +112,7 @@ class _CategoriesState extends State<Categories> {
       child: BuildItem(
         item["s_name"],
         item["s_desc"],
-        //item["image"],
+        item["image"],
         item["s_price"],
         item["discount"],
         item["status"],

@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:mobile/signupaccount.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -19,8 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String _country = '';
   String _selectedCountry = 'دمشق';
   bool _isError = false;
-  List<String> countries = ['دمشق', 'حلب', 'حمص', 'حماة', 'ادلب', 'اللاذقية'];
-
+  Map<String, String> api_data = {};
   bool _validateInput(String value, String fieldName) {
     if (value.isEmpty) {
       showErrorMessage('$fieldName يجب ان لا يكون فارغ');
@@ -61,6 +63,26 @@ class _SignUpPageState extends State<SignUpPage> {
         duration: Duration(seconds: 2),
       ),
     );
+  }
+
+  String selectedMainCategory = '';
+  List preservations = [];
+  void fetch() async {
+    var url1 = get_preservations;
+    var res = await http.get(Uri.parse(url1));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      preservations = data.map((item) => item).toList();
+      selectedMainCategory = preservations[0]['p_name'];
+      print(preservations);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetch();
   }
 
   @override
@@ -156,19 +178,20 @@ class _SignUpPageState extends State<SignUpPage> {
                       Container(
                         width: 350,
                         child: DropdownButton(
-                          value: _selectedCountry,
-                          onChanged: (String? newValue) {
+                          value: selectedMainCategory,
+                          onChanged: (newValue) {
                             setState(() {
-                              _selectedCountry = newValue!;
-                              _country = newValue;
+                              _selectedCountry = newValue!.toString();
+                              _country = newValue.toString();
+                              selectedMainCategory = newValue!.toString();
                             });
                           },
-                          items: countries.map((String country) {
+                          items: preservations.map((country) {
                             return DropdownMenuItem(
-                              value: country,
+                              value: country['p_name'],
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Text(country),
+                                child: Text(country['p_name']),
                               ),
                             );
                           }).toList(),
@@ -191,16 +214,20 @@ class _SignUpPageState extends State<SignUpPage> {
                             _lastName = _lastNameController.text;
                             _age = _ageController.text;
                             _isError = false;
+                            api_data = {
+                              'f_name': _firstName,
+                              'l_name': _lastName,
+                              'age': _age,
+                              'preservation': selectedMainCategory
+                            };
+                            print(api_data);
                           });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUpAccountPage()),
+                                builder: (context) =>
+                                    SignUpAccountPage(api_data)),
                           );
-                          print('firstname: $_firstName');
-                          print('lastname: $_lastName');
-                          print('age: $_age');
-                          print('country: $_country');
                         }
                       },
                       style: ElevatedButton.styleFrom(

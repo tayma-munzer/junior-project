@@ -371,4 +371,18 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> signup(
+    Map<String, String> data,
+    List<dynamic> roles,
+  ) async {
+    var url = register;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'data': data,
+          'roles': roles,
+        }));
+    print(res.body);
+    return res;
+  }
 }

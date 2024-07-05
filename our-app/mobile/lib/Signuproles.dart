@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/homepage.dart';
 
 class SignUpRolesPage extends StatefulWidget {
-  const SignUpRolesPage({Key? key}) : super(key: key);
+  final Map<String, String> api_data;
+  const SignUpRolesPage(this.api_data, {Key? key}) : super(key: key);
 
   @override
   State<SignUpRolesPage> createState() => _SignUpRolesPageState();
@@ -27,10 +32,22 @@ class _SignUpRolesPageState extends State<SignUpRolesPage> {
           SnackBar(content: Text('يجب ان تختار واحدة من الصلاحيات على الاقل')));
     } else {
       print(selectedRoles);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MainHomePage()),
-      );
+
+      AuthCont.signup(widget.api_data, selectedRoles).then((value) {
+        if (value.statusCode == 200) {
+          print('user registered');
+          final Map<String, dynamic> responseMap = json.decode(value.body);
+          AuthManager.saveToken(responseMap['token']);
+          print(responseMap['token']);
+          print(responseMap['roles']);
+          List roles = responseMap['roles'];
+          AuthManager.saveRoles(roles);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MainHomePage()),
+          );
+        }
+      });
     }
   }
 
@@ -108,11 +125,11 @@ class _SignUpRolesPageState extends State<SignUpRolesPage> {
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () => _selectRole('باحث عن عمل'),
+                  onPressed: () => _selectRole('صاحب فرصة عمل'),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
-                      if (selectedRoles.contains('باحث عن عمل')) {
+                      if (selectedRoles.contains('صاحب فرصة عمل')) {
                         return Color.fromARGB(255, 243, 176, 145);
                       }
                       return const Color.fromARGB(255, 152, 209, 255);
@@ -126,7 +143,7 @@ class _SignUpRolesPageState extends State<SignUpRolesPage> {
                       Icon(Icons.work, color: Colors.white),
                       SizedBox(width: 10),
                       Text(
-                        'باحث عن عمل',
+                        'صاحب فرصة عمل',
                         style: TextStyle(
                           fontSize: 22,
                           color: Colors.white,
