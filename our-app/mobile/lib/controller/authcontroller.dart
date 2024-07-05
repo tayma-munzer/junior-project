@@ -397,4 +397,18 @@ class AuthCont {
     print(res.body);
     return res;
   }
+
+  static Future<http.Response> addaltservice(
+    int s_id,
+    List<dynamic> alt_services,
+  ) async {
+    var url = add_alt_service;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          's_id': s_id,
+          'alt_service': alt_services,
+        }));
+    print(res.body);
+    return res;
+  }
 }

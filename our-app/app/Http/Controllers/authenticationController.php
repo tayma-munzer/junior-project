@@ -207,11 +207,13 @@ class authenticationController extends Controller
     }
     // done
     public function addalt_service(addalt_serviceRequest $request){
-        $validator = Validator::make($request->input('alt_service'), [
-            'alt_service'=> [
-            'a_name' => 'required|string',
-            'a_price' => 'required|gte:5000',
-            'added_duration'=>'required|string' ]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            's_id'=>'required|integer',
+            'alt_service'=> 'required|array',
+            'alt_service.*.a_name' => 'required|string',
+            'alt_service.*.a_price' => 'required|gte:5000',
+            'alt_service.*.added_duration'=>'required' 
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'gte:5000'=> 'the :attribute field should be minimum 5000',
@@ -221,8 +223,8 @@ class authenticationController extends Controller
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
-        }else{$data = $request->alt_service;
-            $s_id = $request->s_id;
+        }else{$data = $requestData['alt_service'];
+            $s_id = $requestData['s_id'];
             foreach ($data as $d){
                 $alt_service = alt_services::create([
                     's_id' => $s_id,
