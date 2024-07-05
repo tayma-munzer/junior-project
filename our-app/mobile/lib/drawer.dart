@@ -14,6 +14,7 @@ import 'package:mobile/viewCV.dart';
 import 'package:mobile/viewallJobs.dart';
 import 'package:mobile/viewservice.dart';
 import 'package:mobile/viewvideo.dart';
+import 'package:mobile/viewworkgallery.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
@@ -86,7 +87,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => viewworkgallery(1)),
               );
             },
           ),
