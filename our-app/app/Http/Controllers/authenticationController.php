@@ -18,11 +18,13 @@ use App\Http\Requests\add_language_request;
 use App\Http\Requests\add_media_request;
 use App\Http\Requests\add_projects_request;
 use App\Http\Requests\add_skill_request;
+use App\Http\Requests\add_skill_to_job;
 use App\Http\Requests\add_training_request;
 use App\Http\Requests\add_work_request;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\course_enrollment_request;
 use App\Http\Requests\delete_all_cv;
+use App\Http\Requests\delete_skill_job;
 use App\Http\Requests\delete_work_request;
 use App\Http\Requests\deleteRequest;
 use App\Http\Requests\discountRequest;
@@ -1064,6 +1066,9 @@ class authenticationController extends Controller
         $image = file_get_contents($fullpath);
         $base64image = base64_encode($image);
         $service->image = $base64image;
+        $service->rate = rates_reviews::where('ratable_id', $request->s_id)
+        ->where('ratable_type', 'App\Models\services')
+        ->avg('rate');
         return $service; }
     }
     //done
@@ -1578,8 +1583,8 @@ public function get_course(edit_course_request $request) {
         $errors = $validator->errors();
         return response($errors,402);
     }else{
-    $course=course::where('c_id','=',$request->c_id);
-    return $course->get();
+    $course=course::where('c_id','=',$request->c_id)->get();
+    return $course;
     }
 
 }
@@ -1828,6 +1833,9 @@ public function get_course_detils(get_course_detils $request){
     $image = file_get_contents($fullpath);
     $base64image = base64_encode($image);
     $course_detils->image = $base64image;
+    $course_detils->rate = rates_reviews::where('ratable_id', $request->c_id)
+        ->where('ratable_type', 'App\Models\course')
+        ->avg('rate');
     return $course_detils; }
 }
 
@@ -2540,7 +2548,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     }
 
 
-    public function add_job_skill(add_cv_request $request){
+    public function add_job_skill(add_skill_to_job $request){
         $validator = Validator::make($request->all(),[
             'j_id' => 'required|integer',
             'skill' => 'required|string',
@@ -2553,17 +2561,30 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token = PersonalAccessToken::findToken($request->token);
-        $cv = cv::create([
-        'u_id' =>$user_token->tokenable_id,
-        'email' => $request->email,
-        'address' => $request->address,
-        'phone'=>$request->phone,
-        'career_obj'=>$request->career_obj,
+        $skill = job_skills::create([
+        'j_id' => $request->j_id,
+        'skill' => $request->skill,
         ]);
         return response([
             'message'=> 'added successfully',
-            'cv_id'=>$cv->id,
+        ],200);
+    }
+    }
+    public function delete_job_skill(delete_skill_job $request){
+        $validator = Validator::make($request->all(),[
+            'js_id' => 'required|integer',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $skill = job_skills::where('js_id',$request->js_id)->delete();
+        return response([
+            'message'=> 'deleted successfully',
         ],200);
     }
     }

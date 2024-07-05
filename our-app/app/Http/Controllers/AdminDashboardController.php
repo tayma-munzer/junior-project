@@ -230,4 +230,16 @@ class AdminDashboardController extends Controller
         }
     }
 
+    public function get_user_app_uploads($id){
+        $services = services::where('u_id',$id)->select('s_id','s_name')->get();
+        $courses = course::where('u_id',$id)->select('c_id','c_name')->get();
+        $jobs = job::where('u_id',$id)->select('j_id','j_title')->get();
+
+        return response([
+            'services'=> $services,
+            'courses'=> $courses,
+            'jobs'=> $jobs,
+        ],200);
+    }
+
 }

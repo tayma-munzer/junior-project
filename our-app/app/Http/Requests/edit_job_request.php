@@ -23,11 +23,15 @@ class edit_job_request extends FormRequest
     {
         return [
             'j_id',
-            'j_sal',
-            'j_name',
+            'j_title',
             'j_desc',
             'j_req',
-            //
+            'j_min_sal',
+            'j_max_sal',
+            'j_min_age',
+            'j_max_age',
+            'education',
+            'num_of_exp_years'
         ];
     }
 }
