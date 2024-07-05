@@ -56,6 +56,8 @@ use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
 use App\Http\Requests\get_works_request;
 use App\Http\Requests\is_user_course_enrolled;
+use App\Http\Requests\is_user_job_applied;
+use App\Http\Requests\is_user_service_enrolled;
 use App\Http\Requests\job_application_request;
 use App\Http\Requests\not_found_services_request;
 use App\Http\Requests\register_request;
@@ -2440,5 +2442,56 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         }
     }
 
+
+    public function is_user_service_enrolled(is_user_service_enrolled $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            's_id'=>'required|integer'
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $result = service_enrollment::where('u_id',$user_id)->where('s_id',$request->s_id)->first();
+            if (!empty($result)){
+                return response([
+                    'enrolled'=> 'true',
+                ],200);
+            }else{
+                return response([
+                    'enrolled'=> 'false',
+                ],202);
+            }
+        }
+    }
+    public function is_user_job_applied(is_user_job_applied $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'j_id'=>'required|integer'
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $result = job_application::where('u_id',$user_id)->where('j_id',$request->j_id)->first();
+            if (!empty($result)){
+                return response([
+                    'applied'=> 'true',
+                ],200);
+            }else{
+                return response([
+                    'applied'=> 'false',
+                ],202);
+            }
+        }
+    }
 
 }

@@ -135,6 +135,8 @@ Route::get('/get_service_ratings/{id}', [authenticationController::class, 'get_s
 
 Route::get('get_enrollments_last_7_days', [authenticationController::class, 'get_enrollments_last_7_days']);
 Route::post('/is_user_course_enrolled', [authenticationController::class, 'is_user_course_enrolled']);
+Route::post('/is_user_service_enrolled', [authenticationController::class, 'is_user_service_enrolled']);
+Route::post('/is_user_job_applied', [authenticationController::class, 'is_user_job_applied']);
 
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){
     Route::get('/get_profiles', 'get_profiles');
