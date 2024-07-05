@@ -10,14 +10,19 @@ class job extends Model
     use HasFactory;
     protected $table = 'jobs';
     protected $primaryKey = 'j_id';
-    public $timestamps = false;
     protected $fillable = [
         'u_id',
-        'j_name',
+        'j_title',
         'j_desc',
-        'j_sal',
         'j_req',
-         'is_accepted',
+        'j_min_sal',
+        'j_max_sal',
+        'j_min_age',
+        'j_max_age',
+        'education',
+        'num_of_exp_years',
+        'jt_id',
+        'is_accepted',
     ];
 
     public function complaints(): \Illuminate\Database\Eloquent\Relations\MorphMany

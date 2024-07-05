@@ -141,3 +141,4 @@ const delete_cv_language = URL + "delete_cv_language";
 const add_course_enrollment = URL + "add_course_enrollment";
 const is_user_course_enrolled = URL + "is_user_course_enrolled";
 const get_preservations = URL + "get_preservations";
+const get_job_types = URL + "get_job_types";

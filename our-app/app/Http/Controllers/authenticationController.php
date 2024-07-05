@@ -78,6 +78,7 @@ use App\Models\training_courses;
 use App\Models\User;
 use App\Models\courses_type;
 use App\Models\job_application;
+use App\Models\job_skills;
 use App\Models\not_found_services;
 use App\Models\role;
 use App\Models\service_enrollment;
@@ -235,34 +236,54 @@ class authenticationController extends Controller
     }
 // done
     public function addjob (addjobRequest $request){
-        $validator = Validator::make($request->all(), [
+        $request = json_decode($request->getContent(), true);
+        $validator = Validator::make($request, [
             'token' => 'required',
-            'j_name' => 'required|string',
+            'j_title' => 'required|string',
             'j_desc' => 'required|string',
-            'j_sal' => 'required|integer',
             'j_req'=>'required|string',
+            'j_min_sal' => 'required|integer',
+            'j_max_sal' => 'required|integer',
+            'j_min_age' => 'required|integer',
+            'j_max_age' => 'required|integer',
+            'education'=>'required|string',
+            'category'=>'required|string',
+            'num_of_exp_years' => 'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'string'=> 'the :attribute field should be string',
-            'exists'=> 'the :attribute field should be exist',
             'integer' => 'the :attribute field should be a number',
         ]);
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $user_token =PersonalAccessToken::findToken($request->token);
+        $user_token =PersonalAccessToken::findToken($request['token']);
         $job = job::create([
         'u_id' => $user_token->tokenable_id,
-        'j_name' => $request->j_name,
-        'j_desc' => $request->j_desc,
-        'j_sal' => $request->j_sal,
-        'j_req' => $request->j_req,
+        'j_title' => $request['j_title'],
+        'j_desc' => $request['j_desc'],
+        'j_req' => $request['j_req'],
+        'j_min_sal' => $request['j_min_sal'],
+        'j_max_sal' => $request['j_max_sal'],
+        'j_min_age' => $request['j_min_age'],
+        'j_max_age' => $request['j_max_age'],
+        'education' => $request['education'],
+        'jt_id'=>gets::job_type_id($request['category']),
+        'num_of_exp_years' => $request['num_of_exp_years'],
         ]);
+        if(!empty($request['skills'])){
+            foreach ($request['skills'] as $skill){
+                $skill = job_skills::create([
+                    'j_id'=>$job->j_id,
+                    'skill'=>$skill['s_name'],
+                ]);
+            }
+        }
         event(new JobCreated($job->j_name,"ll"));
         return response([
             'message'=> 'added successfully',
-            'j_id' =>$job->id
+            'j_id' =>$job->j_id
         ],200);
     }
     }
@@ -727,10 +748,16 @@ class authenticationController extends Controller
     public function edit_job(edit_job_request $request){
         $validator = Validator::make($request->all(), [
             'j_id' => 'required|exists:jobs,j_id',
-            'j_sal' => 'required|integer',
-            'j_name'=> 'required|string',
+            'j_min_sal' => 'required|integer',
+            'j_max_sal' => 'required|integer',
+            'j_min_age' => 'required|integer',
+            'j_max_age' => 'required|integer',
+            'j_title'=> 'required|string',
             'j_desc'=> 'required|string',
             'j_req' => 'required|string',
+            'education' => 'required|string',
+            'category'=>'required|string',
+            'num_of_exp_years' => 'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',
@@ -742,10 +769,16 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $effected_rows=job::where('j_id','=',$request->j_id)->update([
-            'j_sal'=>$request->j_sal,
-            'j_name'=>$request->j_name,
-            'j_desc'=>$request->j_desc,
-            'j_req'=>$request->j_req,
+            'j_title' => $request->j_title,
+            'j_desc' => $request->j_desc,
+            'j_req' => $request->j_req,
+            'j_min_sal' => $request->j_min_sal,
+            'j_max_sal' => $request->j_max_sal,
+            'j_min_age' => $request->j_min_age,
+            'j_max_age' => $request->j_max_age,
+            'education' => $request->education,
+            'jt_id'=>gets::job_type_id($request->category),
+            'num_of_exp_years' => $request->num_of_exp_years,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -890,19 +923,20 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $effected_rows=job::where('j_id','=',$request->j_id)->delete();
-        if ($effected_rows!=0){
-            $jobs =job::all();
-        return response([
-            'message'=> 'deleted successfully',
-            'jobs'=>$jobs
-        ],200); }
-        else {
+            $effected_rows=job::where('j_id','=',$request->j_id)->delete();
+            if ($effected_rows!=0){
+                job_skills::where('j_id','=',$request->j_id)->delete();
+                $jobs =job::all();
             return response([
-                'message'=> 'nothing is deleted something went wrong'
-            ],402);
+                'message'=> 'deleted successfully',
+                'jobs'=>$jobs
+            ],200); }
+            else {
+                return response([
+                    'message'=> 'nothing is deleted something went wrong'
+                ],402);
+            }
         }
-    }
     }
     //done
     public function delete_service(edit_service_request $request){
@@ -975,7 +1009,12 @@ class authenticationController extends Controller
             return response($errors,402);
         }else{
         $job =job::where('j_id','=',$request->j_id)->first();
-        return $job; }
+        $skills = job_skills::where('j_id','=',$request->j_id)->get();
+        $job->category = gets::job_type_by_id($job->jt_id);
+        return response([
+            'job'=> $job,
+            'skills'=>$skills,
+        ],200);}
     }
     //done
     public function get_media(edit_media_request $request){
@@ -2498,6 +2537,35 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
                 ],202);
             }
         }
+    }
+
+
+    public function add_job_skill(add_cv_request $request){
+        $validator = Validator::make($request->all(),[
+            'j_id' => 'required|integer',
+            'skill' => 'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'string'=> 'the :attribute field should be string',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $user_token = PersonalAccessToken::findToken($request->token);
+        $cv = cv::create([
+        'u_id' =>$user_token->tokenable_id,
+        'email' => $request->email,
+        'address' => $request->address,
+        'phone'=>$request->phone,
+        'career_obj'=>$request->career_obj,
+        ]);
+        return response([
+            'message'=> 'added successfully',
+            'cv_id'=>$cv->id,
+        ],200);
+    }
     }
 
 }

@@ -138,6 +138,7 @@ Route::post('/is_user_course_enrolled', [authenticationController::class, 'is_us
 Route::post('/is_user_service_enrolled', [authenticationController::class, 'is_user_service_enrolled']);
 Route::post('/is_user_job_applied', [authenticationController::class, 'is_user_job_applied']);
 Route::get('/get_preservations', [gets::class, 'get_preservations']);
+Route::get('/get_job_types', [gets::class, 'get_job_types']);
 
 
 
