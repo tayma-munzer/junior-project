@@ -55,6 +55,7 @@ use App\Http\Requests\get_course_for_user;
 use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
 use App\Http\Requests\get_works_request;
+use App\Http\Requests\is_user_course_enrolled;
 use App\Http\Requests\job_application_request;
 use App\Http\Requests\not_found_services_request;
 use App\Http\Requests\register_request;
@@ -2367,9 +2368,8 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
 
     public function get_enrollments_last_7_days()
     {
-    $lastSevenDays = now()->subDays(7)->format('Y-m-d');
-
-    $services_data = DB::table('service_enrollments')
+        $lastSevenDays = now()->subDays(7)->format('Y-m-d');
+        $services_data = DB::table('service_enrollments')
         ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date")
         ->selectRaw('COUNT(service_enrollments.se_id) as services')
         ->whereDate('service_enrollments.updated_at', '>=', $lastSevenDays)
@@ -2383,35 +2383,61 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         ->groupBy('date')
         ->get()
         ->toArray();
-    $dates = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = now()->subDays($i)->toDateString();
-        $dates[] = $date;
+        $dates = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->toDateString();
+            $dates[] = $date;
+        }
+
+        $combinedData = [];
+
+        foreach ($courses_data as $course) {
+            $combinedData[$course->date]['courses'] = $course->courses;
+        }
+
+        foreach ($services_data as $service) {
+            $combinedData[$service->date]['services'] = $service->services;
+        }
+        $finalData = [];
+        foreach($dates as $date){
+            $data = [
+                "date" => $date,
+                "courses" => 0,
+                "services" => 0
+            ];
+            if (isset($combinedData[$date])) {
+                $data['courses'] = $combinedData[$date]['courses'] ?? 0;
+                $data['services'] = $combinedData[$date]['services'] ?? 0;
+            }
+            $finalData[] = $data;
+        }
+        return $finalData; 
     }
 
-    $combinedData = [];
-
-foreach ($courses_data as $course) {
-    $combinedData[$course->date]['courses'] = $course->courses;
-}
-
-foreach ($services_data as $service) {
-    $combinedData[$service->date]['services'] = $service->services;
-}
-$finalData = [];
-foreach($dates as $date){
-    $data = [
-        "date" => $date,
-        "courses" => 0,
-        "services" => 0
-    ];
-    if (isset($combinedData[$date])) {
-        $data['courses'] = $combinedData[$date]['courses'] ?? 0;
-        $data['services'] = $combinedData[$date]['services'] ?? 0;
-    }
-    $finalData[] = $data;
-}
-return $finalData; 
+    public function is_user_course_enrolled(is_user_course_enrolled $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'c_id'=>'required|integer'
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $result = course_enrollment::where('u_id',$user_id)->where('c_id',$request->c_id)->first();
+            if (!empty($result)){
+                return response([
+                    'enrolled'=> 'true',
+                ],200);
+            }else{
+                return response([
+                    'enrolled'=> 'false',
+                ],202);
+            }
+        }
     }
 
 
