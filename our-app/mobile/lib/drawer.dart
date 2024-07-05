@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/addalternativeservice.dart';
 import 'package:mobile/addcourse.dart';
 import 'package:mobile/addcveducation.dart';
 import 'package:mobile/addcvskills.dart';
@@ -101,7 +102,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ContactUsPage()),
+                MaterialPageRoute(builder: (context) => SettingsPage()),
               );
             },
           ),

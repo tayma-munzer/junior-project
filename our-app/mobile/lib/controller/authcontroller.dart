@@ -55,7 +55,8 @@ class AuthCont {
   static Future<http.Response> addJob(
     String j_name,
     String j_desc,
-    String j_sal,
+    int j_sal_min,
+    int j_sal_max,
     String j_req,
   ) async {
     final token = await AuthManager.getToken();
@@ -63,7 +64,8 @@ class AuthCont {
     var res = await http.post(Uri.parse(url), body: {
       'j_name': j_name,
       'j_desc': j_desc,
-      'j_sal': j_sal,
+      'j_sal_min': j_sal_min,
+      'j_sal_max': j_sal_max,
       'j_req': j_req,
       'token': token
     });

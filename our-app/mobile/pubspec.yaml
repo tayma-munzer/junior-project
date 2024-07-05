@@ -93,6 +93,11 @@ flutter:
      - assets/getservice.png
      - assets/getcourse.png
      - assets/book.webp
+     - assets/accountimage.png
+     - assets/toppinkcorner.png
+     - assets/bluecorner.png
+     - assets/altservice.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
