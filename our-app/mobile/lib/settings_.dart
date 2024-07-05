@@ -8,6 +8,7 @@ import 'package:mobile/contactus.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/edit_profile.dart';
 import 'package:mobile/help.dart';
+import 'package:mobile/veiwProfile.dart';
 import 'package:mobile/wallet.dart';
 
 enum PopupType {
@@ -86,12 +87,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   height: 10,
                 ),
-                buildAccountOptionRow2(context, "تعديل الملف الشخصي", () {
+                buildAccountOptionRow2(context, " الملف الشخصي", () {
                   Navigator.pop(context); // Close the drawer
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditProfilePage(),
+                      builder: (context) => ViewProfile(),
                     ),
                   );
                 }),

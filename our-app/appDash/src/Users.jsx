@@ -61,11 +61,11 @@ function Users() {
         <td>{item.u_img}</td>
         <td>{item.username}</td>
         <td>
-          <Link to='/Manegment'>
-            <span className="icon-wrapper">
-              <HiDotsVertical className="edit-icon" />
-            </span>
-          </Link>
+        <Link to={`/Manegment/${item.u_id}`}>
+          <span className="icon-wrapper">
+            <HiDotsVertical className="edit-icon" />
+          </span>
+        </Link>
         </td>
         <td>
         <button type="button" onClick={(e)=>deleteUser(e,item.u_id)} className="btn-delete">

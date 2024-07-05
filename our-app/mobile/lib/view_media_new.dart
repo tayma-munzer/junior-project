@@ -138,7 +138,7 @@ class _view_media_newState extends State<view_media_new> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(33.0),
+        preferredSize: Size.fromHeight(60.0),
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
@@ -148,16 +148,16 @@ class _view_media_newState extends State<view_media_new> {
           children: [
             SizedBox(height: 10),
             Card(
-              child:
-              Padding(
+              elevation: 4, // Increased card elevation
+              color: Colors.blue.shade400,
+              child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
                   video_name,
                   style: TextStyle(
                     fontSize: 25,
-                    color: Colors.blue,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
-
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -166,25 +166,23 @@ class _view_media_newState extends State<view_media_new> {
             SizedBox(height: 20),
             Container(
               height: 220,
-              child: Expanded(
-
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    _videoPlayerController != null &&
-                        _videoPlayerController!.value.isInitialized
-                        ? AspectRatio(
-                      aspectRatio:
-                      _videoPlayerController!.value.aspectRatio,
-                      child: VideoPlayer(_videoPlayerController!),
-                    )
-                        : CircularProgressIndicator(),
-
-                  ],
-                ),
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  _videoPlayerController != null &&
+                      _videoPlayerController!.value.isInitialized
+                      ? AspectRatio(
+                    aspectRatio:
+                    _videoPlayerController!.value.aspectRatio,
+                    child: VideoPlayer(_videoPlayerController!),
+                  )
+                      : CircularProgressIndicator(),
+                ],
               ),
             ),
             Card(
+              color:Colors.grey.shade50,
+              elevation: 4,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -201,6 +199,8 @@ class _view_media_newState extends State<view_media_new> {
                     onChanged: _onSliderChanged,
                     onChangeStart: _onSliderChangeStart,
                     onChangeEnd: _onSliderChangeEnd,
+                    activeColor: Colors.blue.shade400,
+                    inactiveColor: Colors.grey.shade300,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -220,13 +220,13 @@ class _view_media_newState extends State<view_media_new> {
             ),
             SizedBox(height: 20,),
             Card(
+              color:Colors.grey.shade50,
+              elevation: 4,
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child:
-              Directionality(
-
+              child: Directionality(
                 textDirection: TextDirection.rtl,
                 child: Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(25),
                   child: Text(
                     video_desc,
                     style: TextStyle(fontSize: 20),

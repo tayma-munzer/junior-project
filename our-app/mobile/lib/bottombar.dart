@@ -7,6 +7,7 @@ import 'package:mobile/add.dart';
 import 'package:mobile/search.dart';
 import 'package:mobile/personalaccount.dart';
 import 'package:mobile/services_types.dart';
+import 'package:mobile/veiwProfile.dart';
 
 class BottomBar extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _BottomBarState extends State<BottomBar> {
   Color _addIconColor = Colors.white;
   Color _searchIconColor = Colors.white;
   Color _accountIconColor = Colors.white;
+  Color _categoriesIconColor = Colors.white;
 
   void _updateIconColor(String icon) {
     setState(() {
@@ -46,7 +48,8 @@ class _BottomBarState extends State<BottomBar> {
         _homeIconColor = Colors.white;
         _addIconColor = Colors.white;
         _searchIconColor = Colors.white;
-        _accountIconColor = Colors.black;
+        _accountIconColor = Colors.white;
+        _categoriesIconColor=Colors.black;
       }
     });
   }
@@ -123,11 +126,11 @@ class _BottomBarState extends State<BottomBar> {
               onPressed: () {
                 _updateIconColor('account');
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PersonalAccount()));
+                    MaterialPageRoute(builder: (context) => ViewProfile()));
               },
             ),
             IconButton(
-              icon: Icon(Icons.category_rounded, color: _accountIconColor),
+              icon: Icon(Icons.category_rounded, color: _categoriesIconColor),
               onPressed: () {
                 _updateIconColor('categories');
                 Navigator.push(context,
