@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import 
 { BsGrid1X2Fill, BsFillArchiveFill, BsPeopleFill,BsFillBellFill}
  from 'react-icons/bs';
- import { FaPercent, FaMoneyBill,FaUser } from 'react-icons/fa';
+
 function Sidebar({openSidebarToggle}) {
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
@@ -30,6 +30,12 @@ function Sidebar({openSidebarToggle}) {
             <li className='sidebar-list-item'>
                 <Link to="/Complaints">
                     <BsFillBellFill className='icon'/> الشكاوي
+                </Link>
+            </li>
+
+            <li className='sidebar-list-item'>
+                <Link to="/Addcategory">
+                    <BsFillBellFill className='icon'/> أدارة الأقسام
                 </Link>
             </li>
             
