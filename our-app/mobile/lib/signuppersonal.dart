@@ -7,7 +7,8 @@ import 'package:mobile/settings_.dart';
 import 'package:mobile/Signuproles.dart';
 
 class SignUpPersonalPage extends StatefulWidget {
-  const SignUpPersonalPage({Key? key}) : super(key: key);
+  final Map<String, String> api_data;
+  const SignUpPersonalPage(this.api_data, {Key? key}) : super(key: key);
 
   @override
   _SignUpPersonalPageState createState() => _SignUpPersonalPageState();
@@ -21,17 +22,21 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
   String _username = '';
   String _userbio = '';
   bool _isError = false;
-
+  String? base64Image;
+  String? image_name;
   Future<void> _selectImage() async {
     final pickedImage = await ImagePicker().pickImage(
       source: ImageSource.gallery,
     );
 
     if (pickedImage != null) {
-      final pickedImageBytes = await pickedImage.readAsBytes();
-      String base64Image = base64Encode(pickedImageBytes);
       setState(() {
         _selectedImage = File(pickedImage.path);
+        image_name = pickedImage.name;
+      });
+      final pickedImageBytes = await _selectedImage.readAsBytes();
+      setState(() {
+        base64Image = base64Encode(pickedImageBytes);
       });
     }
   }
@@ -179,15 +184,20 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
                               _username = _usernameController.text;
                               _userbio = _userbioController.text;
                               _isError = false;
+                              widget.api_data['u_desc'] = _userbio;
+                              widget.api_data['username'] = _username;
+                              widget.api_data['u_img_name'] = image_name!;
+                              widget.api_data['u_img_data'] = base64Image!;
+                              widget.api_data['gender'] = "female";
+                              print(widget.api_data);
                             });
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SignUpRolesPage(),
+                                builder: (context) =>
+                                    SignUpRolesPage(widget.api_data),
                               ),
                             );
-                            print('username: $_username');
-                            print('bio: $_userbio');
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/signuppersonal.dart';
 
 class SignUpAccountPage extends StatefulWidget {
-  const SignUpAccountPage({Key? key}) : super(key: key);
+  final Map<String, String> api_data;
+  const SignUpAccountPage(this.api_data, {Key? key}) : super(key: key);
 
   @override
   _SignUpAccountPageState createState() => _SignUpAccountPageState();
@@ -67,6 +68,12 @@ class _SignUpAccountPageState extends State<SignUpAccountPage> {
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -213,11 +220,15 @@ class _SignUpAccountPageState extends State<SignUpAccountPage> {
                             _confirmedPassword =
                                 _confirmPasswordController.text;
                             _isError = false;
+                            widget.api_data['email'] = _email;
+                            widget.api_data['password'] = _password;
+                            print(widget.api_data);
                           });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUpPersonalPage()),
+                                builder: (context) =>
+                                    SignUpPersonalPage(widget.api_data)),
                           );
                           print('email: $_email');
                           print('password: $_password');

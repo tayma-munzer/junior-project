@@ -148,5 +148,8 @@ class gets extends Controller
         return $preservation->p_name;
     }
     
+    function get_preservations(){
+        return preservations::all();
+    }
     
 }

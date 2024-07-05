@@ -2113,19 +2113,19 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     public function register(register_request $request){
         $requestData = json_decode($request->getContent(), true);
         $validator = Validator::make($requestData, [
-            'f_name' => 'required|string',
-            'l_name' => 'required|string',
-            'age' => 'required|integer',
-            'u_desc' => 'required|string',
-            'u_img_name' => 'required|string',
-            'u_img_data' => 'required',
-            'email' => 'required',
-            'username'=>'required|string',
-            'password'=>'required|min:5',
-            'gender'=>'required|string',
-            'preservation'=>'required|string',
+            'data'=>'required|array',
+            'data.f_name' => 'required|string',
+            'data.l_name' => 'required|string',
+            'data.age' => 'required|integer',
+            'data.u_desc' => 'required|string',
+            'data.u_img_name' => 'required|string',
+            'data.u_img_data' => 'required',
+            'data.email' => 'required',
+            'data.username'=>'required|string',
+            'data.password'=>'required|min:5',
+            'data.gender'=>'required|string',
+            'data.preservation'=>'required|string',
             'roles'=>'required|array',
-            'roles.*.role'=>'required|string',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'gte:50000'=> 'the :attribute field should be minimum 50000',
@@ -2137,37 +2137,43 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-        $img_data = $request -> u_img_data;
+            $request = $requestData['data'];
+        $img_data = $request['u_img_data'];
         $decoded_img = base64_decode($img_data);
         $path = storage_path('images/');
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
-        $fullpath = $path.''.$request->u_img_name;
+        $fullpath = $path.''.$request['u_img_name'];
         file_put_contents($fullpath,$decoded_img);
         $user = User::create([
-        'f_name' => $request->f_name,
-        'l_name' => $request->l_name,
-        'age' => $request->age,
-        'u_desc' => $request->u_desc,
-        'email' => $request->email,
-        'username'=> $request->username ,
-        'password'=>$request->password,
-        'u_img' => $request->u_img_name,
-        'gender' => $request->gender,
-        'p_id'=>gets::preservation_id($request->preservation),
+        'f_name' => $request['f_name'],
+        'l_name' => $request['l_name'],
+        'age' => $request['age'],
+        'u_desc' => $request['u_desc'],
+        'email' => $request['email'],
+        'username'=> $request['username'] ,
+        'password'=>$request['password'],
+        'u_img' => $request['u_img_name'],
+        'gender' => $request['gender'],
+        'p_id'=>gets::preservation_id($request['preservation']),
         ]);
         $user_id = $user->u_id;
         $roles = $requestData['roles'];
+        $returned_roles=[];
         foreach ($roles as $role){
-            $r_id = gets::role_id($role['role']);
+            $r_id = gets::role_id($role);
+            $returned_roles[]=['role' => $role];
             $role = user_role::create([
             'u_id' =>$user_id,
             'r_id' => $r_id,
             ]);
         }
+        $token = $user->createToken('token')->plainTextToken;
         return response([
-            'message'=> 'added successfully'
+            'message'=> 'added successfully',
+            'token'=>$token,
+            'roles'=> $returned_roles,
         ],200);
     }
     }
