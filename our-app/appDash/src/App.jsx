@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Requests from './Requests';
 import Home from './Home';
 import Complaints from './Complaints';
@@ -28,7 +28,7 @@ function App() {
         <Routes>
           <Route path="/Requests" element={<Requests />} />
           <Route path="/Complaints" element={<Complaints />} />
-          <Route path="/Manegment" element={<Manegment />} />
+          <Route path='/Manegment/:u_id' element={<Manegment />} /> {/* Update the component prop to element */}
           <Route path="/Users" element={<Users />} />
           <Route path='/' element={<Home />} />
           <Route path='/Services' element={<Services />} />

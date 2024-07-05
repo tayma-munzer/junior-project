@@ -96,7 +96,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       print("Request failed with status: ${response.statusCode}");
     }
   }
-
+  bool isEnrolled = false;
   Future<void> fetch_is_student() async {
     var url = is_user_course_enrolled;
     String? token = await AuthManager.getToken();
@@ -108,6 +108,14 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     print("This is the response:");
     print(response.body);
     print(response.statusCode);
+    if (response.statusCode == 200) {
+      var decodedData = json.decode(response.body);
+      var enrolledValue = decodedData["enrolled"];
+      isEnrolled = enrolledValue == "true";
+    } else {
+      print("Request failed with status: ${response.statusCode}");
+    }
+    print(isEnrolled);
   }
 
   Future<void> deleteCourse() async {
@@ -385,10 +393,9 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                     : ListView.builder(
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
-                                        itemCount: int.tryParse(
-                                                courseData['num_of_free_videos']
-                                                    .toString()) ??
-                                            0,
+                          itemCount: isEnrolled
+                              ? videoData!.length
+                              : int.tryParse(courseData['num_of_free_videos'].toString()) ?? 0,
                                         itemBuilder: (context, index) {
                                           var videoId =
                                               videoData!.keys.elementAt(index);

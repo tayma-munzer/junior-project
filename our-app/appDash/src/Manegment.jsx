@@ -1,41 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ProgressBar } from 'react-bootstrap';
+import { useParams } from 'react-router';
+import axios from 'axios';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-
-
-
-const userData = [
-  {
-    value: '123456',
-  },
-  {
-    value: 'John',
-  },
-  {
-    value: 'Doe',
-  },
-  {
-    value: '30',
-  },
-  {
-    value: 'Lorem ipsum dolor sit amet...',
-  },
-  {
-    value: 'john.doe@example.com',
-  },
-  {
-    value: 'johndoe',
-  },
-  {
-    value: '********',
-  },
-  {
-    value: 'Male',
-  },
-  {
-    value: 'ABC123',
-  },
-];
 
 function CustomCard() {
   return (
@@ -46,55 +13,94 @@ function CustomCard() {
   );
 }
 
-function Management() {
+function Manegment() {
+  const [user, setUser] = useState(null);
+  const [jobsUploaded, setJobsUploaded] = useState(0);
+  const [servicesUploaded, setservicesUploaded] = useState(0);
+  const [coursesUploaded, setcoursesUploaded] = useState(0);
+  const params = useParams();
 
- 
+  useEffect(() => {
+    const { u_id } = params;
+    axios
+      .get(`http://127.0.0.1:8000/api/admin/get_user_profile/${u_id}`)
+      .then(res => {
+        console.log(res);
+        setUser(res.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
 
+    axios
+      .get(`http://127.0.0.1:8000/api/admin/get_jobs_count/${u_id}`)
+      .then(res => {
+        console.log(res);
+        const { jobs_count } = res.data;
+        setJobsUploaded(jobs_count); // Update jobsUploaded with the count obtained from the API
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    axios
+      .get(`http://127.0.0.1:8000/api/admin/get_services_count/${u_id}`)
+      .then(res => {
+        console.log(res);
+        const { services_count } = res.data;
+        setservicesUploaded(services_count); // Update servicesUploaded with the count obtained from the API
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    axios
+      .get(`http://127.0.0.1:8000/api/admin/get_courses_count/${u_id}`)
+      .then(res => {
+        console.log(res);
+        const { courses_count } = res.data;
+        setcoursesUploaded(courses_count); // Update coursesUploaded with the count obtained from the API
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, [params]);
 
-  const userImageObj = userData.find((data) => data.name === 'صورة المستخدم');
-  const userImage = userImageObj ? userImageObj.value : '';
+  if (!user) {
+    return <div>Loading...</div>; // Add a loading state while the user data is being fetched
+  }
 
-  const servicesUploaded = 30;
-  const coursesUploaded = 20;
-  const jobsUploaded = 75;
+  const { u_id, f_name, l_name, age, u_desc, email, username, gender, image } = user;
 
   return (
     <div className='Manegment-page'>
       <div className='card-M'>
         <div className='user-image'>
-          <img src={userImage} alt='User' />
+          <img src={image} alt='User' />
         </div>
         <div className='user-details'>
           <h2>تفاصيل المستخدم</h2>
           <div>
-            <strong>معرف المستخدم:</strong> {userData[0].value}
+            <strong>معرف المستخدم:</strong> {u_id}
           </div>
           <div>
-            <strong>الاسم الأول:</strong> {userData[1].value}
+            <strong>الاسم الأول:</strong> {f_name}
           </div>
           <div>
-            <strong>اسم العائلة:</strong> {userData[2].value}
+            <strong>اسم العائلة:</strong> {l_name}
           </div>
           <div>
-            <strong>العمر:</strong> {userData[3].value}
+            <strong>العمر:</strong> {age}
           </div>
           <div>
-            <strong>وصف المستخدم:</strong> {userData[4].value}
+            <strong>وصف المستخدم:</strong> {u_desc}
           </div>
           <div>
-            <strong>البريد الإلكتروني:</strong> {userData[5].value}
+            <strong>البريد الإلكتروني:</strong> {email}
           </div>
           <div>
-            <strong>اسم المستخدم:</strong> {userData[6].value}
+            <strong>اسم المستخدم:</strong> {username}
           </div>
           <div>
-            
-          </div>
-          <div>
-            <strong>الجنس:</strong> {userData[8].value}
-          </div>
-          <div>
-            <strong>معرف المشروع:</strong> {userData[9].value}
+            <strong>الجنس:</strong> {gender}
           </div>
         </div>
       </div>
@@ -129,14 +135,9 @@ function Management() {
       </div>
       <div className='works'>
         <CustomCard />
-    {/* </div>
-      
-      <div className='button-container'>
-        <button className='custom-button'>حذف الحساب</button>*/}
       </div>
     </div>
-   
   );
 }
 
-export default Management;
+export default Manegment;
