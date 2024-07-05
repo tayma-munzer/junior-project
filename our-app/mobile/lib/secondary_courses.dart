@@ -113,30 +113,7 @@ class _SecondaryCoursesPageState extends State<SecondaryCoursesPage> {
                   },
                 ),
                 SizedBox(height: 30),
-                service == 'true'
-                    ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddCourse(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(10),
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text(
-                      'أضف',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                  ),
-                )
-                    : Container(),
+
               ],
             ),
           ),
