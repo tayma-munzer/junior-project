@@ -142,6 +142,11 @@ class gets extends Controller
         $role = role::where('role','=',$role)->first();
         return $role->r_id;
     }
+
+    static function get_preservation(string $p_id){
+        $preservation = preservations::where('p_id','=',$p_id)->first();
+        return $preservation->p_name;
+    }
     
     
 }

@@ -2364,4 +2364,55 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
         $ratings = $service->ratings;
         return response()->json(['ratings'=>$ratings]);
     }
+
+    public function get_enrollments_last_7_days()
+    {
+    $lastSevenDays = now()->subDays(7)->format('Y-m-d');
+
+    $services_data = DB::table('service_enrollments')
+        ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date")
+        ->selectRaw('COUNT(service_enrollments.se_id) as services')
+        ->whereDate('service_enrollments.updated_at', '>=', $lastSevenDays)
+        ->groupBy('date')
+        ->get()
+        ->toArray();
+        $courses_data = DB::table('course_enrollments')
+        ->selectRaw("DATE_FORMAT(created_at, '%Y-%m-%d') as date")
+        ->selectRaw('COUNT(course_enrollments.ce_id) as courses')
+        ->whereDate('course_enrollments.created_at', '>=', $lastSevenDays)
+        ->groupBy('date')
+        ->get()
+        ->toArray();
+    $dates = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $date = now()->subDays($i)->toDateString();
+        $dates[] = $date;
+    }
+
+    $combinedData = [];
+
+foreach ($courses_data as $course) {
+    $combinedData[$course->date]['courses'] = $course->courses;
+}
+
+foreach ($services_data as $service) {
+    $combinedData[$service->date]['services'] = $service->services;
+}
+$finalData = [];
+foreach($dates as $date){
+    $data = [
+        "date" => $date,
+        "courses" => 0,
+        "services" => 0
+    ];
+    if (isset($combinedData[$date])) {
+        $data['courses'] = $combinedData[$date]['courses'] ?? 0;
+        $data['services'] = $combinedData[$date]['services'] ?? 0;
+    }
+    $finalData[] = $data;
+}
+return $finalData; 
+    }
+
+
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\add_common_question;
+use App\Models\common_questions;
 use App\Models\Complaint;
 use App\Models\course;
 use App\Models\job;
@@ -196,5 +198,36 @@ class AdminDashboardController extends Controller
         return response()->json ($jobs) ;
     }
     
-   
+    public function get_user_profile($id){
+        $personal_info=User::where('u_id','=',$id)->first();
+        $path = storage_path('images\\');
+        $fullpath = $path.''.$personal_info->u_img;
+        $image = file_get_contents($fullpath);
+        $base64image = base64_encode($image);
+        $personal_info->image = $base64image;
+        $personal_info -> preservation = gets::get_preservation($personal_info->p_id);
+        return $personal_info;
+    }
+
+    public function add_common_question (add_common_question $request){
+        $validator = Validator::make($request->all(), [
+            'answer' =>'required|string',
+            'question'=>'required|string',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            common_questions::create([
+                'question'=>$request->question,
+                'answer'=>$request->answer,
+            ]);
+            return response([
+                'message'=> 'added successfully'
+            ],200);
+        }
+    }
+
 }

@@ -133,6 +133,8 @@ Route::get('/get_training_course_rating/{id}', [authenticationController::class,
 Route::get('/get_job_ratings/{id}', [authenticationController::class, 'get_job_rating']);
 Route::get('/get_service_ratings/{id}', [authenticationController::class, 'get_service_rating']);
 
+Route::get('get_enrollments_last_7_days', [authenticationController::class, 'get_enrollments_last_7_days']);
+
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){
     Route::get('/get_profiles', 'get_profiles');
     Route::get('/get_complaints', 'get_complaints');
@@ -159,6 +161,8 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
 
     Route::get('/get_courses_requests', 'get_courses_requests');
     Route::get('/get_jobs_requests', 'get_jobs_requests');
+    Route::get('/get_user_profile/{id}', 'get_user_profile');
+    Route::post('/add_common_question', 'add_common_question');
 });
 
 
