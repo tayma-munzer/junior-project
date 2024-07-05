@@ -599,6 +599,316 @@ class DatabaseSeeder extends Seeder
             'updated_at'=>'2024-06-28 07:17:14',
         ]);
         
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'4',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'4',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'3',
+            'ratable_type'=>'App\Models\services',
+        ]);
+
+
+
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'5',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'5',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'6',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'8',
+            'ratable_type'=>'App\Models\services',
+        ]);
+
+
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'2',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'9',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'7',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'7',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'6',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'8',
+            'ratable_type'=>'App\Models\services',
+        ]);
+
+
+
+
+
+
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'1',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'4',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'4',
+            'ratable_type'=>'App\Models\services',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'3',
+            'ratable_type'=>'App\Models\services',
+        ]);
+
+
+
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'5',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'5',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'6',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\cousre',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'8',
+            'ratable_type'=>'App\Models\course',
+        ]);
+
+
+        DB::table('rates_reviews')->insert([
+            'rate'=>'3',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'2',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev 33 rev',
+            'user_id'=>'2',
+            'ratable_id'=>'9',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'1',
+            'ratable_id'=>'10',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'7',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'7',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'5',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'6',
+            'ratable_type'=>'App\Models\course',
+        ]);
+        DB::table('rates_reviews')->insert([
+            'rate'=>'4',
+            'review'=>'rev rev',
+            'user_id'=>'2',
+            'ratable_id'=>'8',
+            'ratable_type'=>'App\Models\course',
+        ]);
 
     }
 }
