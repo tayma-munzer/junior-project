@@ -29,6 +29,10 @@ class ItemDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final discountValue = discount ?? "0";
+    final double originalPrice = double.tryParse(price) ?? 0;
+    final double discountPercentage = double.tryParse(discountValue) ?? 0;
+    final double discountedPrice = originalPrice - (originalPrice * (discountPercentage / 100));
     Widget imageWidget;
 
     // Assuming you have the image data available
@@ -152,7 +156,7 @@ class ItemDetails extends StatelessWidget {
                         SizedBox(width: 5),
                         Spacer(),
                         Text(
-                          price,
+                          '  $discountedPrice   ل.س',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.italic,
@@ -186,7 +190,7 @@ class ItemDetails extends StatelessWidget {
                               ),
                               Spacer(),
                               Text(
-                                discount,
+                                ' % $discount',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FontStyle.italic,

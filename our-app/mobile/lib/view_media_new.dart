@@ -7,34 +7,31 @@ import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(view_media_new());
-}
+import 'appbar.dart';
+import 'bottombar.dart';
+import 'drawer.dart';
 
 class view_media_new extends StatefulWidget {
+  final String videoId;
+  final String videoName;
+
+  view_media_new({required this.videoId, required this.videoName});
+
   @override
   _view_media_newState createState() => _view_media_newState();
 }
 
 class _view_media_newState extends State<view_media_new> {
-  //late WebSocketClient _webSocketClient;
   VideoPlayerController? _videoPlayerController;
   File? _tempVideoFile;
   File? _video;
   var socket;
-  String video_name = "waiting for video";
+  String video_name = "";
   String video_desc = "";
   final ImagePicker _picker = ImagePicker();
-  // Future<void> _pickVideo() async {
-  //   final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
-
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _webSocketClient.sendMessage(pickedFile.path);
-  //       //_video = File(pickedFile.path);
-  //     });
-  //   }
-  // }
+  double _sliderValue = 0.0;
+  bool _isSliderChanging = false;
+  bool _isPlaying = false;
 
   Future<void> connect(url, m_id) async {
     try {
@@ -44,7 +41,7 @@ class _view_media_newState extends State<view_media_new> {
       final data = {'m_id': m_id};
       socket.add(jsonEncode(data));
       socket.listen(
-        (message) {
+            (message) {
           print("receive");
           _handleWebSocketvideo(message);
         },
@@ -64,8 +61,7 @@ class _view_media_newState extends State<view_media_new> {
   @override
   void initState() {
     super.initState();
-    // number 1 is the id of the media you want to get
-    connect("ws://10.0.2.2:8765", "1");
+    connect("ws://10.0.2.2:8765", widget.videoId);
   }
 
   void _handleWebSocketvideo(dynamic message) async {
@@ -85,6 +81,15 @@ class _view_media_newState extends State<view_media_new> {
       ..initialize().then((_) {
         setState(() {});
         _videoPlayerController?.play();
+        _videoPlayerController?.addListener(() {
+          if (_videoPlayerController!.value.isInitialized &&
+              !_isSliderChanging) {
+            setState(() {
+              _sliderValue = _videoPlayerController!.value.position.inMilliseconds /
+                  _videoPlayerController!.value.duration.inMilliseconds;
+            });
+          }
+        });
       });
 
     print('Video saved: $videoName');
@@ -92,27 +97,147 @@ class _view_media_newState extends State<view_media_new> {
 
   @override
   void dispose() {
+    _videoPlayerController?.dispose();
     super.dispose();
   }
+  void _togglePlayPause() {
+    setState(() {
+      if (_videoPlayerController!.value.isPlaying) {
+        _videoPlayerController!.pause();
+        _isPlaying = false;
+      } else {
+        if (_videoPlayerController!.value.position >=
+            _videoPlayerController!.value.duration) {
+          _videoPlayerController!.seekTo(Duration.zero);
+        }
+        _videoPlayerController!.play();
+        _isPlaying = true;
+      }
+    });
+  }
 
+  void _onSliderChanged(double value) {
+    if (_videoPlayerController != null && _videoPlayerController!.value.isInitialized) {
+      final double newPosition = value * _videoPlayerController!.value.duration.inMilliseconds;
+      _videoPlayerController!.seekTo(Duration(milliseconds: newPosition.toInt()));
+    }
+  }
+
+  void _onSliderChangeStart(double value) {
+    setState(() {
+      _isSliderChanging = true;
+    });
+  }
+
+  void _onSliderChangeEnd(double value) {
+    setState(() {
+      _isSliderChanging = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(video_name),
-        ),
-        body: Center(
-          child: _videoPlayerController != null &&
-                  _videoPlayerController!.value.isInitialized
-              ? AspectRatio(
-                  aspectRatio: _videoPlayerController!.value.aspectRatio,
-                  child: VideoPlayer(_videoPlayerController!),
-                )
-              : CircularProgressIndicator(),
-        ),
-        bottomSheet: Text(video_desc),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(33.0),
+        child: CustomAppBar(),
       ),
+      drawer: CustomDrawer(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 10),
+            Card(
+              child:
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  video_name,
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              height: 220,
+              child: Expanded(
+
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    _videoPlayerController != null &&
+                        _videoPlayerController!.value.isInitialized
+                        ? AspectRatio(
+                      aspectRatio:
+                      _videoPlayerController!.value.aspectRatio,
+                      child: VideoPlayer(_videoPlayerController!),
+                    )
+                        : CircularProgressIndicator(),
+
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Slider(
+                    value: _isSliderChanging
+                        ? _sliderValue
+                        : (_videoPlayerController != null &&
+                        _videoPlayerController!.value.isInitialized &&
+                        !_isSliderChanging
+                        ? _sliderValue
+                        : 0.0),
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: _onSliderChanged,
+                    onChangeStart: _onSliderChangeStart,
+                    onChangeEnd: _onSliderChangeEnd,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          _isPlaying ? Icons.pause : Icons.play_arrow,
+                          color: Colors.black,
+                          size: 32,
+                        ),
+                        onPressed: _togglePlayPause,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20,),
+            Card(
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child:
+              Directionality(
+
+                textDirection: TextDirection.rtl,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    video_desc,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }
