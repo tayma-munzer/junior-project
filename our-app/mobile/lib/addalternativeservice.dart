@@ -9,7 +9,8 @@ import 'package:mobile/drawer.dart';
 import 'package:mobile/addcvtrainingcourse.dart';
 
 class AddAltService extends StatefulWidget {
-  const AddAltService({Key? key}) : super(key: key);
+  final int s_id;
+  const AddAltService(this.s_id, {Key? key}) : super(key: key);
 
   @override
   _AddAltServiceState createState() => _AddAltServiceState();
@@ -184,20 +185,20 @@ class _AddAltServiceState extends State<AddAltService> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      int durationValue;
+                      String durationValue;
                       if (durationOrCalendar == 'days') {
-                        durationValue = durationInDays;
+                        durationValue = " ايام " + durationInDays.toString();
                       } else if (durationOrCalendar == 'hours') {
                         durationValue =
-                            int.parse(AltServiceDurationController.text);
+                            " ساعات " + AltServiceDurationController.text;
                       } else {
-                        durationValue = 0;
+                        durationValue = 'لا تستهلك وقت اضافي';
                       }
 
                       Map<String, dynamic> altservice = {
                         'a_name': AltServiceTitleController.text,
                         'a_price': AltServicePriceController.text,
-                        'added_duration': durationValue,
+                        'added_duration': durationValue.toString(),
                       };
                       setState(() {
                         altservices.add(altservice);
@@ -259,6 +260,11 @@ class _AddAltServiceState extends State<AddAltService> {
                   ),
                   onPressed: () {
                     print(altservices);
+                    AuthCont.addaltservice(widget.s_id, altservices)
+                        .then((value) {
+                      print(value.body);
+                      print(value.statusCode);
+                    });
                   },
                   child: Container(
                     width: screenWidth - 50,

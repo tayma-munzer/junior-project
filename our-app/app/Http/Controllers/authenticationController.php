@@ -61,6 +61,7 @@ use App\Http\Requests\is_user_course_enrolled;
 use App\Http\Requests\is_user_job_applied;
 use App\Http\Requests\is_user_service_enrolled;
 use App\Http\Requests\job_application_request;
+use App\Http\Requests\job_filters;
 use App\Http\Requests\not_found_services_request;
 use App\Http\Requests\register_request;
 use App\Http\Requests\service_enrollment_request;
@@ -207,11 +208,13 @@ class authenticationController extends Controller
     }
     // done
     public function addalt_service(addalt_serviceRequest $request){
-        $validator = Validator::make($request->input('alt_service'), [
-            'alt_service'=> [
-            'a_name' => 'required|string',
-            'a_price' => 'required|gte:5000',
-            'added_duration'=>'required|string' ]
+        $requestData = json_decode($request->getContent(), true);
+        $validator = Validator::make($requestData, [
+            's_id'=>'required|integer',
+            'alt_service'=> 'required|array',
+            'alt_service.*.a_name' => 'required|string',
+            'alt_service.*.a_price' => 'required|gte:5000',
+            'alt_service.*.added_duration'=>'required' 
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'gte:5000'=> 'the :attribute field should be minimum 5000',
@@ -221,8 +224,8 @@ class authenticationController extends Controller
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
-        }else{$data = $request->alt_service;
-            $s_id = $request->s_id;
+        }else{$data = $requestData['alt_service'];
+            $s_id = $requestData['s_id'];
             foreach ($data as $d){
                 $alt_service = alt_services::create([
                     's_id' => $s_id,
@@ -2587,6 +2590,173 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             'message'=> 'deleted successfully',
         ],200);
     }
+    }
+
+    public function get_my_jobs(get_by_token $request){
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $my_jobs = job::where('u_id',$user_id)->get();
+            if(empty($my_jobs)){
+                return response([
+                    'message'=> 'you have no jobs',
+                ],202);
+            }
+            return response([
+                'jobs'=> $my_jobs,
+            ],200);
+        }
+    }
+
+    public function get_my_services(get_by_token $request){
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $my_services = services::where('u_id',$user_id)->get();
+            if(empty($my_services)){
+                return response([
+                    'message'=> 'you have no services',
+                ],202);
+            }
+            return response([
+                'services'=> $my_services,
+            ],200);
+        }
+    }
+
+    public function get_my_courses(get_by_token $request){
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $my_courses = course::where('u_id',$user_id)->get();
+            if(empty($my_courses)){
+                return response([
+                    'message'=> 'you have no courses',
+                ],202);
+            }
+            return response([
+                'services'=> $my_courses,
+            ],200);
+        }
+    }
+
+    public function get_my_services_enrollments(get_by_token $request){
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $my_services = service_enrollment::join('services', 'services.s_id','=','service_enrollments.s_id')
+            ->select('services.s_id', 'services.s_name')
+            ->where('service_enrollments.u_id', '=', $user_id)
+            ->get();
+            if(empty($my_services)){
+                return response([
+                    'message'=> 'you have no services',
+                ],202);
+            }
+            return response([
+                'services'=> $my_services,
+            ],200);
+        }
+    }
+
+    public function get_my_courses_enrollments(get_by_token $request){
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $my_courses = course_enrollment::join('courses', 'courses.c_id','=','course_enrollments.c_id')
+            ->select('courses.c_id', 'courses.c_name')
+            ->where('course_enrollments.u_id', '=', $user_id)
+            ->get();
+            if(empty($my_courses)){
+                return response([
+                    'message'=> 'you have no courses',
+                ],202);
+            }
+            return response([
+                'courses'=> $my_courses,
+            ],200);
+        }
+    }
+
+    public function job_filter (job_filters $request){
+        $validator = Validator::make($request->all(),[
+            'min_sal' => 'integer',
+            'max_sal'=> 'integer',
+            'min_age'=> 'integer',
+            'max_age'=> 'integer',
+            'min_num_of_exp_years'=> 'integer',
+            'max_num_of_exp_years'=> 'integer',
+        ], $messages = [
+            'integer' => 'The :attribute field must be integer.',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $query = job::query();
+            if ($request->has('min_sal')) {
+                $query->where('j_min_sal','>=', $request->min_sal);
+            }
+            if ($request->has('max_sal')) {
+                $query->where('j_max_sal','<=', $request->max_sal);
+            }
+            if ($request->has('min_age')) {
+                $query->where('j_min_age','>=', $request->min_age);
+            }
+            if ($request->has('max_age')) {
+                $query->where('j_max_age','<=', $request->max_age);
+            }
+            if ($request->has('min_num_of_exp_years')) {
+                $query->where('num_of_exp_years','>=', $request->min_num_of_exp_years);
+            }
+            if ($request->has('max_num_of_exp_years')) {
+                $query->where('num_of_exp_years','<=', $request->max_num_of_exp_years);
+            }
+            $results = $query->get();
+    
+            return response()->json($results);
+
+        }
     }
 
 }

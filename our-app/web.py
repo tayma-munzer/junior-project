@@ -105,7 +105,7 @@ async def search(websocket):
             cosine_sim = cosine_similarity(X[0], X[1])[0][0]
             courses_cos_list.append([cosine_sim,course])
         for job in jobs :
-            X = vectorizer.fit_transform([search_string, job['j_name']])
+            X = vectorizer.fit_transform([search_string, job['j_title']])
             cosine_sim = cosine_similarity(X[0], X[1])[0][0]
             jobs_cos_list.append([cosine_sim,job])
         service_sorted_list = sorted(services_cos_list, key=lambda x: x[0], reverse=True)
