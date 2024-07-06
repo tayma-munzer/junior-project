@@ -6,15 +6,20 @@ import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
 import 'package:mobile/addsugestiontoservice.dart';
 import 'package:mobile/addvideo.dart';
+import 'package:mobile/addwork.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/controller/authManager.dart';
+import 'package:mobile/editCourse.dart';
+import 'package:mobile/editcv.dart';
 import 'package:mobile/listCourses.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/viewCV.dart';
 import 'package:mobile/viewallJobs.dart';
 import 'package:mobile/viewservice.dart';
+import 'package:mobile/viewuserservices.dart';
 import 'package:mobile/viewvideo.dart';
+import 'package:mobile/viewworkgallery.dart';
 import 'package:mobile/whoarewe.dart';
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
@@ -52,7 +57,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchRoles();
   }
@@ -87,7 +91,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => viewworkgallery(2)),
               );
             },
           ),
@@ -152,7 +156,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ViewJobs()),
+                      MaterialPageRoute(builder: (context) => addWork(2)),
                     );
                   },
                 )

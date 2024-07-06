@@ -3,10 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:mobile/appbar.dart';
+import 'package:mobile/bottombar.dart';
+import 'package:mobile/drawer.dart';
 
 class addWork extends StatefulWidget {
   final int s_id;
   const addWork(this.s_id, {Key? key}) : super(key: key);
+
   @override
   _addWorkState createState() => _addWorkState();
 }
@@ -18,6 +22,18 @@ class _addWorkState extends State<addWork> {
   String? base64work;
 
   var socket;
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.right,
+        ),
+      ),
+    );
+  }
 
   Future<void> connect(url, work) async {
     try {
@@ -65,6 +81,15 @@ class _addWorkState extends State<addWork> {
   }
 
   void _saveFile() {
+    if (_description.isEmpty) {
+      _showSnackbar('يُرجى ملء حقل الوصف');
+      return;
+    }
+    if (_file == null) {
+      _showSnackbar('يُرجى اختيار ملف');
+      return;
+    }
+
     print('desc: $_description');
     print('file: $workname');
     print('bytes : $base64work');
@@ -80,43 +105,98 @@ class _addWorkState extends State<addWork> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(' اضف عمل ال معرض الاعمال'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(33.0),
+        child: CustomAppBar(),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'ادخل وصف مناسب للملف',
+      drawer: CustomDrawer(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/works.png',
+                width: 20,
+                height: 200,
               ),
-              onChanged: (value) {
-                setState(() {
-                  _description = value;
-                });
-              },
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _selectFile,
-              child: Text('اختر ملف'),
-            ),
-            SizedBox(height: 16.0),
-            if (_file != null)
+              SizedBox(height: 20),
               Text(
-                '${_file?.name}',
+                'وصف الملف',
                 textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _saveFile,
-              child: Text('حفظ'),
-            ),
-          ],
+              SizedBox(height: 15),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: TextField(
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    hintText: 'ادخل وصف مناسب للملف',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: _selectFile,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  minimumSize: MaterialStateProperty.all(Size(300, 40)),
+                ),
+                child: Text(
+                  ' اختر ملفا',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.0),
+              if (_file != null)
+                Text(
+                  '${_file?.name}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _saveFile,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  minimumSize: MaterialStateProperty.all(Size(300, 40)),
+                ),
+                child: Text(
+                  ' حفظ التغيريات',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }

@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile/CategoriesDetails.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/readcourse.dart';
 import 'package:mobile/services/PusherServices.dart';
-import 'package:mobile/viewcoursetobuy.dart';
+import 'package:mobile/viewjob.dart';
 import 'package:mobile/viewjobtobuy.dart';
-import 'package:mobile/viewservicetobuy.dart';
-import 'package:mobile/wallet.dart';
 
 class MainHomePage extends StatefulWidget {
   const MainHomePage({Key? key}) : super(key: key);
@@ -69,6 +69,266 @@ class _MainHomePageState extends State<MainHomePage> {
     fetchCourses();
   }
 
+  Widget buildJobCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => viewjob(jobs[_currentJobIndex]['j_id'])));
+      },
+      child: SizedBox(
+        height: 150,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              height: 300,
+              width: 300,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 255, 227, 184),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    jobs[_currentJobIndex]['j_name'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    jobs[_currentJobIndex]['j_desc'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentJobIndex =
+                          (_currentJobIndex - 1).clamp(0, jobs.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back_ios),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentJobIndex =
+                          (_currentJobIndex + 1).clamp(0, jobs.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_forward_ios),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildServiceCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CategoriesDetails(
+                    services[_currentServicesIndex]['s_id'])));
+      },
+      child: SizedBox(
+        height: 400,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              height: 350,
+              width: 300,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 255, 227, 184),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Positioned(
+                    top: 0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      child: Image.memory(
+                        base64Decode(services[_currentServicesIndex]['image']),
+                        height: 240,
+                        width: 400,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    services[_currentServicesIndex]['s_name'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    services[_currentServicesIndex]['s_desc'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentServicesIndex = (_currentServicesIndex - 1)
+                          .clamp(0, services.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back_ios),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentServicesIndex = (_currentServicesIndex + 1)
+                          .clamp(0, services.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_forward_ios),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildCourseCard() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CourseDetailsPage(courses[_currentCoursesIndex]['c_id'])));
+      },
+      child: SizedBox(
+        height: 400,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              height: 350,
+              width: 300,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 156, 224, 255),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Positioned(
+                    top: 0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      child: Image.memory(
+                        base64Decode(courses[_currentCoursesIndex]['image']),
+                        height: 240,
+                        width: 400,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    courses[_currentCoursesIndex]['c_name'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    courses[_currentCoursesIndex]['c_desc'].toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 66, 62, 62),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentCoursesIndex = (_currentCoursesIndex - 1)
+                          .clamp(0, courses.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back_ios),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentCoursesIndex = (_currentCoursesIndex + 1)
+                          .clamp(0, courses.length - 1);
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_forward_ios),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,288 +340,64 @@ class _MainHomePageState extends State<MainHomePage> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Center(child: Image.asset('assets/homepage.png', width: 300)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Center(child: Image.asset('assets/homepage.png', width: 500)),
 
-            // Jobs Section
-            Text(
-              'الاعمال',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            // Job Card with Arrows
-            if (jobs.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              viewjobtobuy(jobs[_currentJobIndex]['j_id'])));
-                },
-                child: SizedBox(
-                  height: 150,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 255, 227, 184),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              jobs[_currentJobIndex]['j_name'].toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              jobs[_currentJobIndex]['j_desc'].toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentJobIndex = (_currentJobIndex - 1)
-                                    .clamp(0, jobs.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_back_ios),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentJobIndex = (_currentJobIndex + 1)
-                                    .clamp(0, jobs.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              SizedBox(height: 10),
+              Text(
+                'الخدمات',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
-            else
-              const Center(
-                child: CircularProgressIndicator(),
               ),
-            SizedBox(height: 10),
-            Text(
-              'الخدمات',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            if (services.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => viewservicetobuy(
-                              services[_currentServicesIndex]['s_id'])));
-                },
-                child: SizedBox(
-                  height: 150,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 255, 227, 184),
-                          image: DecorationImage(
-                            image: MemoryImage(
-                              base64Decode(
-                                  services[_currentServicesIndex]['image']),
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              services[_currentServicesIndex]['s_name']
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              services[_currentServicesIndex]['s_desc']
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentServicesIndex =
-                                    (_currentServicesIndex - 1)
-                                        .clamp(0, services.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_back_ios),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentServicesIndex =
-                                    (_currentServicesIndex + 1)
-                                        .clamp(0, services.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              SizedBox(height: 10),
+              if (services.isNotEmpty)
+                buildServiceCard()
+              else
+                const Center(
+                  child: CircularProgressIndicator(),
                 ),
-              )
-            else
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-            SizedBox(height: 10),
-            Text(
-              'الكورسات',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            // course Card with Arrows
-            if (courses.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => viewcoursetotobuy(
-                              courses[_currentCoursesIndex]['c_id'])));
-                },
-                child: SizedBox(
-                  height: 150,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 255, 227, 184),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              courses[_currentCoursesIndex]['c_name']
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              courses[_currentCoursesIndex]['c_desc']
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 66, 62, 62),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentCoursesIndex =
-                                    (_currentCoursesIndex - 1)
-                                        .clamp(0, courses.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_back_ios),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentCoursesIndex =
-                                    (_currentCoursesIndex + 1)
-                                        .clamp(0, courses.length - 1);
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              SizedBox(height: 10),
+              Text(
+                'الكورسات',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
-            else
-              const Center(
-                child: CircularProgressIndicator(),
               ),
-          ]),
+              SizedBox(height: 10),
+              // course Card with Arrows
+              if (courses.isNotEmpty)
+                buildCourseCard()
+              else
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+
+              // Jobs Section
+              Text(
+                'الاعمال',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              // Job Card with Arrows
+              if (jobs.isNotEmpty)
+                buildJobCard()
+              else
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomBar(),

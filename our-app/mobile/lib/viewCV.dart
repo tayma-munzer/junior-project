@@ -187,7 +187,7 @@ class _viewcvState extends State {
                     height: 10,
                   ),
                   if (skills.isEmpty)
-                    Text('No skills to be displayed')
+                    Text('لا يوجد مهارات لعرضها')
                   else
                     for (int i = 0; i < skills.length; i++)
                       Container(
@@ -285,7 +285,7 @@ class _viewcvState extends State {
                     height: 10,
                   ),
                   if (training_courses.isEmpty)
-                    Text('No courses to be displayed')
+                    Text('لا يوجد دورات تدريبية لعرضها')
                   else
                     for (int i = 0; i < training_courses.length; i++)
                       Container(
@@ -373,7 +373,7 @@ class _viewcvState extends State {
                     height: 10,
                   ),
                   Text(
-                    ' الخبرات',
+                    '  الخبرات',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -387,8 +387,8 @@ class _viewcvState extends State {
                   SizedBox(
                     height: 10,
                   ),
-                  if (experience.isEmpty)
-                    Text('No exp to be displayed')
+                  if (education.isEmpty)
+                    Text('لا يوجد خبرات سابقة لعرضها')
                   else
                     for (int i = 0; i < experience.length; i++)
                       Container(
@@ -404,6 +404,7 @@ class _viewcvState extends State {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
+                                  alignment: Alignment.centerLeft,
                                   icon: Icon(Icons.delete),
                                   onPressed: () async {
                                     var url = delete_exp;
@@ -416,7 +417,7 @@ class _viewcvState extends State {
                                       print('deleted seccessfully');
                                       Map data = json.decode(res.body);
                                       setState(() {
-                                        experience = data['experiences'];
+                                        experience = data['experience'];
                                       });
                                     } else {
                                       print('something went wrong');
@@ -424,7 +425,8 @@ class _viewcvState extends State {
                                   },
                                 ),
                                 IconButton(
-                                  padding: EdgeInsets.only(right: 10.0),
+                                  //padding: EdgeInsets.only(right: 60.0),
+                                  alignment: Alignment(-1.0, 0),
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
                                     Navigator.push(
@@ -441,104 +443,11 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  ' اسم الشركة او مكان العمل : ${experience[i]['company']} \n   المسمى الوظيفي : ${experience[i]['position']} \n  تاريخ البدء في العمل :${experience[i]['start_date']} \n تاريخ انهاءالعمل :${experience[i]['end_date']} \n  المسؤوليات في العمل: ${experience[i]['responsibilities']} ',
+                                  'اسم الشركة: ${experience[i]['company']} \n    الموقع الوظيفي : ${experience[i]['position']} \n  تاريخ البدء:${experience[i]['start_date']} \n  تاريخ الانتهاء :${experience[i]['end_date']} \n   المسؤوليات: ${experience[i]['responsibilities']} ',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    padding: EdgeInsets.only(right: 8.0),
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AddExperience(mainInfo['cv_id']),
-                          ));
-                    },
-                  ),
-                  Text(
-                    'المشاريع',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  if (projects.isEmpty)
-                    Text('No projects to be displayed')
-                  else
-                    for (int i = 0; i < projects.length; i++)
-                      Container(
-                        color: i % 2 == 0
-                            ? const Color.fromARGB(255, 168, 216, 255)
-                            : Colors.white,
-                        padding: EdgeInsets.all(10),
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                var url = delete_project;
-                                var res = await http.post(Uri.parse(url),
-                                    body: {
-                                      'p_id': projects[i]['p_id'].toString()
-                                    });
-                                if (res.statusCode == 200) {
-                                  print('deleted seccessfully');
-                                  Map data = json.decode(res.body);
-                                  setState(() {
-                                    projects = data['projects'];
-                                  });
-                                } else {
-                                  print('something went wrong');
-                                }
-                              },
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.only(right: 10.0),
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          projectedit(projects[i]['p_id'])),
-                                );
-                              },
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '  اسم المشروع :  ${projects[i]['p_name']} \n  وصف المشروع : ${projects[i]['p_desc']} \n  تاريخ البدء في المشروع :${projects[i]['start_date']} \n تاريخ انهاء العمل :${projects[i]['end_date']} \n  المسؤوليات في المشروع: ${projects[i]['responsibilities']} ',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
                                   ),
                                   textAlign: TextAlign.right,
                                 ),
