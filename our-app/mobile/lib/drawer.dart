@@ -11,6 +11,7 @@ import 'package:mobile/contactus.dart';
 import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/editCourse.dart';
 import 'package:mobile/editcv.dart';
+import 'package:mobile/editgallery.dart';
 import 'package:mobile/listCourses.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
@@ -91,7 +92,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => viewworkgallery(2)),
+                MaterialPageRoute(builder: (context) => viewworkgallery(1)),
               );
             },
           ),
@@ -107,7 +108,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => addWork(1)),
               );
             },
           ),
@@ -123,7 +124,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WhoPage()),
+                MaterialPageRoute(builder: (context) => AddCVMain()),
               );
             },
           ),
@@ -139,7 +140,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RulesPage()),
+                MaterialPageRoute(builder: (context) => Editgallery(2)),
               );
             },
           ),
