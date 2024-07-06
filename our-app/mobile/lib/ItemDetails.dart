@@ -6,6 +6,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mobile/colors.dart';
 import 'package:mobile/rating.dart';
 
+import 'RatingStars.dart';
+
 class ItemDetails extends StatelessWidget {
   final String image;
   final String serviceTitle;
@@ -15,6 +17,7 @@ class ItemDetails extends StatelessWidget {
   final String numberOfBuyers;
   final String status;
   final String discount;
+  final String rate;
 
   ItemDetails({
     required this.image,
@@ -25,6 +28,7 @@ class ItemDetails extends StatelessWidget {
     required this.numberOfBuyers,
     required this.status,
     required this.discount,
+    required this.rate,
   });
 
   @override
@@ -78,7 +82,20 @@ class ItemDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    RatingWidget2(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RatingStars(rate: rate), // Display the RatingStars widget
+                        Text(
+                          rate, // Display the rate as a number
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
