@@ -42,9 +42,10 @@ class _AddSkillState extends State<AddSkill> {
               children: [
                 Text(': قسم المهارات', textAlign: TextAlign.right),
                 SizedBox(height: 16.0),
-                Text(' اسم المهارة ',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                Text(
+                  ' اسم المهارة ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
                 TextFormField(
                   controller: CVSkillNameController,
                   textAlign: TextAlign.right,

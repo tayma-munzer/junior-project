@@ -66,72 +66,97 @@ class _viewjobState extends State<viewjob> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            Image.asset('assets/workingbag.png', width: 200),
-            SizedBox(height: 50),
-            Text('  اسم الوظيفة :${jobdetails!['j_name']} ',
-                style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text('  توصيف الوظيفة : ${jobdetails!['j_desc']} ',
-                style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text('${jobdetails!['j_sal']} :الراتب(بالليرة السورية)  ',
-                style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text(' متطلبات الوظيفة : ${jobdetails!['j_req']}  ',
-                style: TextStyle(fontSize: 20)),
-            enable == 'true' ? SizedBox(height: 20) : Container(),
-            enable == 'true'
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditJob(widget.j_id)),
-                          );
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          minimumSize: MaterialStateProperty.all(Size(300, 40)),
-                        ),
-                        child:
-                            Text('Edit', style: TextStyle(color: Colors.white)),
-                      ),
-                      SizedBox(height: 5),
-                      ElevatedButton(
-                        onPressed: () async {
-                          var url = delete_job;
-                          var res = await http.post(Uri.parse(url),
-                              body: {'j_id': jobdetails!['j_id'].toString()});
-                          if (res.statusCode == 200) {
-                            print('deleted seccessfully');
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 20),
+              Image.asset('assets/workingbag.png', width: 200),
+              SizedBox(height: 50),
+              Text('  اسم الوظيفة :${jobdetails!['job']['j_title']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text('  توصيف الوظيفة : ${jobdetails!['job']['j_desc']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(' متطلبات الوظيفة : ${jobdetails!['job']['j_req']}  ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   الحد الادنى للراتب : ${jobdetails!['job']['j_min_sal']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   الحد الاقصى للراتب : ${jobdetails!['job']['j_max_sal']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   العمر الادنى للراتب : ${jobdetails!['job']['j_min_age']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   العمر الاقصى للراتب : ${jobdetails!['job']['j_max_age']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   درجة التعليم المطلوبة : ${jobdetails!['job']['education']} ',
+                  style: TextStyle(fontSize: 20)),
+              SizedBox(height: 10),
+              Text(
+                  '   عدد سنين الخبرة المطلوبة : ${jobdetails!['job']['num_of_exp_years']} ',
+                  style: TextStyle(fontSize: 20)),
+              enable == 'true' ? SizedBox(height: 20) : Container(),
+              enable == 'true'
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => FirstPage()),
+                                  builder: (context) => EditJob(widget.j_id)),
                             );
-                          }
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.red),
-                          minimumSize: MaterialStateProperty.all(Size(300, 40)),
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.blue),
+                            minimumSize:
+                                MaterialStateProperty.all(Size(300, 40)),
+                          ),
+                          child: Text('Edit',
+                              style: TextStyle(color: Colors.white)),
                         ),
-                        child: Text('Delete',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  )
-                : Container(),
-          ],
+                        SizedBox(height: 5),
+                        ElevatedButton(
+                          onPressed: () async {
+                            var url = delete_job;
+                            var res = await http.post(Uri.parse(url),
+                                body: {'j_id': jobdetails!['j_id'].toString()});
+                            if (res.statusCode == 200) {
+                              print('deleted seccessfully');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FirstPage()),
+                              );
+                            }
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red),
+                            minimumSize:
+                                MaterialStateProperty.all(Size(300, 40)),
+                          ),
+                          child: Text('Delete',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomBar(),

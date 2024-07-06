@@ -20,6 +20,9 @@ class _LoginState extends State<Login> {
   String userEmail = '';
   String userPassword = '';
 
+  String emailError = '';
+  String passwordError = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,11 +37,13 @@ class _LoginState extends State<Login> {
                 inputFile(
                   label: 'البريد الالكتروني',
                   controller: emailController,
+                  error: emailError,
                 ),
                 inputFile(
                   label: 'كلمة المرور',
                   obscureText: true,
                   controller: passwordController,
+                  error: passwordError,
                 ),
                 SizedBox(height: 20),
                 Center(
@@ -58,7 +63,7 @@ class _LoginState extends State<Login> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FirstPage()),
+                                    builder: (context) => SignUpPage()),
                               );
                             },
                         ),
@@ -70,68 +75,73 @@ class _LoginState extends State<Login> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      AuthCont.loginAuth(userEmail, userPassword).then((value) {
-                        if (value.statusCode == 200) {
-                          final Map<String, dynamic> responseMap =
-                              json.decode(value.body);
-                          AuthManager.saveToken(responseMap['token']);
-                          print(responseMap['token']);
-                          print(responseMap['roles']);
-                          List roles = responseMap['roles'];
-                          AuthManager.saveRoles(roles);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MainHomePage()),
-                          );
-                        } else if (value.statusCode == 402) {
-                          // email or password is written wrong
-                          Map<String, dynamic> responseMap =
-                              json.decode(value.body);
-                          if (responseMap.containsKey('email')) {
-                            List<dynamic> emailErrors = responseMap['email'];
-                            if (emailErrors.isNotEmpty) {
-                              //error of the email
-                              print(
-                                  'Error in email: ${emailErrors.join(', ')}');
-                            }
-                          }
+                      if (userEmail.isEmpty) {
+                        setState(() {
+                          emailError = 'يجب ان لا يكون البريد الالكتروني فراغا';
+                        });
+                      } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(userEmail)) {
+                        setState(() {
+                          emailError = 'هذه ليست الصيغة الصحيحة لليمبل';
+                        });
+                      } else {
+                        emailError = '';
+                      }
 
-                          if (responseMap.containsKey('password')) {
-                            List<dynamic> passwordErrors =
-                                responseMap['password'];
-                            if (passwordErrors.isNotEmpty) {
-                              print(
-                                  //error of the password
-                                  'Error in password: ${passwordErrors.join(', ')}');
-                            }
+                      if (userPassword.isEmpty) {
+                        setState(() {
+                          passwordError = 'يجب ان لا تكون كلمة السر فارغة';
+                        });
+                      } else {
+                        passwordError = '';
+                      }
+
+                      if (emailError.isEmpty && passwordError.isEmpty) {
+                        AuthCont.loginAuth(userEmail, userPassword)
+                            .then((value) {
+                          if (value.statusCode == 200) {
+                            final Map<String, dynamic> responseMap =
+                                json.decode(value.body);
+                            AuthManager.saveToken(responseMap['token']);
+                            print(responseMap['token']);
+                            print(responseMap['roles']);
+                            List roles = responseMap['roles'];
+                            AuthManager.saveRoles(roles);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainHomePage()),
+                            );
+                          } else if (value.statusCode == 402) {
+                            setState(() {
+                              emailError = 'هذا ليس البريد الالكتروني الصحيح';
+                            });
+                          } else if (value.statusCode == 422) {
+                            setState(() {
+                              passwordError =
+                                  'تأكد من البريد الالكتروني او كلمة المرور';
+                            });
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('خطأ'),
+                                  content: Text('حدث خطأ غير متوقع'),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('حسنا'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
-                        } else if (value.statusCode == 422) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('هناك خطأ'),
-                                content: Text(
-                                    'تأكد من البريد الالكتروني او كلمة المرور'),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(
-                                          context); // Close the dialog
-                                      Navigator.pop(
-                                          context); // Navigate back to previous page
-                                    },
-                                    child: Text('تم'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          // هون اي ايرور غير طبيعي متل انو مافي اتصال بالباك اند
-                        }
-                      });
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -154,7 +164,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget inputFile({label, obscureText = false, controller}) {
+  Widget inputFile({label, obscureText = false, controller, error}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -168,12 +178,13 @@ class _LoginState extends State<Login> {
           textAlign: TextAlign.right,
           onChanged: (value) {
             if (label == 'البريد الالكتروني') {
-              userEmail = value;
-              emailController.text = value; // Update the emailController value
+              setState(() {
+                userEmail = value;
+              });
             } else if (label == 'كلمة المرور') {
-              userPassword = value;
-              passwordController.text =
-                  value; // Update the passwordController value
+              setState(() {
+                userPassword = value;
+              });
             }
           },
           decoration: InputDecoration(
@@ -183,6 +194,7 @@ class _LoginState extends State<Login> {
             ),
             border:
                 OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+            errorText: error,
           ),
         ),
         SizedBox(height: 10),

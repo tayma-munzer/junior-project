@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/drawer.dart';
 
-class WalletPage extends StatelessWidget {
+class Viewaltservice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

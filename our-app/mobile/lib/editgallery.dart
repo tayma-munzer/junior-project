@@ -4,23 +4,22 @@ import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/drawer.dart';
-import 'package:mobile/editgallery.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:http/http.dart' as http;
 
-class viewworkgallery extends StatefulWidget {
+class Editgallery extends StatefulWidget {
   final int s_id;
 
-  const viewworkgallery(this.s_id, {Key? key}) : super(key: key);
+  const Editgallery(this.s_id, {Key? key}) : super(key: key);
 
   @override
-  State<viewworkgallery> createState() => _viewworkgalleryState();
+  State<Editgallery> createState() => _EditgalleryState();
 }
 
-class _viewworkgalleryState extends State<viewworkgallery> {
+class _EditgalleryState extends State<Editgallery> {
   Map<String, dynamic>? worksmap;
   List<dynamic>? works;
 
@@ -72,7 +71,7 @@ class _viewworkgalleryState extends State<viewworkgallery> {
         child: Column(
           children: [
             Image.asset(
-              'assets/viewworkgallery.png',
+              'assets/homepage.png',
               width: 350,
               height: 300,
             ),
@@ -92,33 +91,24 @@ class _viewworkgalleryState extends State<viewworkgallery> {
                         return Container(
                           color: color,
                           child: ListTile(
-                            leading: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () async {
-                                    var url = delete_work;
-                                    var res = await http
-                                        .post(Uri.parse(url), body: {
+                            leading: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var url = delete_work;
+                                var res = await http.post(Uri.parse(url),
+                                    body: {
                                       'w_id': works![index]['w_id'].toString()
                                     });
-                                    if (res.statusCode == 200) {
-                                      print('deleted successfully');
-                                      Map data = json.decode(res.body);
-                                      setState(() {
-                                        works = data['works'];
-                                      });
-                                    } else {
-                                      print('something went wrong');
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: editGallery,
-                                ),
-                              ],
+                                if (res.statusCode == 200) {
+                                  print('deleted successfully');
+                                  Map data = json.decode(res.body);
+                                  setState(() {
+                                    works = data['works'];
+                                  });
+                                } else {
+                                  print('something went wrong');
+                                }
+                              },
                             ),
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,10 +176,5 @@ class _viewworkgalleryState extends State<viewworkgallery> {
       ),
       bottomNavigationBar: BottomBar(),
     );
-  }
-
-  void editGallery() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Editgallery(widget.s_id)));
   }
 }

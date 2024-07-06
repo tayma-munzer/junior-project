@@ -73,7 +73,7 @@ function Services() {
     <div className="services-container">
       {services.map(service => (
         <div className="card-services" key={service.s_id}>
-          <img className="service-image" src="path/to/s_img.jpg" alt="Service" />
+             <img className="service-image" src={`data:image/jpeg;base64,${service.image}`} alt="Service" />
           <div className="card-content">
             <h2 className="service-title">{service.s_name}</h2>
             <p className="service-description">{service.s_desc}</p>

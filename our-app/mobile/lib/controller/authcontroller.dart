@@ -180,15 +180,29 @@ class AuthCont {
     return res;
   }
 
-  static Future<http.Response> editJob(String j_id, String j_sal, String j_name,
-      String j_desc, String j_req) async {
+  static Future<http.Response> editJob(
+      String j_id,
+      String j_title,
+      String j_desc,
+      String j_req,
+      String j_min_sal,
+      String j_max_sal,
+      String j_min_age,
+      String j_max_age,
+      String education,
+      String num_of_exp_years) async {
     var url = edit_job;
     var res = await http.post(Uri.parse(url), body: {
       'j_id': j_id,
-      'j_sal': j_sal,
-      'j_name': j_name,
+      'j_title': j_title,
       'j_desc': j_desc,
       'j_req': j_req,
+      'j_min_sal': j_min_sal,
+      'j_max_sal': j_max_sal,
+      'j_min_age': j_min_age,
+      'j_max_age': j_max_age,
+      'education': education,
+      'num_of_exp_years': num_of_exp_years
     });
     return res;
   }
