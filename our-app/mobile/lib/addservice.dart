@@ -507,6 +507,10 @@ class _AddServiceState extends State<AddService> {
                 if (int.tryParse(couponValue) != null &&
                     int.parse(couponValue) > 0 &&
                     int.parse(couponValue) <= 100) {
+                  AuthCont.add_discount_service('2', couponValue).then((value) {
+                    print(value.body);
+                    print(value.statusCode);
+                  });
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

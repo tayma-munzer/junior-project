@@ -4,6 +4,7 @@ import 'package:mobile/addcourse.dart';
 import 'package:mobile/addcveducation.dart';
 import 'package:mobile/addcvskills.dart';
 import 'package:mobile/addservice.dart';
+import 'package:mobile/addsugestiontoservice.dart';
 import 'package:mobile/addvideo.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/controller/authManager.dart';
@@ -118,7 +119,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => WhoPage()),
+                MaterialPageRoute(builder: (context) => ServiceSuggetion()),
               );
             },
           ),

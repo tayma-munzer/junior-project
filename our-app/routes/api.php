@@ -141,6 +141,12 @@ Route::get('/get_preservations', [gets::class, 'get_preservations']);
 Route::get('/get_job_types', [gets::class, 'get_job_types']);
 Route::post('/add_job_skill', [authenticationController::class, 'add_job_skill']);
 Route::post('/delete_job_skill', [authenticationController::class, 'delete_job_skill']);
+Route::post('/get_my_courses', [authenticationController::class, 'get_my_courses']);
+Route::post('/get_my_jobs', [authenticationController::class, 'get_my_jobs']);
+Route::post('/get_my_services', [authenticationController::class, 'get_my_services']);
+Route::post('/get_my_services_enrollments', [authenticationController::class, 'get_my_services_enrollments']);
+Route::post('/get_my_courses_enrollments', [authenticationController::class, 'get_my_courses_enrollments']);
+Route::post('/job_filter', [authenticationController::class, 'job_filter']);
 
 
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){

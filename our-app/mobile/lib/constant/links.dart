@@ -142,3 +142,10 @@ const add_course_enrollment = URL + "add_course_enrollment";
 const is_user_course_enrolled = URL + "is_user_course_enrolled";
 const get_preservations = URL + "get_preservations";
 const get_job_types = URL + "get_job_types";
+
+const get_my_courses = URL + "get_my_courses";
+const get_my_jobs = URL + "get_my_jobs";
+const get_my_services = URL + "get_my_services";
+const get_my_services_enrollments = URL + "get_my_services_enrollments";
+const get_my_courses_enrollments = URL + "get_my_courses_enrollments";
+const job_filter = URL + "job_filter";
