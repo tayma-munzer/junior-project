@@ -53,6 +53,8 @@ dependencies:
   flutter_local_notifications: ^17.1.2
   shared_preferences: ^2.2.3
   web_socket_channel: ^2.1.0
+  open_file: ^3.3.2
+
 
   #open_file: ^3.3.2
 
@@ -97,6 +99,8 @@ flutter:
      - assets/toppinkcorner.png
      - assets/bluecorner.png
      - assets/altservice.png
+     - assets/workgallery.png
+     - assets/works.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

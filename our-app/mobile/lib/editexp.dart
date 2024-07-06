@@ -69,33 +69,33 @@ class _editexpState extends State<editexp> {
               SizedBox(height: 10),
               buildTextField('اسم الشركة', companyController, (value) {
                 if (value.isEmpty) {
-                  return 'company name cant be empty';
+                  return 'اسم الشركة يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('المسمى الوظيفي ', positionController, (value) {
                 if (value.isEmpty) {
-                  return 'position  cant be empty';
+                  return 'المسمى الوظيفي يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('  تاريخ البدء في العمل', startController,
                   (value) {
                 if (value.isEmpty) {
-                  return ' start date cant be empty';
+                  return ' تاريخ بدء العمل يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('  تاريخ انهاء العمل', endController, (value) {
                 if (value.isEmpty) {
-                  return ' end date cant be empty';
+                  return ' تاريخ انهاء العمل يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('مسؤوليات العمل', responsibilitiesController,
                   (value) {
                 if (value.isEmpty) {
-                  return '  responsibilities cant be empty';
+                  return '  مسؤوليات العمل يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
@@ -110,7 +110,7 @@ class _editexpState extends State<editexp> {
                     saveValues();
                   } else {}
                 },
-                child: Text('Save'),
+                child: Text('حفظ'),
               ),
             ],
           ),

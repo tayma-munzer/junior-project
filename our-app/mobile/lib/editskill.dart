@@ -62,19 +62,19 @@ class _editskillState extends State<editskill> {
               SizedBox(height: 10),
               buildTextField('اسم المهارة', nameController, (value) {
                 if (value.isEmpty) {
-                  return 'skill name cant be empty';
+                  return 'اسم المهارة يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('مستوى المهارة', levelController, (value) {
                 if (value.isEmpty) {
-                  return 'skill level cant be empty';
+                  return 'مستوى المهارة يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               buildTextField('عدد سنين الخبرة', yearsController, (value) {
                 if (value.isEmpty) {
-                  return 'years of experince cant be empty';
+                  return 'عدد سنين الخبرة يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
@@ -87,7 +87,7 @@ class _editskillState extends State<editskill> {
                     saveValues();
                   } else {}
                 },
-                child: Text('Save'),
+                child: Text('حفظ'),
               ),
             ],
           ),

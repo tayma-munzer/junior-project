@@ -53,52 +53,58 @@ class _EditCvState extends State<EditCv> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
+              SizedBox(
+                height: 20,
+              ),
               Text(
-                'Main Info',
+                ' المعلومات الاساسية',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
               SizedBox(height: 10),
-              buildTextField('Email', emailController, (value) {
+              buildTextField('البريد الالكتروني', emailController, (value) {
                 if (!isValidEmail(value)) {
-                  return 'Invalid email';
+                  return ' هذه ليست الصيغة الصخيخة للبريد الالكتروني';
                 }
                 return null;
               }),
-              buildTextField('Phone', phoneController, (value) {
+              buildTextField('رقم الهاتف', phoneController, (value) {
                 if (!isValidPhone(value)) {
-                  return 'Invalid phone number';
+                  return 'هذه ليست الصيغة الصحيحة لرقم الهاتف';
                 }
                 return null;
               }),
-              buildTextField('Address', addressController, (value) {
+              buildTextField('العنوان', addressController, (value) {
                 if (value.isEmpty) {
-                  return 'Address cannot be empty';
+                  return 'العنوان يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
-              buildTextField('Career Objective', careerObjController, (value) {
+              buildTextField('الهدف الوظيفي', careerObjController, (value) {
                 if (value.isEmpty) {
-                  return 'Career Objective cannot be empty';
+                  return 'الهدف الوظيفي يجب ان لا يكون فارغا';
                 }
                 return null;
               }),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Add save functionality here
-                  if (isValidEmail(emailController.text) &&
-                      isValidPhone(phoneController.text) &&
-                      addressController.text.isNotEmpty &&
-                      careerObjController.text.isNotEmpty) {
-                    saveValues();
-                  } else {
-                    // Show error message or handle invalid input
-                  }
-                },
-                child: Text('Save'),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  ),
+                  onPressed: () {
+                    if (isValidEmail(emailController.text) &&
+                        isValidPhone(phoneController.text) &&
+                        addressController.text.isNotEmpty &&
+                        careerObjController.text.isNotEmpty) {
+                      saveValues();
+                    } else {}
+                  },
+                  child: Text('حفظ التغيرات'),
+                ),
               ),
             ],
           ),
@@ -114,6 +120,7 @@ class _EditCvState extends State<EditCv> {
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextFormField(
         controller: controller,
+        textAlign: TextAlign.right,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),
