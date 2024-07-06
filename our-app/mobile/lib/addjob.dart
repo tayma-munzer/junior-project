@@ -376,17 +376,32 @@ class _AddjobPageState extends State<AddjobPage> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      print('job name: $j_name');
-                      print('job description: $j_desc');
-                      print('job minimum Salary: $j_sal_min');
-                      print('job maximum Salary: $j_sal_max');
-                      print('job minimum age: $j_age_min');
-                      print('job maximum age: $j_age_max');
-                      print('job requirements: $j_req');
-                      print('job education: $j_edu');
-                      print('job experince: $j_exp');
-
-                      print('job skill array: ${skills.toString()}');
+                      // print('job name: $j_name');
+                      // print('job description: $j_desc');
+                      // print('job minimum Salary: $j_sal_min');
+                      // print('job maximum Salary: $j_sal_max');
+                      // print('job minimum age: $j_age_min');
+                      // print('job maximum age: $j_age_max');
+                      // print('job requirements: $j_req');
+                      // print('job education: $j_edu');
+                      // print('job experince: $j_exp');
+                      // print('job skill array: ${skills.toString()}');
+                      AuthCont.addJob(
+                              j_name,
+                              j_desc,
+                              j_sal_min,
+                              j_sal_max,
+                              j_req,
+                              j_age_min,
+                              j_age_max,
+                              j_edu,
+                              j_exp,
+                              'تصميم هندسي',
+                              skills)
+                          .then((value) {
+                        print(value.body);
+                        print(value.statusCode);
+                      });
                     }
                   },
                   child: Container(

@@ -399,41 +399,41 @@ class DatabaseSeeder extends Seeder
             'ct_id'=>'3',
             'num_of_free_videos'=>'0',
         ]);
-        DB::table('jobs')->insert([
-            'j_name'=>'اسم الوظيفة 1',
-            'j_desc'=>'وصف الوظيفة 1',
-            'j_sal'=>'2000000',
-            'j_req'=>'متطليات الوظيفة 1',
-            'u_id'=>'1'
-        ]);
-        DB::table('jobs')->insert([
-            'j_name'=>'اسم الوظيفة 2',
-            'j_desc'=>'وصف الوظيفة 2',
-            'j_sal'=>'3000000',
-            'j_req'=>'متطليات الوظيفة 2',
-            'u_id'=>'1'
-        ]);
-        DB::table('jobs')->insert([
-            'j_name'=>'اسم الوظيفة 3',
-            'j_desc'=>'وصف الوظيفة 3',
-            'j_sal'=>'1500000',
-            'j_req'=>'متطليات الوظيفة 3',
-            'u_id'=>'2'
-        ]);
-        DB::table('jobs')->insert([
-            'j_name'=>'اسم الوظيفة 4',
-            'j_desc'=>'وصف الوظيفة 4',
-            'j_sal'=>'3500000',
-            'j_req'=>'متطليات الوظيفة 4',
-            'u_id'=>'1'
-        ]);
-        DB::table('jobs')->insert([
-            'j_name'=>'اسم الوظيفة 5',
-            'j_desc'=>'وصف الوظيفة 5',
-            'j_sal'=>'4500000',
-            'j_req'=>'متطليات الوظيفة 5',
-            'u_id'=>'2'
-        ]);
+        // DB::table('jobs')->insert([
+        //     'j_name'=>'اسم الوظيفة 1',
+        //     'j_desc'=>'وصف الوظيفة 1',
+        //     'j_sal'=>'2000000',
+        //     'j_req'=>'متطليات الوظيفة 1',
+        //     'u_id'=>'1'
+        // ]);
+        // DB::table('jobs')->insert([
+        //     'j_name'=>'اسم الوظيفة 2',
+        //     'j_desc'=>'وصف الوظيفة 2',
+        //     'j_sal'=>'3000000',
+        //     'j_req'=>'متطليات الوظيفة 2',
+        //     'u_id'=>'1'
+        // ]);
+        // DB::table('jobs')->insert([
+        //     'j_name'=>'اسم الوظيفة 3',
+        //     'j_desc'=>'وصف الوظيفة 3',
+        //     'j_sal'=>'1500000',
+        //     'j_req'=>'متطليات الوظيفة 3',
+        //     'u_id'=>'2'
+        // ]);
+        // DB::table('jobs')->insert([
+        //     'j_name'=>'اسم الوظيفة 4',
+        //     'j_desc'=>'وصف الوظيفة 4',
+        //     'j_sal'=>'3500000',
+        //     'j_req'=>'متطليات الوظيفة 4',
+        //     'u_id'=>'1'
+        // ]);
+        // DB::table('jobs')->insert([
+        //     'j_name'=>'اسم الوظيفة 5',
+        //     'j_desc'=>'وصف الوظيفة 5',
+        //     'j_sal'=>'4500000',
+        //     'j_req'=>'متطليات الوظيفة 5',
+        //     'u_id'=>'2'
+        // ]);
         DB::table('cv')->insert([
             'career_obj'=>'هددف وظيفي محدد',
             'phone'=>'0912345678',
@@ -910,5 +910,13 @@ class DatabaseSeeder extends Seeder
             'ratable_type'=>'App\Models\course',
         ]);
 
+        DB::table('job_types')->insert([
+            'type'=>'قسم اللغويات',
+            't_icon'=>'translate',
+        ]);
+        DB::table('job_types')->insert([
+            'type'=>'تصميم هندسي',
+            't_icon'=>'mdiRulerSquareCompass',
+        ]);
     }
 }

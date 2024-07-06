@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class addjobRequest extends FormRequest
+class add_skill_to_job extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,8 @@ class addjobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token',
-            'j_title',
-            'j_desc',
-            'j_req',
-            'j_min_sal',
-            'j_max_sal',
-            'j_min_age',
-            'j_max_age',
-            'education',
-            'num_of_exp_years'
+            'j_id',
+            'skill'
         ];
     }
 }

@@ -138,7 +138,9 @@ Route::post('/is_user_course_enrolled', [authenticationController::class, 'is_us
 Route::post('/is_user_service_enrolled', [authenticationController::class, 'is_user_service_enrolled']);
 Route::post('/is_user_job_applied', [authenticationController::class, 'is_user_job_applied']);
 Route::get('/get_preservations', [gets::class, 'get_preservations']);
-
+Route::get('/get_job_types', [gets::class, 'get_job_types']);
+Route::post('/add_job_skill', [authenticationController::class, 'add_job_skill']);
+Route::post('/delete_job_skill', [authenticationController::class, 'delete_job_skill']);
 
 
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){
@@ -169,6 +171,7 @@ Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix
     Route::get('/get_jobs_requests', 'get_jobs_requests');
     Route::get('/get_user_profile/{id}', 'get_user_profile');
     Route::post('/add_common_question', 'add_common_question');
+    Route::get('/get_user_app_uploads/{id}', 'get_user_app_uploads');
 });
 
 

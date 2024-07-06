@@ -53,22 +53,34 @@ class AuthCont {
   }
 
   static Future<http.Response> addJob(
-    String j_name,
-    String j_desc,
-    int j_sal_min,
-    int j_sal_max,
-    String j_req,
-  ) async {
+      String j_title,
+      String j_desc,
+      int j_min_sal,
+      int j_max_sal,
+      String j_req,
+      int j_min_age,
+      int j_max_age,
+      String education,
+      String num_of_exp_years,
+      String category,
+      List<Map<String, String>> skills) async {
     final token = await AuthManager.getToken();
     var url = add_job;
-    var res = await http.post(Uri.parse(url), body: {
-      'j_name': j_name,
-      'j_desc': j_desc,
-      'j_sal_min': j_sal_min,
-      'j_sal_max': j_sal_max,
-      'j_req': j_req,
-      'token': token
-    });
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          'j_title': j_title,
+          'j_desc': j_desc,
+          'j_min_sal': j_min_sal.toString(),
+          'j_max_sal': j_max_sal.toString(),
+          'j_min_age': j_min_age.toString(),
+          'j_max_age': j_max_age.toString(),
+          'education': education,
+          'j_req': j_req,
+          'num_of_exp_years': num_of_exp_years,
+          'category': category,
+          'token': token,
+          'skills': skills,
+        }));
     return res;
   }
 
@@ -381,6 +393,20 @@ class AuthCont {
         body: jsonEncode({
           'data': data,
           'roles': roles,
+        }));
+    print(res.body);
+    return res;
+  }
+
+  static Future<http.Response> addaltservice(
+    int s_id,
+    List<dynamic> alt_services,
+  ) async {
+    var url = add_alt_service;
+    var res = await http.post(Uri.parse(url),
+        body: jsonEncode({
+          's_id': s_id,
+          'alt_service': alt_services,
         }));
     print(res.body);
     return res;

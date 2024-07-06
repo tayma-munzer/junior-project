@@ -13,6 +13,7 @@ use App\Models\common_questions;
 use App\Models\course;
 use App\Models\courses_type;
 use App\Models\job;
+use App\Models\job_types;
 use App\Models\languages;
 use App\Models\media;
 use App\Models\preservations;
@@ -150,6 +151,20 @@ class gets extends Controller
     
     function get_preservations(){
         return preservations::all();
+    }
+
+    static function job_type_id(string $type){
+        $type = DB::table('job_types')->where('type','=',$type)->first();
+        return $type->jt_id;
+    }
+
+    static function job_type_by_id(string $id){
+        $type = DB::table('job_types')->where('jt_id','=',$id)->first();
+        return $type->type;
+    }
+
+    static function get_job_types(){
+        return job_types::all();
     }
     
 }
