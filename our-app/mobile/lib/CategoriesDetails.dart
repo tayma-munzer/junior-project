@@ -9,6 +9,7 @@ import 'package:mobile/colors.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/rating.dart';
 
 class CategoriesDetails extends StatefulWidget {
   final int s_id;
@@ -30,10 +31,8 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
 
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-      //print(decodedData);
-      print('object');
-      print(decodedData["image"].toString().length);
-      print('object');
+      print(decodedData);
+
       if (decodedData is Map<String, dynamic>) {
         setState(() {
           data = [
@@ -47,9 +46,11 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
               "discount": decodedData["discount"].toString(),
               "status": decodedData["status"],
               "image": decodedData["image"],
+              "rate":decodedData["rate"].toString(),
             }
           ];
         });
+        print (data[0]["rate"]);
       } else {
         print("Invalid response format: $decodedData");
       }
@@ -61,7 +62,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
   @override
   void initState() {
     super.initState();
-    print("hilo");
+
     fetchData();
   }
 
@@ -103,6 +104,8 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
       numberOfBuyers: item["num_of_buyers"],
       status: item["status"],
       discount: item["discount"],
+      rate: item["rate"],
+
     );
   }
 
@@ -177,6 +180,75 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                   ),
                 ),
               ),
+              SizedBox(width: 5,),
+    Expanded(
+    child: TextButton(
+    onPressed: () {
+    showDialog(
+    context: context,
+    builder: (BuildContext context) {
+    String review = ''; // Variable to store the review text
+
+    return AlertDialog(
+    title: Directionality(textDirection: TextDirection.rtl,
+    child: Text('أضف')),
+    content: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+    RatingWidget2(),
+    SizedBox(height: 16.0),
+    Directionality(
+      textDirection: TextDirection.rtl,
+      child: TextField(
+      onChanged: (value) {
+      review = value; // Update the review text
+      },
+      decoration:
+      InputDecoration(
+      labelText: 'شاركنا رأيك',
+      border: OutlineInputBorder(),
+      ),
+      textAlign: TextAlign.right, // Set the text alignment to right-to-left
+      ),
+    ),
+    ],
+    ),
+    actions: [
+    TextButton(
+    onPressed: () {
+    print('Rating: ${RatingWidget2.getRating()}');
+    print('Review: $review');
+    Navigator.of(context).pop();
+    },
+    child: Text('تم'),
+    ),
+    TextButton(
+    onPressed: () {
+    Navigator.of(context).pop();
+    },
+    child: Text('إلغاء'),
+    ),
+    ],
+    );
+    },
+    );
+    },
+    child: Text(
+    'أضف تقييمك',
+    style: TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+    ),
+    ),
+    style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+    padding: MaterialStateProperty.all<EdgeInsets>(
+    EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+    ),
+    ),
+    ),
+    ),
             ],
           ),
         ],

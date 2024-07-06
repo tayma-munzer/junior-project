@@ -411,4 +411,32 @@ class AuthCont {
     print(res.body);
     return res;
   }
+
+  static Future<http.Response> add_discount_service(
+      String s_id, String discount) async {
+    var url = add_service_discount;
+    var res = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+      'discount': discount,
+    });
+    return res;
+  }
+
+  static Future<http.Response> delete_discount_service(String s_id) async {
+    var url = delete_discount;
+    var res = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+    });
+    return res;
+  }
+
+  static Future<http.Response> add_service_suggest(String suggest) async {
+    var url = add_not_found_service;
+    final token = await AuthManager.getToken();
+    var res = await http.post(Uri.parse(url), body: {
+      'token': token,
+      'service_desc': suggest,
+    });
+    return res;
+  }
 }

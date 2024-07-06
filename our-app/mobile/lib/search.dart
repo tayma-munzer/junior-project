@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
       print("try");
       socket = await WebSocket.connect(url);
       print('WebSocket connected');
-      final data = {'search_string': 'قواعد'};
+      final data = {'search_string': _controller.text};
       socket.add(jsonEncode(data));
       socket.listen(
         (message) {

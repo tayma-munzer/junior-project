@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 
 class ServiceSuggetion extends StatefulWidget {
@@ -21,12 +22,28 @@ class _ServiceSuggetionState extends State<ServiceSuggetion> {
 
   void sendSuggestion() {
     if (userInput.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text('تم ارسال اقتراحكم \n شكرا'),
-        ),
-      );
+      AuthCont.add_service_suggest(userInput).then((value) {
+        print(value.body);
+        print(value.statusCode);
+        if (value.statusCode == 200) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text(
+                'تم ارسال اقتراحكم \n شكرا',
+                textAlign: TextAlign.right,
+              ),
+            ),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('حدثت مشكلة يرجى المحاولة في وقت لاحق'),
+            ),
+          );
+        }
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('لا يمکن ارسال مقترح فارغ')),
@@ -49,7 +66,7 @@ class _ServiceSuggetionState extends State<ServiceSuggetion> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'اختر صلاحياتك',
+                  'ادخل وصفاً مناسب للخدمة التي لم تجدها',
                   style: TextStyle(fontSize: 25),
                 ),
                 Card(

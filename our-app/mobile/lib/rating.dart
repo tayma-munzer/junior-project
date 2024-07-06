@@ -3,8 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class RatingWidget2 extends StatefulWidget {
+  static _RatingWidget2State? ratingWidget2State; // Add this line
+
   @override
-  _RatingWidget2State createState() => _RatingWidget2State();
+  _RatingWidget2State createState() {
+    var state = _RatingWidget2State();
+    ratingWidget2State = state; // Assign the state instance to the static variable
+    return state;
+  }
+
+  static double getRating() {
+    return ratingWidget2State?.rating ?? 0;
+  }
 }
 
 class _RatingWidget2State extends State<RatingWidget2> {
