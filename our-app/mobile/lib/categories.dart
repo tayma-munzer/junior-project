@@ -5,6 +5,8 @@ import 'package:mobile/courses_types.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/services_types.dart';
 
+import 'jobsCategories.dart';
+
 class AllCategories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class AllCategories extends StatelessWidget {
                 },
                 child: buildCategoryBox(
                   text: "الخدمات",
-                  icon: Icons.work,
+                  icon: Icons.design_services,
                   color: Color(0xFF4E80FF),
                 ),
               ),
@@ -51,6 +53,24 @@ class AllCategories extends StatelessWidget {
                   text: "الدورات التدريبية",
                   icon: Icons.school,
                   color: Color(0xFF3465FF),
+                ),
+              ),
+            ),
+            SizedBox(height: 40),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>jobs_types(),
+                    ),
+                  );
+                },
+                child: buildCategoryBox(
+                  text: "الفرص الوظيفية",
+                  icon: Icons.work,
+                  color: Color(0xFF4E80FF),
                 ),
               ),
             ),

@@ -10,10 +10,12 @@ import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editCourse.dart';
 import 'package:mobile/listCourses.dart';
+import 'package:mobile/rating.dart';
 import 'package:mobile/videoWidget.dart';
 import 'package:mobile/videoplayer.dart';
 import 'package:mobile/view_media_new.dart';
 
+import 'RatingStars.dart';
 import 'controller/authManager.dart';
 
 class CourseDetailsPage extends StatefulWidget {
@@ -64,8 +66,11 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
           "c_duration": decodedData["c_duration"].toString(),
           "pre_requisite": decodedData["pre_requisite"],
           "num_of_free_videos": decodedData["num_of_free_videos"].toString(),
+          "rate": decodedData["rate"].toString(),
         };
       });
+      print("hello rate");
+      print(courseData["rate"]);
       fetchVideoData();
     } else {
       print("Request failed with status: ${response.statusCode}");
@@ -230,7 +235,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                               child: Text(
                                 courseData != null
                                     ? courseData["pre_requisite"].toString()
-                                    : "",
+                                    : "لا يوجد متطلبات سابقة",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
@@ -251,14 +256,22 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              courseData != null
-                                  ? courseData["c_name"].toString()
-                                  : "",
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text
+                                  (
+                                  courseData != null
+                                      ? courseData["c_name"].toString()
+                                      : "",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                RatingStars(rate: courseData["rate"]),
+
+                              ],
                             ),
                             SizedBox(
                               height: 10,
@@ -521,6 +534,75 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         ),
                       )
                     : Container(),
+                SizedBox(height: 5,),
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        String review = ''; // Variable to store the review text
+
+                        return AlertDialog(
+                          title: Directionality(textDirection: TextDirection.rtl,
+                              child: Text('أضف')),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RatingWidget2(),
+                              SizedBox(height: 16.0),
+                              Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: TextField(
+                                  onChanged: (value) {
+                                    review = value; // Update the review text
+                                  },
+                                  decoration:
+                                  InputDecoration(
+                                    labelText: 'شاركنا رأيك',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  textAlign: TextAlign.right, // Set the text alignment to right-to-left
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                print('Rating: ${RatingWidget2.getRating()}');
+                                print('Review: $review');
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('تم'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('إلغاء'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Text(
+                    'أضف تقييمك',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                    ),
+                  ),
+                ),
+
+
               ],
             ),
           ),
