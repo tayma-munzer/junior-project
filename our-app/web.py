@@ -184,6 +184,36 @@ async def get_works(websocket):
         print("start sending")
         await websocket.send(json.dumps(msg))
         print("done sending")
+
+
+async def job_search(websocket):
+    async for message in websocket:
+        data = json.loads(message)
+        search_string = data['search_string']
+        courses = json.loads(response.text)
+        response = requests.get('http://127.0.0.1:8000/api/get_all_jobs')
+        jobs = json.loads(response.text)
+        vectorizer = CountVectorizer()
+        jobs_cos_list = []
+        for job in jobs :
+            X = vectorizer.fit_transform([search_string, job['j_title'], job['j_desc'], job['j_education'], job['j_req']])
+            cosine_sim_title = cosine_similarity(X[0], X[1])[0][0]
+            cosine_sim_desc = cosine_similarity(X[0], X[2])[0][0]
+            cosine_sim_education = cosine_similarity(X[0], X[3])[0][0]
+            cosine_sim_req = cosine_similarity(X[0], X[4])[0][0]
+            avg_cosine_sim = (cosine_sim_title + cosine_sim_desc + cosine_sim_education + cosine_sim_req) / 4
+            jobs_cos_list.append([avg_cosine_sim,job])
+        job_sorted_list = sorted(jobs_cos_list, key=lambda x: x[0], reverse=True)
+        returned_jobs = [item[1] for item in job_sorted_list]
+        print("\n\n jobs\n\n")
+        for item in returned_jobs:
+            print(item)
+        response = {
+            'jobs':returned_jobs
+        }
+        print("start sending")
+        await websocket.send(json.dumps(response))
+        print("done sending")
     
 
 
@@ -197,7 +227,8 @@ async def main():
             async with websockets.serve(search,"localhost",8767):    
                 async with websockets.serve(add_works,"localhost",8768,max_size=1 * 1024 * 1024 * 1024):
                     async with websockets.serve(get_works,"localhost",8769,max_size=32 * 1024 * 1024 * 1024):
-                        await asyncio.Future()
+                        async with websockets.serve(job_search,"localhost",8770):    
+                            await asyncio.Future()
 
 if __name__ == "__main__":
     asyncio.run(main())

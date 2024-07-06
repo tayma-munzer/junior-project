@@ -17,6 +17,7 @@ import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/viewCV.dart';
 import 'package:mobile/viewallJobs.dart';
+import 'package:mobile/viewaltservice.dart';
 import 'package:mobile/viewservice.dart';
 import 'package:mobile/viewuserservices.dart';
 import 'package:mobile/viewvideo.dart';
@@ -124,7 +125,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddCVMain()),
+                MaterialPageRoute(builder: (context) => ViewJobs()),
               );
             },
           ),
@@ -175,7 +176,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => viewallJobs()),
+                      MaterialPageRoute(builder: (context) => ViewJobs()),
                     );
                   },
                 )
@@ -193,7 +194,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListCourses()),
+                      MaterialPageRoute(builder: (context) => Viewaltservice()),
                     );
                   },
                 )

@@ -21,8 +21,13 @@ class _EditJobState extends State<EditJob> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descController = TextEditingController();
-  TextEditingController _salaryController = TextEditingController();
   TextEditingController _requirementsController = TextEditingController();
+  TextEditingController _minimumsalController = TextEditingController();
+  TextEditingController _maxmumsalController = TextEditingController();
+  TextEditingController _minimumageController = TextEditingController();
+  TextEditingController _maximumageController = TextEditingController();
+  TextEditingController _educationController = TextEditingController();
+  TextEditingController _yearsofexperinceController = TextEditingController();
 
   @override
   void initState() {
@@ -36,10 +41,17 @@ class _EditJobState extends State<EditJob> {
         await http.post(Uri.parse(url), body: {"j_id": widget.j_id.toString()});
     setState(() {
       jobdetails = json.decode(res.body);
-      _nameController.text = jobdetails!['j_name'].toString();
-      _descController.text = jobdetails!['j_desc'].toString();
-      _salaryController.text = jobdetails!['j_sal'].toString();
-      _requirementsController.text = jobdetails!['j_req'].toString();
+      _nameController.text = jobdetails!['job']['j_title'].toString();
+      _descController.text = jobdetails!['job']['j_desc'].toString();
+      _minimumsalController.text = jobdetails!['job']['j_min_sal'].toString();
+      _maxmumsalController.text = jobdetails!['job']['j_max_sal'].toString();
+      _minimumageController.text = jobdetails!['job']['j_min_age'].toString();
+      _maximumageController.text = jobdetails!['job']['j_max_age'].toString();
+      _educationController.text = jobdetails!['job']['education'].toString();
+      _yearsofexperinceController.text =
+          jobdetails!['job']['num_of_exp_years'].toString();
+      _educationController.text = jobdetails!['job']['j_req'].toString();
+
       print(jobdetails);
     });
   }
@@ -52,51 +64,81 @@ class _EditJobState extends State<EditJob> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Form(
-        key: _formKey,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 50),
-              Image.asset('assets/edit.png', width: 100),
-              SizedBox(height: 50),
-              _buildJobItem('اسم الوظيفة', 'j_name', _nameController, (value) {
-                jobdetails!['j_name'] = value;
-              }),
-              _buildJobItem('التوصيف الوظيفي', 'j_desc', _descController,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 50),
+                Image.asset('assets/edit.png', width: 100),
+                SizedBox(height: 50),
+                _buildJobItem('عنوان الوظيفة', 'j_title', _nameController,
+                    (value) {
+                  jobdetails!['job']['j_title'] = value;
+                }),
+                _buildJobItem('التوصيف الوظيفي', 'j_desc', _descController,
+                    (value) {
+                  jobdetails!['job']['j_desc'] = value;
+                }),
+                _buildJobItem(
+                  'الحد الادنى للراتب',
+                  'j_min_sal',
+                  _minimumsalController,
                   (value) {
-                jobdetails!['j_desc'] = value;
-              }),
-              _buildJobItem(
-                  'الراتب (بالليرة السورية)', 'j_sal', _salaryController,
-                  (value) {
-                jobdetails!['j_sal'] = value;
-              }, isInteger: true),
-              _buildJobItem('متطلبات الوظيفة', 'j_req', _requirementsController,
-                  (value) {
-                jobdetails!['j_req'] = value;
-              }),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _saveJobDetails();
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  minimumSize: MaterialStateProperty.all(Size(300, 50)),
+                    jobdetails!['job']['j_min_sal'] = value;
+                  },
                 ),
-                child: Text(
-                  ' حفظ التغيريات',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontSize: 18,
+                _buildJobItem(
+                    ' الحد الاقصى للراتب', 'j_max_sal', _maxmumsalController,
+                    (value) {
+                  jobdetails!['job']['j_max_sal'] = value;
+                }),
+                _buildJobItem(
+                    '  المتطلبات الوظيفية ', 'j_req', _requirementsController,
+                    (value) {
+                  jobdetails!['job']['j_max_sal'] = value;
+                }),
+                _buildJobItem(
+                    '    الحد الادنى للعمر', 'j_min_age', _minimumageController,
+                    (value) {
+                  jobdetails!['job']['j_min_age'] = value;
+                }),
+                _buildJobItem(
+                    '    الحد الاقصى للعمر', 'j_max_age', _maximumageController,
+                    (value) {
+                  jobdetails!['job']['j_max_age'] = value;
+                }),
+                _buildJobItem('      درجة التعليم المطلوبة', 'education',
+                    _educationController, (value) {
+                  jobdetails!['job']['education'] = value;
+                }),
+                _buildJobItem('   عدد سنين الخبرة المطلوبة', 'num_of_exp_years',
+                    _yearsofexperinceController, (value) {
+                  jobdetails!['job']['num_of_exp_years'] = value;
+                }),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _saveJobDetails();
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    minimumSize: MaterialStateProperty.all(Size(300, 50)),
+                  ),
+                  child: Text(
+                    ' حفظ التغيريات',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -148,16 +190,22 @@ class _EditJobState extends State<EditJob> {
   void _saveJobDetails() {
     print(jobdetails);
     AuthCont.editJob(
-            jobdetails!['j_id'].toString(),
-            jobdetails!['j_sal'].toString(),
-            jobdetails!['j_name'],
-            jobdetails!['j_desc'],
-            jobdetails!['j_req'])
-        .then((value) {
+      jobdetails!['job']['j_id'].toString(),
+      jobdetails!['job']['j_min_sal'].toString(),
+      jobdetails!['job']['j_max_sal'].toString(),
+      jobdetails!['job']['j_min_age'].toString(),
+      jobdetails!['job']['j_max_age'].toString(),
+      jobdetails!['job']['num_of_exp_years'].toString(),
+      jobdetails!['job']['education'].toString(),
+      jobdetails!['job']['j_title'].toString(),
+      jobdetails!['job']['j_desc'].toString(),
+      jobdetails!['job']['j_req'].toString(),
+    ).then((value) {
       if (value.statusCode == 200) {
         print('edit successfully');
       } else {
         print('something went wrong');
+        print(value.body);
       }
     });
   }

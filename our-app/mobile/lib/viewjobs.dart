@@ -77,7 +77,7 @@ class _ViewJobsState extends State<ViewJobs> {
                 ? Color.fromARGB(255, 146, 206, 255)
                 : Colors.white;
             return ListTile(
-              title: Text(job['j_name']),
+              title: Text(job['j_title']),
               subtitle: Text(job['j_desc']),
               tileColor: backgroundColor,
               trailing: Row(
