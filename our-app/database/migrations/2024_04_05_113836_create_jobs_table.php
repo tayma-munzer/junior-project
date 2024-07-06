@@ -25,7 +25,8 @@ return new class extends Migration
             $table->integer('num_of_exp_years');
             $table->integer('jt_id');
             $table->integer('u_id');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         
         });
     }

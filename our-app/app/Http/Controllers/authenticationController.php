@@ -23,6 +23,7 @@ use App\Http\Requests\add_training_request;
 use App\Http\Requests\add_work_request;
 use App\Http\Requests\addalt_serviceRequest;
 use App\Http\Requests\course_enrollment_request;
+use App\Http\Requests\course_rate_or_not;
 use App\Http\Requests\delete_all_cv;
 use App\Http\Requests\delete_skill_job;
 use App\Http\Requests\delete_work_request;
@@ -54,6 +55,7 @@ use App\Http\Requests\get_type_service_request;
 use App\Http\Requests\getsectype;
 use App\Http\Requests\get_courses_type_request;
 use App\Http\Requests\get_course_for_user;
+use App\Http\Requests\get_jobs_for_type;
 use App\Http\Requests\get_project_request;
 use App\Http\Requests\get_skill;
 use App\Http\Requests\get_works_request;
@@ -65,6 +67,7 @@ use App\Http\Requests\job_filters;
 use App\Http\Requests\not_found_services_request;
 use App\Http\Requests\register_request;
 use App\Http\Requests\service_enrollment_request;
+use App\Http\Requests\service_rate_or_not;
 use App\Models\alt_services;
 use App\Models\course;
 use App\Models\course_enrollment;
@@ -2083,6 +2086,9 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             'c_id' => $request->c_id,
             'u_id' => $user_token->tokenable_id,
             ]);
+            $course = course::where('c_id','=',$request->c_id)->first();
+            $num_of_buyers = $course->num_of_buyers;
+            course::where('c_id','=',$request->c_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
             return response([
                 'message'=> 'added successfully',
             ],200);
@@ -2108,9 +2114,9 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             's_id' => $request->s_id,
             'u_id' => $user_token->tokenable_id,
             ]);
-            // $service = services::where('s_id','=',$request->s_id)->first();
-            // $num_of_buyers = $service->num_of_buyers;
-            // services::where('s_id','=',$request->s_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
+            $service = services::where('s_id','=',$request->s_id)->first();
+            $num_of_buyers = $service->num_of_buyers;
+            services::where('s_id','=',$request->s_id)->update(['num_of_buyers'=>$num_of_buyers+1]);
             return response([
                 'message'=> 'added successfully',
             ],200);
@@ -2335,16 +2341,18 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     {
         $validator = Validator::make($request->all(), [
             'description' => 'required',
-            'u_id'=>'required',
+            'token'=>'required',
             'j_id'=>'required',
         ]);
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             Complaint::create([
                 'description' => $request->description,
-                'u_id'=>$request->u_id,
+                'u_id'=>$user_id,
                 'complainable_id'=>$request->j_id,
                 'complainable_type'=> job::class,
             ]);
@@ -2357,16 +2365,18 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     {
         $validator = Validator::make($request->all(), [
             'description' => 'required',
-            'u_id'=>'required',
+            'token'=>'required',
             'c_id'=>'required',
         ]);
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             Complaint::create([
                 'description' => $request->description,
-                'u_id'=>$request->u_id,
+                'u_id'=>$user_id,
                 'complainable_id'=>$request->c_id,
                 'complainable_type'=> course::class,
             ]);
@@ -2380,16 +2390,18 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     {
         $validator = Validator::make($request->all(), [
             'description' => 'required',
-            'u_id'=>'required',
+            'token'=>'required',
             's_id'=>'required',
         ]);
         if ($validator->fails()){
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             Complaint::create([
                 'description' => $request->description,
-                'u_id'=>$request->u_id,
+                'u_id'=>$user_id,
                 'complainable_id'=>$request->s_id,
                 'complainable_type'=> services::class,
             ]);
@@ -2758,5 +2770,237 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
 
         }
     }
+
+    public function get_jobs_for_type(get_jobs_for_type $request){
+        $validator = Validator::make($request->all(), [
+            'jt_id' => 'required|integer',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $jobs=job::where('jt_id','=',$request->jt_id)->get();
+            return $jobs; }
+        }
+
+        public function course_rate_or_not(course_rate_or_not $request){
+        $validator = Validator::make($request->all(), [
+            'c_id' => 'required|integer',
+            'token' =>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $enrollmet=course_enrollment::where('c_id',$request->c_id)->where('u_id',$user_id)->get();
+            $rate = rates_reviews::where('ratable_id',$request->c_id)->where('user_id',$request->u_id)->where('ratable_type','App\Models\course')->get();
+            if( $rate->isEmpty() && $enrollmet->isNotEmpty()){
+                return "true" ;
+            }
+            return "false" ; 
+        }
+    }
+
+    public function service_rate_or_not(service_rate_or_not $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|integer',
+            'token' =>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $enrollmet=service_enrollment::where('s_id',$request->s_id)->where('u_id',$user_id)->get();
+            $rate = rates_reviews::where('ratable_id',$request->s_id)->where('user_id',$request->u_id)->where('ratable_type','App\Models\services')->get();
+            if( $rate->isEmpty() && $enrollmet->isNotEmpty()){
+                return "true" ;
+            }
+            return "false" ; 
+        }
+    }
+
+    public function is_service_owner(service_rate_or_not $request){
+        $validator = Validator::make($request->all(), [
+            's_id' => 'required|integer',
+            'token' =>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $owner=services::where('s_id',$request->s_id)->where('u_id',$user_id)->get();
+            if($owner->isNotEmpty()){
+                return "true" ;
+            }
+            return "false" ; 
+        }
+    }
+
+    public function is_course_owner(course_rate_or_not $request){
+        $validator = Validator::make($request->all(), [
+            'c_id' => 'required|integer',
+            'token' =>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $owner=course::where('c_id',$request->c_id)->where('u_id',$user_id)->get();
+            if($owner->isNotEmpty()){
+                return "true" ;
+            }
+            return "false" ; 
+        }
+    }
+
+    public function is_job_owner(service_rate_or_not $request){
+        $validator = Validator::make($request->all(), [
+            'j_id' => 'required|integer',
+            'token' =>'required',
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'integer' => 'the :attribute field should be a number',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
+            $owner=job::where('j_id',$request->j_id)->where('u_id',$user_id)->get();
+            if($owner->isNotEmpty()){
+                return "true" ;
+            }
+            return "false" ; 
+        }
+    }
+
+    public function num_of_pindings(){
+        $pinding_services = services::where('status','pinding')->count();
+        $pinding_courses = course::where('is_accepted','0')->count();     
+        $pinding_jobs = job::where('is_accepted','0')->count();     
+        return ['services'=> $pinding_services, 'courses'=>$pinding_courses,'jobs'=>$pinding_jobs];
+    }
+
+    function num_of_users_in_roles()
+{
+    return user_role::join('roles','user_roles.r_id','=','roles.r_id')
+        ->selectRaw('roles.role, count(u_id) as user_count')
+        ->groupBy('roles.role')
+        ->get();
+}
+
+public function get_aprovments_last_7_days()
+    {
+        $lastSevenDays = now()->subDays(7)->format('Y-m-d');
+        $services_data = DB::table('services')
+        ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date")
+        ->selectRaw('COUNT(services.s_id) as services')
+        ->whereDate('services.updated_at', '>=', $lastSevenDays)
+        ->where('services.status','pinding')
+        ->groupBy('date')
+        ->get()
+        ->toArray();
+        $courses_data = DB::table('courses')
+        ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date")
+        ->selectRaw('COUNT(courses.c_id) as courses')
+        ->whereDate('courses.updated_at', '>=', $lastSevenDays)
+        ->where('courses.is_accepted','0')
+        ->groupBy('date')
+        ->get()
+        ->toArray();
+        $jobs_data = DB::table('jobs')
+        ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date")
+        ->selectRaw('COUNT(jobs.j_id) as jobs')
+        ->whereDate('jobs.updated_at', '>=', $lastSevenDays)
+        ->where('jobs.is_accepted','0')
+        ->groupBy('date')
+        ->get()
+        ->toArray();
+        $dates = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->toDateString();
+            $dates[] = $date;
+        }
+
+        $combinedData = [];
+
+        foreach ($courses_data as $course) {
+            $combinedData[$course->date]['courses'] = $course->courses;
+        }
+
+        foreach ($services_data as $service) {
+            $combinedData[$service->date]['services'] = $service->services;
+        }
+
+        foreach ($jobs_data as $job) {
+            $combinedData[$job->date]['jobs'] = $job->jobs;
+        }
+        $finalData = [];
+        foreach($dates as $date){
+            $data = [
+                "date" => $date,
+                "courses" => 0,
+                "services" => 0,
+                "jobs"=>0
+            ];
+            if (isset($combinedData[$date])) {
+                $data['courses'] = $combinedData[$date]['courses'] ?? 0;
+                $data['services'] = $combinedData[$date]['services'] ?? 0;
+                $data['jobs'] = $combinedData[$date]['jobs'] ?? 0;
+            }
+            $finalData[] = $data;
+        }
+        return $finalData; 
+    }
+
+    public function get_users_last_month()
+    {
+        $dates = [];
+        for ($i = 28; $i >= 0; $i-=7) {
+            $date = now()->subDays($i)->toDateString();
+            $dates[] = $date;
+        }
+        $users_data = [];
+        foreach ($dates as $date) {
+            $count = User
+                ::selectRaw('COUNT(u_id) as users')
+                ->whereDate('created_at', '<=', $date)
+                ->first()->users;
+
+            $users_data[] = [
+                'date' => $date,
+                'users' => $count
+            ];
+        }
+        return $users_data;
+    }
+
+
+
+
 
 }

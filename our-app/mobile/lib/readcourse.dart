@@ -9,10 +9,12 @@ import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/editCourse.dart';
+import 'package:mobile/fatora.dart';
 import 'package:mobile/listCourses.dart';
 import 'package:mobile/videoWidget.dart';
 import 'package:mobile/videoplayer.dart';
 import 'package:mobile/view_media_new.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'controller/authManager.dart';
 
@@ -96,6 +98,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       print("Request failed with status: ${response.statusCode}");
     }
   }
+
   bool isEnrolled = false;
   Future<void> fetch_is_student() async {
     var url = is_user_course_enrolled;
@@ -393,9 +396,12 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                     : ListView.builder(
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
-                          itemCount: isEnrolled
-                              ? videoData!.length
-                              : int.tryParse(courseData['num_of_free_videos'].toString()) ?? 0,
+                                        itemCount: isEnrolled
+                                            ? videoData!.length
+                                            : int.tryParse(courseData[
+                                                        'num_of_free_videos']
+                                                    .toString()) ??
+                                                0,
                                         itemBuilder: (context, index) {
                                           var videoId =
                                               videoData!.keys.elementAt(index);
@@ -480,10 +486,25 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 ),
                 user == 'true'
                     ? ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          AuthCont.fatora().then((value) {
+                            print(value.body);
+                            final data = jsonDecode(value.body);
+                            print(data['Data']['url']);
+                            final url = data['Data']['url'];
+                            // final WebViewController controller =
+                            //     WebViewController()
+                            //       ..setJavaScriptMode(
+                            //           JavaScriptMode.unrestricted)
+                            //       ..loadRequest(Uri.parse(url));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => fatora()),
+                            // );
+                          });
                           AuthCont.course_enrollment(widget.c_id.toString())
                               .then((value) {
-                            if (value.statusCode == 200) {
+                            if (value.statusCode == 2000) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
