@@ -60,7 +60,7 @@ class _viewserviceState extends State<viewservice> {
             ),
             SizedBox(height: 50),
             Text(
-              ' اسم الخدمة: ${servicedetails!['s_name']}  ',
+              '  ${servicedetails!['s_name']} اسم الخدمة  ',
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),

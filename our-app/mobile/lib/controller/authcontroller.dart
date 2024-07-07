@@ -35,18 +35,19 @@ class AuthCont {
       String description,
       String duration,
       String img_data,
-      String img_name) async {
+      String img_name,
+      String couponValue) async {
     var url = add_service;
     final token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {
       'service_name': name,
       'service_price': price,
-      //'mainCategory': mainCategory,
       'service_sec_type': subCategory,
       'service_desc': description,
       'service_duration': duration,
       'service_img_data': img_data,
       'img_name': img_name,
+      'couponValue': couponValue,
       'token': token,
     });
     return res;
