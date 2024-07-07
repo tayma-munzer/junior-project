@@ -103,6 +103,7 @@ flutter:
      - assets/workgallery.png
      - assets/works.png
      - assets/viewworkgallery.png
+     - assets/altserviceview.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
