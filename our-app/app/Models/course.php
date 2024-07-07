@@ -10,7 +10,6 @@ class course extends Model
     use HasFactory;
     protected $table = 'courses';
     protected  $primaryKey = 'c_id';
-    public $timestamps = false;
     protected $fillable = [
         'c_name',
         'c_desc',
@@ -22,6 +21,7 @@ class course extends Model
         'num_of_free_videos',
         'ct_id',
         'is_accepted',
+        'num_of_buyers'
     ];
 
     public function courses_type(){

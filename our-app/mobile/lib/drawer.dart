@@ -158,7 +158,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => addWork(2)),
+                      MaterialPageRoute(builder: (context) => ViewJobs()),
                     );
                   },
                 )
@@ -194,7 +194,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Viewaltservice()),
+                      MaterialPageRoute(
+                          builder: (context) => viewaltservice(2)),
                     );
                   },
                 )

@@ -147,6 +147,18 @@ Route::post('/get_my_services', [authenticationController::class, 'get_my_servic
 Route::post('/get_my_services_enrollments', [authenticationController::class, 'get_my_services_enrollments']);
 Route::post('/get_my_courses_enrollments', [authenticationController::class, 'get_my_courses_enrollments']);
 Route::post('/job_filter', [authenticationController::class, 'job_filter']);
+Route::post('/course_rate_or_not', [authenticationController::class, 'course_rate_or_not']);
+Route::post('/service_rate_or_not', [authenticationController::class, 'service_rate_or_not']);
+Route::post('/is_service_owner', [authenticationController::class, 'is_service_owner']);
+Route::post('/is_course_owner', [authenticationController::class, 'is_course_owner']);
+Route::post('/is_job_owner', [authenticationController::class, 'is_job_owner']);
+Route::get('/num_of_pindings', [authenticationController::class, 'num_of_pindings']);
+Route::get('/num_of_users_in_roles', [authenticationController::class, 'num_of_users_in_roles']);
+Route::get('/get_aprovments_last_7_days', [authenticationController::class, 'get_aprovments_last_7_days']);
+Route::get('/get_users_last_month', [authenticationController::class, 'get_users_last_month']);
+Route::post('/get_alt_service', [authenticationController::class, 'get_alt_service']);
+
+
 
 
 Route::controller(\App\Http\Controllers\AdminDashboardController::class)->prefix('/admin')->group(function (){

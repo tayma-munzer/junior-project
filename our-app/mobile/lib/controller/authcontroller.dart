@@ -453,4 +453,20 @@ class AuthCont {
     });
     return res;
   }
+
+  static Future<http.Response> fatora() async {
+    var url = "https://egate-t.fatora.me/api/create-payment";
+    final username = 'mahara';
+    final password = 'mahara@123';
+    final auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final requestBody =
+        jsonEncode({"lang": "ar", "terminalId": "14740044", "amount": "1253"});
+    var res = await http.post(Uri.parse(url),
+        headers: {
+          'Authorization': auth,
+          'Content-Type': 'application/json',
+        },
+        body: requestBody);
+    return res;
+  }
 }

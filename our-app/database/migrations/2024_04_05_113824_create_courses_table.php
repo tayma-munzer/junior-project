@@ -21,9 +21,9 @@ return new class extends Migration
             $table->mediumText('c_img');
             $table->integer('u_id');
             $table->integer('num_of_free_videos');
-
-        
-        
+            $table->integer('num_of_buyers')->default(0);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();  
 
         
         });

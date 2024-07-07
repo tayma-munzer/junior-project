@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('gender');
             $table->integer('p_id');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

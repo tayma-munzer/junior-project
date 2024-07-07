@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -23,8 +24,8 @@ return new class extends Migration
             $table->integer('discount')->default(0);// a value between 0 to 100 
             $table->string('status')->default('pinding');//pinding (waiting for admin aprove) or aproved 
             $table->string('s_img');
-            $table->string('s_video')->nullable(true);// it could be null 
-
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         
         });
     }

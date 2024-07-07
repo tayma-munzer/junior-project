@@ -50,7 +50,7 @@ class _EditJobState extends State<EditJob> {
       _educationController.text = jobdetails!['job']['education'].toString();
       _yearsofexperinceController.text =
           jobdetails!['job']['num_of_exp_years'].toString();
-      _educationController.text = jobdetails!['job']['j_req'].toString();
+      _requirementsController.text = jobdetails!['job']['j_req'].toString();
 
       print(jobdetails);
     });
@@ -98,7 +98,7 @@ class _EditJobState extends State<EditJob> {
                 _buildJobItem(
                     '  المتطلبات الوظيفية ', 'j_req', _requirementsController,
                     (value) {
-                  jobdetails!['job']['j_max_sal'] = value;
+                  jobdetails!['job']['j_req'] = value;
                 }),
                 _buildJobItem(
                     '    الحد الادنى للعمر', 'j_min_age', _minimumageController,
@@ -191,15 +191,15 @@ class _EditJobState extends State<EditJob> {
     print(jobdetails);
     AuthCont.editJob(
       jobdetails!['job']['j_id'].toString(),
+      jobdetails!['job']['j_title'].toString(),
+      jobdetails!['job']['j_desc'].toString(),
+      jobdetails!['job']['j_req'].toString(),
       jobdetails!['job']['j_min_sal'].toString(),
       jobdetails!['job']['j_max_sal'].toString(),
       jobdetails!['job']['j_min_age'].toString(),
       jobdetails!['job']['j_max_age'].toString(),
-      jobdetails!['job']['num_of_exp_years'].toString(),
       jobdetails!['job']['education'].toString(),
-      jobdetails!['job']['j_title'].toString(),
-      jobdetails!['job']['j_desc'].toString(),
-      jobdetails!['job']['j_req'].toString(),
+      jobdetails!['job']['num_of_exp_years'].toString(),
     ).then((value) {
       if (value.statusCode == 200) {
         print('edit successfully');
