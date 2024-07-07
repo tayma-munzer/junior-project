@@ -10,6 +10,9 @@ import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/rating.dart';
+import 'package:mobile/serviceComplaint.dart';
+
+import 'controller/authManager.dart';
 
 class CategoriesDetails extends StatefulWidget {
   final int s_id;
@@ -22,8 +25,9 @@ class CategoriesDetails extends StatefulWidget {
 
 class _CategoriesDetailsState extends State<CategoriesDetails> {
   List<Map<String, dynamic>> data = [];
-
+String? token;
   Future<void> fetchData() async {
+    token = await AuthManager.getToken();
     var url = get_service;
     var response = await http.post(Uri.parse(url), body: {
       "s_id": widget.s_id.toString(),
@@ -139,7 +143,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                     backgroundColor:
                         WidgetStateProperty.all<Color>(Colors.blue),
                     padding: WidgetStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
                     ),
                   ),
                 ),
@@ -157,7 +161,26 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                     AuthCont.service_enrollment(widget.s_id.toString())
                         .then((value) {
                       if (value.statusCode == 200) {
-                        print("enroll request have been sent");
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: AlertDialog(
+                                title: Text('نجاح'),
+                                content: Text('تمت العملية بنجاح'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('موافق'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       } else {
                         print("error");
                       }
@@ -172,10 +195,9 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.blue),
-                    padding: WidgetStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                    padding: MaterialStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
                     ),
                   ),
                 ),
@@ -244,13 +266,46 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
     style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
     padding: MaterialStateProperty.all<EdgeInsets>(
-    EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+    EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
     ),
     ),
     ),
     ),
             ],
           ),
+          SizedBox(
+            height: 16,
+          ),
+             TextButton(
+              onPressed: () {
+
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                     builder: (context) => ComplaintPage(
+
+                       sId: widget.s_id.toString(),
+                     ),
+                   ),
+                );
+              },
+              child: Text(
+                'أضف شكوى',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor:
+                WidgetStateProperty.all<Color>(Colors.blue),
+                padding: WidgetStateProperty.all<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: 80.0, vertical: 10.0),
+                ),
+              ),
+            ),
+
         ],
       ),
     );

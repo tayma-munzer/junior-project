@@ -17,6 +17,7 @@ import 'package:mobile/videoplayer.dart';
 import 'package:mobile/view_media_new.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'CourseComplaints.dart';
 import 'RatingStars.dart';
 import 'controller/authManager.dart';
 
@@ -623,7 +624,36 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                   ),
                 ),
 
+                SizedBox(
+                  height: 10,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ComplaintCoursePage(
 
+                          cId: widget.c_id.toString(),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'أضف شكوى',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                  ),
+                ),),
               ],
             ),
           ),
