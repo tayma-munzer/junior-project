@@ -2245,7 +2245,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             return response($errors,402);
         }else{
             $work = works_gallery::where('w_id','=',$request->w_id)->first();
-            $s_id = $work -> s_id ;
+            $s_id = $work->s_id;
             $work_name= $work->w_name;
             $path = storage_path('works\\');
             $fullpath = $path.''.$work_name;

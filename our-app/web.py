@@ -168,6 +168,7 @@ async def get_works(websocket):
         data = json.loads(response.text)
         works = []
         for work in data :
+            w_id = work['w_id']
             s_id = work['s_id']
             w_name = work['w_name']
             w_desc = work['w_desc']
@@ -175,7 +176,7 @@ async def get_works(websocket):
             if os.path.exists(work_path):
                 with open(work_path, 'rb') as work_file:
                     work_bytes = work_file.read()
-                w = {'w_name':w_name,'w_desc':w_desc,'s_id':s_id , 'w_bytes':list(work_bytes)}
+                w = {'w_id':w_id ,'w_name':w_name,'w_desc':w_desc,'s_id':s_id , 'w_bytes':list(work_bytes)}
                 works.append(w)
             else:
                 print(f"work file '{w_name}' not found.")

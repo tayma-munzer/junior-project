@@ -99,6 +99,7 @@ class _viewworkgalleryState extends State<viewworkgallery> {
                                   icon: Icon(Icons.delete),
                                   onPressed: () async {
                                     var url = delete_work;
+                                    print(works!);
                                     var res = await http
                                         .post(Uri.parse(url), body: {
                                       'w_id': works![index]['w_id'].toString()
@@ -110,13 +111,22 @@ class _viewworkgalleryState extends State<viewworkgallery> {
                                         works = data['works'];
                                       });
                                     } else {
+                                      print(res.body);
                                       print('something went wrong');
                                     }
                                   },
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.edit),
-                                  onPressed: editGallery,
+                                  onPressed: () {
+                                    String w_desc = showPopup(
+                                        context,
+                                        works![index]['w_id'].toString(),
+                                        works![index]['w_desc'].toString());
+                                    setState(() {
+                                      works![index]['w_desc'] = w_desc;
+                                    });
+                                  },
                                 ),
                               ],
                             ),
@@ -189,7 +199,66 @@ class _viewworkgalleryState extends State<viewworkgallery> {
   }
 
   void editGallery() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Editgallery(widget.s_id)));
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (context) => Editgallery(widget.s_id)));
+  }
+  String showPopup(BuildContext context, String w_id, String intial) {
+    String initialText = intial;
+    TextEditingController _textController =
+        TextEditingController(text: initialText);
+    String editedtext = intial;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Popup'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('عدل وصع الملف'),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _textController,
+                decoration: InputDecoration(
+                  hintText: '',
+                ),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
+                  print('Edited text: ${_textController.text}');
+                  var url = edit_work;
+                  var res = await http.post(Uri.parse(url),
+                      body: {'w_id': w_id, 'w_desc': _textController.text});
+                  print(res.body);
+                  if (res.statusCode == 200) {
+                    setState(() {
+                      editedtext = _textController.text;
+                    });
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(content: Text("تم التعديل بنجاح"));
+                        });
+                  } else {
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(content: Text("مشكلة"));
+                        });
+                  }
+                },
+                child: Text('Submit'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    print(editedtext);
+    return editedtext;
   }
 }
