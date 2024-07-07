@@ -110,7 +110,7 @@ class _jobs_typesState extends State<jobs_types> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SearchJob(),
+            builder: (context) => SearchJob(data[index]["jt_id"]),
           ),
         );
       },

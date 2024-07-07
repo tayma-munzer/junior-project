@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mobile/buildCatItem.dart';
 import 'package:mobile/constant/links.dart';
@@ -12,7 +13,8 @@ import 'package:mobile/viewjob.dart';
 import 'package:mobile/editjob.dart';
 
 class SearchJob extends StatefulWidget {
-  const SearchJob({Key? key});
+  final int jt_id;
+  const SearchJob(this.jt_id, {Key? key});
 
   @override
   State<SearchJob> createState() => _SearchJobState();
@@ -22,9 +24,9 @@ List jobs = [];
 
 class _SearchJobState extends State<SearchJob> {
   void fetchJobs() async {
-    var url = get_user_jobs;
-    String? token = await AuthManager.getToken();
-    var res = await http.post(Uri.parse(url), body: {'token': token});
+    var url = get_jobs_for_type;
+    var res = await http
+        .post(Uri.parse(url), body: {'jt_id': widget.jt_id.toString()});
     List data = json.decode(res.body);
     setState(() {
       jobs = data.map((item) => item).toList();
@@ -35,6 +37,9 @@ class _SearchJobState extends State<SearchJob> {
   String? user;
   String? job;
   String? service;
+  late WebSocket socket;
+  List<dynamic>? _searchResults;
+  Map<String, dynamic>? results;
 
   Future fetchRoles() async {
     String? userRole = await AuthManager.isUser();
@@ -58,6 +63,40 @@ class _SearchJobState extends State<SearchJob> {
     super.initState();
     fetchJobs();
     fetchRoles();
+    //connect("ws://10.0.2.2:8770"); // هاد استدعي جوا زر البحث و بس
+  }
+
+  Future<void> connect(url) async {
+    try {
+      print("try");
+      socket = await WebSocket.connect(url);
+      print('WebSocket connected');
+      final data = {
+        'search_string': 'aa',
+        'jt_id': widget.jt_id.toString()
+      }; //  حطي مضمون التيكست بوكس aa   بدل
+      socket.add(jsonEncode(data));
+      socket.listen(
+        (message) {
+          print("receive");
+          setState(() {
+            results = jsonDecode(message);
+            print(results);
+            _searchResults = results!['jobs'];
+            print(_searchResults); // jobs هي اعمليلها سيت ستيت بمصفوفة
+          });
+        },
+        onError: (error) {
+          print('WebSocket error: $error');
+        },
+        onDone: () {
+          print('WebSocket connection closed');
+        },
+      );
+      print('WebSocket connection established.');
+    } catch (e) {
+      print('WebSocket connection failed: $e');
+    }
   }
 
   @override
@@ -72,7 +111,7 @@ class _SearchJobState extends State<SearchJob> {
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+            crossAxisCount: 1,
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
           ),

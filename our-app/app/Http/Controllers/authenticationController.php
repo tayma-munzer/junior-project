@@ -3014,6 +3014,8 @@ public function get_aprovments_last_7_days()
         return $media->first(); }
     }
 
+    
+
 
 
 
