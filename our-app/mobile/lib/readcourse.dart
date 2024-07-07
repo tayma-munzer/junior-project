@@ -127,6 +127,27 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     print(isEnrolled);
   }
 
+  String isOwner = "";
+
+  Future<void> fetchIsOwner() async {
+    String? token = await AuthManager.getToken();
+    var url = is_course_owner;
+    print("help me");
+    print(widget.c_id);
+
+    var response = await http.post(Uri.parse(url), body: {
+      'c_id': widget.c_id.toString(), // Convert the integer to a string
+      'token': token!,
+    });
+
+    print(response.body);
+    setState(() {
+      isOwner = response.body; // Assign the value to isOwner
+    });
+    print("object");
+    print(isOwner);
+  }
+
   Future<void> deleteCourse() async {
     var url = delete_course;
     var response = await http.post(Uri.parse(url), body: {
@@ -180,6 +201,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
     fetchCourseData();
     fetchRoles();
     fetch_is_student();
+    fetchIsOwner();
   }
 
   @override
@@ -380,7 +402,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 10),
                 Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
@@ -459,42 +481,45 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 SizedBox(
                   height: 20,
                 ),
-                service == 'true'
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditCourse(widget.c_id)),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              minimumSize: Size(150, 40),
+                Visibility(
+                  visible: isOwner=="true",
+
+                      child:Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditCourse(widget.c_id)),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                minimumSize: Size(150, 40),
+                              ),
+                              child: Text('تعديل الدورة',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18)),
                             ),
-                            child: Text('تعديل الدورة',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18)),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              confirmDeleteCourse();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              minimumSize: Size(150, 40),
+                            ElevatedButton(
+                              onPressed: () {
+                                confirmDeleteCourse();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                minimumSize: Size(150, 40),
+                              ),
+                              child: Text('حذف الدورة',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18)),
                             ),
-                            child: Text('حذف الدورة',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18)),
-                          ),
-                        ],
-                      )
-                    : Container(),
+                          ],
+                        )
+
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -556,70 +581,73 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         ),
                       )
                     : Container(),
-                SizedBox(height: 5,),
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        String review = ''; // Variable to store the review text
+                SizedBox(height: 10,),
+                Visibility(
+                  visible: isEnrolled,
+                  child: TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          String review = ''; // Variable to store the review text
 
-                        return AlertDialog(
-                          title: Directionality(textDirection: TextDirection.rtl,
-                              child: Text('أضف')),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              RatingWidget2(),
-                              SizedBox(height: 16.0),
-                              Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: TextField(
-                                  onChanged: (value) {
-                                    review = value; // Update the review text
-                                  },
-                                  decoration:
-                                  InputDecoration(
-                                    labelText: 'شاركنا رأيك',
-                                    border: OutlineInputBorder(),
+                          return AlertDialog(
+                            title: Directionality(textDirection: TextDirection.rtl,
+                                child: Text('أضف')),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RatingWidget2(),
+                                SizedBox(height: 16.0),
+                                Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: TextField(
+                                    onChanged: (value) {
+                                      review = value; // Update the review text
+                                    },
+                                    decoration:
+                                    InputDecoration(
+                                      labelText: 'شاركنا رأيك',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    textAlign: TextAlign.right, // Set the text alignment to right-to-left
                                   ),
-                                  textAlign: TextAlign.right, // Set the text alignment to right-to-left
                                 ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  print('Rating: ${RatingWidget2.getRating()}');
+                                  print('Review: $review');
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('تم'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('إلغاء'),
                               ),
                             ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                print('Rating: ${RatingWidget2.getRating()}');
-                                print('Review: $review');
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('تم'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('إلغاء'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Text(
-                    'أضف تقييمك',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      'أضف تقييمك',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                    padding: WidgetStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                      ),
                     ),
                   ),
                 ),
@@ -627,33 +655,36 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 SizedBox(
                   height: 10,
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ComplaintCoursePage(
+                Visibility(
+                  visible: isEnrolled,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ComplaintCoursePage(
 
-                          cId: widget.c_id.toString(),
+                            cId: widget.c_id.toString(),
+                          ),
                         ),
+                      );
+                    },
+                    child: Text(
+                      'أضف شكوى',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                    );
-                  },
-                  child: Text(
-                    'أضف شكوى',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor:
-                    WidgetStateProperty.all<Color>(Colors.blue),
-                    padding: WidgetStateProperty.all<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
-                  ),
-                ),),
+                    style: ButtonStyle(
+                      backgroundColor:
+                      WidgetStateProperty.all<Color>(Colors.blue),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
+                          EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                    ),
+                  ),),
+                ),
               ],
             ),
           ),

@@ -341,7 +341,7 @@ class _EditCourseState extends State<EditCourse> {
         courseDetails![key] = value;
       });
       print(key);
-      print("Updated userDetails: ");
+      print("Updated course Details: ");
       print(courseDetails![key]);
       // print("Keys in userDetails: ${userDetails!.keys.toList()}");
       // print("values in userDetails: ${userDetails!.values.toList()}");

@@ -15,7 +15,11 @@ import 'package:mobile/editgallery.dart';
 import 'package:mobile/listCourses.dart';
 import 'package:mobile/rules.dart';
 import 'package:mobile/settings_.dart';
+import 'package:mobile/view%20_my_services_admin.dart';
 import 'package:mobile/viewCV.dart';
+import 'package:mobile/view_inrolled_courses.dart';
+import 'package:mobile/view_inrolled_services.dart';
+import 'package:mobile/view_my_courses_admin.dart';
 import 'package:mobile/viewallJobs.dart';
 import 'package:mobile/viewallaltservices.dart';
 import 'package:mobile/viewaltservice.dart';
@@ -189,7 +193,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(' الدورات التعليمية الخاصة بي'),
+                      Text('عرض الخدمات الغير مخدمة'),
                       SizedBox(width: 10),
                       Icon(Icons.rule),
                     ],
@@ -202,6 +206,85 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   },
                 )
               : Container(),
+          service == 'true'
+              ? ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('عرض الخدمات الخاصة بي'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ViewServices(),
+              ));
+            },
+          )
+              : Container(),
+
+          service == 'true'
+              ? ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('عرض الكورسات الخاصة بي'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewCourses(),
+                  ));
+            },
+          )
+              : Container(),
+
+          user == 'true'
+              ? ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('عرض الكورسات المسجلة'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewCourses2(),
+                  ));
+            },
+          )
+              : Container(),
+          user == 'true'
+              ? ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('عرض الخدمات المسجلة'),
+                SizedBox(width: 10),
+                Icon(Icons.rule),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewServices2(),
+                  ));
+            },
+          )
+              : Container(),
+
           ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.end,
