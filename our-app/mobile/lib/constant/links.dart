@@ -154,3 +154,4 @@ const service_rate_or_not = URL + "service_rate_or_not";
 const is_service_owner = URL + "is_service_owner";
 const is_course_owner = URL + "is_course_owner";
 const is_job_owner = URL + "is_job_owner";
+const get_alt_service = URL + "get_alt_service";

@@ -21,6 +21,7 @@ class ServiceCreated implements ShouldBroadcastNow
      */
     public function __construct($service_name)
     {
+        echo "hiiiiiiii\n";
         $this->message = "Checkout the new $service_name service";
     }
 

@@ -127,6 +127,7 @@ class authenticationController extends Controller
             'message'=> 'logged in',
             'token'=>$token,
             'roles'=>$roles,
+            'id'=>$user->id,
         ],200);
     }
     }
@@ -764,7 +765,6 @@ class authenticationController extends Controller
             'j_desc'=> 'required|string',
             'j_req' => 'required|string',
             'education' => 'required|string',
-            'category'=>'required|string',
             'num_of_exp_years' => 'required|integer',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -785,7 +785,6 @@ class authenticationController extends Controller
             'j_min_age' => $request->j_min_age,
             'j_max_age' => $request->j_max_age,
             'education' => $request->education,
-            'jt_id'=>gets::job_type_id($request->category),
             'num_of_exp_years' => $request->num_of_exp_years,
         ]);
         if ($effected_rows!=0){
@@ -2997,6 +2996,22 @@ public function get_aprovments_last_7_days()
             ];
         }
         return $users_data;
+    }
+
+
+    public function get_alt_service(edit_media_request $request){
+        $validator = Validator::make($request->all(), [
+            'a_id' => 'required',///////////////////////exists:media,c_id
+        ], $messages = [
+            'required' => 'The :attribute field is required.',
+            'exists'=> 'the :attribute field should be exist',
+        ]);
+        if ($validator->fails()){
+            $errors = $validator->errors();
+            return response($errors,402);
+        }else{
+        $media =alt_services::where('a_id','=',$request->a_id);
+        return $media->first(); }
     }
 
 

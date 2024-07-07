@@ -156,6 +156,7 @@ Route::get('/num_of_pindings', [authenticationController::class, 'num_of_pinding
 Route::get('/num_of_users_in_roles', [authenticationController::class, 'num_of_users_in_roles']);
 Route::get('/get_aprovments_last_7_days', [authenticationController::class, 'get_aprovments_last_7_days']);
 Route::get('/get_users_last_month', [authenticationController::class, 'get_users_last_month']);
+Route::post('/get_alt_service', [authenticationController::class, 'get_alt_service']);
 
 
 
