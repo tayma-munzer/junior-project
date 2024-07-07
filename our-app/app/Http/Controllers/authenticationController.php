@@ -3001,7 +3001,7 @@ public function get_aprovments_last_7_days()
 
     public function get_alt_service(edit_media_request $request){
         $validator = Validator::make($request->all(), [
-            'a_id' => 'required',///////////////////////exists:media,c_id
+            'a_id' => 'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'exists'=> 'the :attribute field should be exist',

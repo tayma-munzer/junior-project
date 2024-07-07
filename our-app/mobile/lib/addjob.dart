@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/viewjob.dart';
+import 'package:http/http.dart' as http;
 
 class AddjobPage extends StatefulWidget {
   const AddjobPage({Key? key}) : super(key: key);
@@ -39,6 +43,25 @@ class _AddjobPageState extends State<AddjobPage> {
   String j_req = '';
   String j_edu = '';
   String j_exp = '';
+  List types = [];
+  String selectedMainCategory = 'Category 1';
+
+  void fetch() async {
+    var url1 = get_job_types;
+    var res = await http.get(Uri.parse(url1));
+    List<dynamic> data = json.decode(res.body);
+    setState(() {
+      types = data.map((item) => item).toList();
+      selectedMainCategory = types[0]['type'];
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetch();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +139,28 @@ class _AddjobPageState extends State<AddjobPage> {
                     j_req = value;
                     return null;
                   },
+                ),
+                SizedBox(height: 30),
+                Text(
+                  'التصنيف الرئيسي',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                DropdownButton<String>(
+                  value: selectedMainCategory,
+                  items: types.map((value) {
+                    return DropdownMenuItem<String>(
+                      value: value['type'],
+                      child: Text(value['type'], textAlign: TextAlign.right),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMainCategory = value!;
+                      print(selectedMainCategory);
+                    });
+                  },
+                  icon: SizedBox.shrink(),
                 ),
                 SizedBox(height: 16.0),
                 Text(
@@ -396,11 +441,17 @@ class _AddjobPageState extends State<AddjobPage> {
                               j_age_max,
                               j_edu,
                               j_exp,
-                              'تصميم هندسي',
+                              selectedMainCategory,
                               skills)
                           .then((value) {
                         print(value.body);
                         print(value.statusCode);
+                        int j_id = json.decode(value.body)['j_id'];
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => viewjob(j_id)),
+                        );
                       });
                     }
                   },
