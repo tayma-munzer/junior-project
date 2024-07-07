@@ -190,13 +190,14 @@ async def job_search(websocket):
     async for message in websocket:
         data = json.loads(message)
         search_string = data['search_string']
-        courses = json.loads(response.text)
-        response = requests.get('http://127.0.0.1:8000/api/get_all_jobs')
+        jt_id = data['jt_id']
+        data = {'jt_id': jt_id}
+        response = requests.post('http://127.0.0.1:8000/api/get_jobs_for_type', data=data)
         jobs = json.loads(response.text)
         vectorizer = CountVectorizer()
         jobs_cos_list = []
         for job in jobs :
-            X = vectorizer.fit_transform([search_string, job['j_title'], job['j_desc'], job['j_education'], job['j_req']])
+            X = vectorizer.fit_transform([search_string, job['j_title'], job['j_desc'], job['education'], job['j_req']])
             cosine_sim_title = cosine_similarity(X[0], X[1])[0][0]
             cosine_sim_desc = cosine_similarity(X[0], X[2])[0][0]
             cosine_sim_education = cosine_similarity(X[0], X[3])[0][0]

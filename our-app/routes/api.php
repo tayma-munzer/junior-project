@@ -157,6 +157,7 @@ Route::get('/num_of_users_in_roles', [authenticationController::class, 'num_of_u
 Route::get('/get_aprovments_last_7_days', [authenticationController::class, 'get_aprovments_last_7_days']);
 Route::get('/get_users_last_month', [authenticationController::class, 'get_users_last_month']);
 Route::post('/get_alt_service', [authenticationController::class, 'get_alt_service']);
+Route::post('/get_jobs_for_type', [authenticationController::class, 'get_jobs_for_type']);
 
 
 
