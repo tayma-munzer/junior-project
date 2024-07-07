@@ -77,11 +77,17 @@ class _viewjobState extends State<viewjob> {
               Text('  اسم الوظيفة :${jobdetails!['job']['j_title']} ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
-              Text('  توصيف الوظيفة : ${jobdetails!['job']['j_desc']} ',
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                '  توصيف الوظيفة : ${jobdetails!['job']['j_desc']} ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
-              Text(' متطلبات الوظيفة : ${jobdetails!['job']['j_req']}  ',
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                ' متطلبات الوظيفة : ${jobdetails!['job']['j_req']}  ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
               Text(
                   '   الحد الادنى للراتب : ${jobdetails!['job']['j_min_sal']} ',
@@ -100,8 +106,10 @@ class _viewjobState extends State<viewjob> {
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(
-                  '   درجة التعليم المطلوبة : ${jobdetails!['job']['education']} ',
-                  style: TextStyle(fontSize: 20)),
+                '   درجة التعليم المطلوبة : ${jobdetails!['job']['education']} ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
               Text(
                   '   عدد سنين الخبرة المطلوبة : ${jobdetails!['job']['num_of_exp_years']} ',

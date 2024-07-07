@@ -30,6 +30,7 @@ class _SearchJobState extends State<SearchJob> {
     List data = json.decode(res.body);
     setState(() {
       jobs = data.map((item) => item).toList();
+      print('test');
       print(jobs);
     });
   }
@@ -37,6 +38,7 @@ class _SearchJobState extends State<SearchJob> {
   String? user;
   String? job;
   String? service;
+  TextEditingController _controller = TextEditingController();
   late WebSocket socket;
   List<dynamic>? _searchResults;
   Map<String, dynamic>? results;
@@ -72,9 +74,9 @@ class _SearchJobState extends State<SearchJob> {
       socket = await WebSocket.connect(url);
       print('WebSocket connected');
       final data = {
-        'search_string': 'aa',
+        'search_string': _controller.text,
         'jt_id': widget.jt_id.toString()
-      }; //  حطي مضمون التيكست بوكس aa   بدل
+      };
       socket.add(jsonEncode(data));
       socket.listen(
         (message) {
@@ -107,42 +109,80 @@ class _SearchJobState extends State<SearchJob> {
         child: CustomAppBar(),
       ),
       drawer: CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 30,
           ),
-          itemCount: jobs.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                // Navigate to ViewJob with the job details
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => viewjob(jobs[index]['j_id']),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  connect("ws://10.0.2.2:8770");
+                },
+                child: Text('Search'),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
                   ),
-                );
-              },
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: index % 2 == 0
-                    ? Color.fromARGB(255, 146, 206, 255)
-                    : Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(jobs[index]['j_title']),
-                    Text(jobs[index]['j_desc']),
-                  ],
+                  cursorColor: Colors.black,
                 ),
               ),
-            );
-          },
-        ),
+            ],
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 5.0,
+                  mainAxisSpacing: 5.0,
+                ),
+                itemCount: jobs.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => viewjob(jobs[index]['j_id']),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: index % 4 < 2
+                            ? Color.fromARGB(255, 146, 206, 255)
+                            : Colors.white,
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            jobs[index]['j_title'],
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          Text(
+                            jobs[index]['j_desc'],
+                            style: TextStyle(fontSize: 16.0),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomBar(),
     );
