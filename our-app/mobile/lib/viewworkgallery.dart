@@ -119,13 +119,7 @@ class _viewworkgalleryState extends State<viewworkgallery> {
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
-                                    String w_desc = showPopup(
-                                        context,
-                                        works![index]['w_id'].toString(),
-                                        works![index]['w_desc'].toString());
-                                    setState(() {
-                                      works![index]['w_desc'] = w_desc;
-                                    });
+                                    showPopup(context, works![index]);
                                   },
                                 ),
                               ],
@@ -198,28 +192,21 @@ class _viewworkgalleryState extends State<viewworkgallery> {
     );
   }
 
-  void editGallery() {
-    // Navigator.push(context,
-    //     MaterialPageRoute(builder: (context) => Editgallery(widget.s_id)));
-  }
-  String showPopup(BuildContext context, String w_id, String intial) {
-    String initialText = intial;
+  showPopup(BuildContext context, dynamic work) {
     TextEditingController _textController =
-        TextEditingController(text: initialText);
-    String editedtext = intial;
-
+        TextEditingController(text: work['w_desc']);
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Popup'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('عدل وصع الملف'),
+              Text('عدل عنوان الملف'),
               SizedBox(height: 16.0),
               TextField(
                 controller: _textController,
+                textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   hintText: '',
                 ),
@@ -229,36 +216,45 @@ class _viewworkgalleryState extends State<viewworkgallery> {
                 onPressed: () async {
                   print('Edited text: ${_textController.text}');
                   var url = edit_work;
-                  var res = await http.post(Uri.parse(url),
-                      body: {'w_id': w_id, 'w_desc': _textController.text});
+                  var res = await http.post(Uri.parse(url), body: {
+                    'w_id': work['w_id'].toString(),
+                    'w_desc': _textController.text
+                  });
                   print(res.body);
                   if (res.statusCode == 200) {
                     setState(() {
-                      editedtext = _textController.text;
+                      work['w_desc'] = _textController.text;
                     });
                     Navigator.of(context).pop();
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(content: Text("تم التعديل بنجاح"));
+                          return AlertDialog(
+                              content: Text(
+                            "تم التعديل بنجاح",
+                            textAlign: TextAlign.center,
+                          ));
                         });
                   } else {
                     Navigator.of(context).pop();
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(content: Text("مشكلة"));
+                          return AlertDialog(
+                            content: Text(
+                              "مشكلة",
+                              textAlign: TextAlign.center,
+                            ),
+                          );
                         });
                   }
                 },
-                child: Text('Submit'),
+                child: Text('حفظ'),
               ),
             ],
           ),
         );
       },
     );
-    print(editedtext);
-    return editedtext;
   }
 }

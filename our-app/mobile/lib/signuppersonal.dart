@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:mobile/settings_.dart';
 import 'package:mobile/Signuproles.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPersonalPage extends StatefulWidget {
   final Map<String, String> api_data;
@@ -67,6 +69,8 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
     );
   }
 
+  String selectedMainCategory = 'female';
+  List gender = ['female', 'male'];
   Future<void> _chooseAccountPicture() async {
     _selectImage();
   }
@@ -169,6 +173,27 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
                         textAlign: TextAlign.right,
                       ),
                     ],
+                  ),
+                  SizedBox(height: 30),
+                  Text(
+                    'المحافظة  ',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedMainCategory,
+                    items: gender.map((value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value, textAlign: TextAlign.right),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedMainCategory = value!;
+                      });
+                    },
+                    icon: SizedBox.shrink(),
                   ),
                   SizedBox(height: 20),
                   Row(

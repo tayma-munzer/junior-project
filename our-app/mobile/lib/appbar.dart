@@ -11,16 +11,16 @@ class CustomAppBar extends StatelessWidget {
       actions: [
         IconButton(
           onPressed: () {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>const notifications()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const notifications()));
           },
-          icon: Icon(Icons.notifications_active),
+          icon: Icon(Icons.notifications_active, color: Colors.white),
         ),
         IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_forward),
+          icon: Icon(Icons.arrow_forward, color: Colors.white),
         ),
       ],
     );

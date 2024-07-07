@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
@@ -74,14 +73,20 @@ class _viewjobState extends State<viewjob> {
               SizedBox(height: 20),
               Image.asset('assets/workingbag.png', width: 200),
               SizedBox(height: 50),
-              Text('  اسم الوظيفة :${jobdetails!['job']['j_title']} ',
+              Text(' ${jobdetails!['job']['j_title']} : اسم الوظيفة ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
-              Text('  توصيف الوظيفة : ${jobdetails!['job']['j_desc']} ',
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                '  ${jobdetails!['job']['j_desc']}: توصيف الوظيفة ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
-              Text(' متطلبات الوظيفة : ${jobdetails!['job']['j_req']}  ',
-                  style: TextStyle(fontSize: 20)),
+              Text(
+                '  ${jobdetails!['job']['j_req']} : متطلبات الوظيفة  ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
               Text(
                   '   الحد الادنى للراتب : ${jobdetails!['job']['j_min_sal']} ',
@@ -91,8 +96,7 @@ class _viewjobState extends State<viewjob> {
                   '   الحد الاقصى للراتب : ${jobdetails!['job']['j_max_sal']} ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
-              Text(
-                  '   العمر الادنى للراتب : ${jobdetails!['job']['j_min_age']} ',
+              Text('   الحد الادنى للعمر : ${jobdetails!['job']['j_min_age']} ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(
@@ -100,12 +104,19 @@ class _viewjobState extends State<viewjob> {
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(
-                  '   درجة التعليم المطلوبة : ${jobdetails!['job']['education']} ',
-                  style: TextStyle(fontSize: 20)),
+                '   ${jobdetails!['job']['education']}  : درجة التعليم المطلوبة ',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 10),
               Text(
                   '   عدد سنين الخبرة المطلوبة : ${jobdetails!['job']['num_of_exp_years']} ',
                   style: TextStyle(fontSize: 20)),
+              // Text(
+              //   '  مهارات : ${jobdetails!['skills'].map((skill) => skill['s_name']).toList()} ',
+              //   style: TextStyle(fontSize: 20),
+              //   textAlign: TextAlign.center,
+              // ),
               enable == 'true' ? SizedBox(height: 20) : Container(),
               enable == 'true'
                   ? Column(
@@ -125,7 +136,7 @@ class _viewjobState extends State<viewjob> {
                             minimumSize:
                                 MaterialStateProperty.all(Size(300, 40)),
                           ),
-                          child: Text('Edit',
+                          child: Text('تعديل',
                               style: TextStyle(color: Colors.white)),
                         ),
                         SizedBox(height: 5),
@@ -139,7 +150,7 @@ class _viewjobState extends State<viewjob> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FirstPage()),
+                                    builder: (context) => HomePage()),
                               );
                             }
                           },
@@ -149,7 +160,7 @@ class _viewjobState extends State<viewjob> {
                             minimumSize:
                                 MaterialStateProperty.all(Size(300, 40)),
                           ),
-                          child: Text('Delete',
+                          child: Text('حذف',
                               style: TextStyle(color: Colors.white)),
                         ),
                       ],
