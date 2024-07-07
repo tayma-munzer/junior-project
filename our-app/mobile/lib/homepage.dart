@@ -94,7 +94,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    jobs[_currentJobIndex]['j_name'].toString(),
+                    jobs[_currentJobIndex]['j_title'].toString(),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Color.fromARGB(255, 66, 62, 62),

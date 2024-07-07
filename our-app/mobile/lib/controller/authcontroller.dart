@@ -207,6 +207,22 @@ class AuthCont {
     return res;
   }
 
+  static Future<http.Response> editaltservice(
+    String a_id,
+    String a_price,
+    String a_name,
+    String added_duration,
+  ) async {
+    var url = edit_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'a_id': a_id,
+      'a_price': a_price,
+      'a_name': a_name,
+      'added_duration': added_duration,
+    });
+    return res;
+  }
+
   static Future<http.Response> editSkill(
       String s_id, String s_name, String s_level, String years_of_exp) async {
     var url = edit_skills;

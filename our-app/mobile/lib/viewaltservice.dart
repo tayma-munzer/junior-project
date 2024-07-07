@@ -48,7 +48,7 @@ class _viewaltserviceState extends State<viewaltservice> {
             SizedBox(height: 70),
             Image.asset('assets/altserviceview.png', width: 300, height: 200),
             SizedBox(height: 40),
-            Text(' اسم الخدمة اللاحقة :${alt_service!['a_name']}  ',
+            Text('${alt_service!['a_name']} :  اسم الخدمة اللاحقة  ',
                 style: TextStyle(fontSize: 20)),
             SizedBox(height: 10),
             Text('  سعر الخدمة اللاحقة :${alt_service!['a_price']}  ',
