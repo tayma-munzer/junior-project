@@ -317,6 +317,30 @@ class AuthCont {
     return response;
   }
 
+  static Future<http.Response> editService(
+    String s_id,
+    String s_name,
+    String s_desc,
+    String s_price,
+    String s_img,
+    String s_duration,
+    String s_img_data,
+  ) async {
+    var url = edit_service;
+
+    var response = await http.post(Uri.parse(url), body: {
+      's_id': s_id,
+      's_name': s_name,
+      's_desc': s_desc,
+      's_price': s_price,
+      's_duration': s_duration,
+      's_img': s_img,
+      's_img_data': s_img_data,
+    });
+
+    return response;
+  }
+
   static Future<http.Response> editProfile(
     String age,
     String u_desc,
