@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
@@ -74,17 +73,17 @@ class _viewjobState extends State<viewjob> {
               SizedBox(height: 20),
               Image.asset('assets/workingbag.png', width: 200),
               SizedBox(height: 50),
-              Text('  اسم الوظيفة :${jobdetails!['job']['j_title']} ',
+              Text(' ${jobdetails!['job']['j_title']} : اسم الوظيفة ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(
-                '  توصيف الوظيفة : ${jobdetails!['job']['j_desc']} ',
+                '  ${jobdetails!['job']['j_desc']}: توصيف الوظيفة ',
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 10),
               Text(
-                ' متطلبات الوظيفة : ${jobdetails!['job']['j_req']}  ',
+                '  ${jobdetails!['job']['j_req']} : متطلبات الوظيفة  ',
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
@@ -106,7 +105,7 @@ class _viewjobState extends State<viewjob> {
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(
-                '   درجة التعليم المطلوبة : ${jobdetails!['job']['education']} ',
+                '   ${jobdetails!['job']['education']}  : درجة التعليم المطلوبة ',
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
@@ -114,6 +113,11 @@ class _viewjobState extends State<viewjob> {
               Text(
                   '   عدد سنين الخبرة المطلوبة : ${jobdetails!['job']['num_of_exp_years']} ',
                   style: TextStyle(fontSize: 20)),
+              // Text(
+              //   '  مهارات : ${jobdetails!['skills'].map((skill) => skill['s_name']).toList()} ',
+              //   style: TextStyle(fontSize: 20),
+              //   textAlign: TextAlign.center,
+              // ),
               enable == 'true' ? SizedBox(height: 20) : Container(),
               enable == 'true'
                   ? Column(
@@ -133,7 +137,7 @@ class _viewjobState extends State<viewjob> {
                             minimumSize:
                                 MaterialStateProperty.all(Size(300, 40)),
                           ),
-                          child: Text('Edit',
+                          child: Text('تعديل',
                               style: TextStyle(color: Colors.white)),
                         ),
                         SizedBox(height: 5),
@@ -147,7 +151,7 @@ class _viewjobState extends State<viewjob> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FirstPage()),
+                                    builder: (context) => HomePage()),
                               );
                             }
                           },
@@ -157,7 +161,7 @@ class _viewjobState extends State<viewjob> {
                             minimumSize:
                                 MaterialStateProperty.all(Size(300, 40)),
                           ),
-                          child: Text('Delete',
+                          child: Text('حذف',
                               style: TextStyle(color: Colors.white)),
                         ),
                       ],
