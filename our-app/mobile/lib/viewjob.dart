@@ -96,8 +96,7 @@ class _viewjobState extends State<viewjob> {
                   '   الحد الاقصى للراتب : ${jobdetails!['job']['j_max_sal']} ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
-              Text(
-                  '   العمر الادنى للراتب : ${jobdetails!['job']['j_min_age']} ',
+              Text('   الحد الادنى للعمر : ${jobdetails!['job']['j_min_age']} ',
                   style: TextStyle(fontSize: 20)),
               SizedBox(height: 10),
               Text(

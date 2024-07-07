@@ -85,7 +85,8 @@ class _SearchJobState extends State<SearchJob> {
             results = jsonDecode(message);
             print(results);
             _searchResults = results!['jobs'];
-            print(_searchResults); // jobs هي اعمليلها سيت ستيت بمصفوفة
+            print(_searchResults);
+            // jobs = _searchResults;
           });
         },
         onError: (error) {
@@ -120,7 +121,11 @@ class _SearchJobState extends State<SearchJob> {
                 onPressed: () {
                   connect("ws://10.0.2.2:8770");
                 },
-                child: Text('Search'),
+                child: Text('بحث'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 243, 176, 145)),
+                ),
               ),
               Expanded(
                 child: TextField(
@@ -133,6 +138,9 @@ class _SearchJobState extends State<SearchJob> {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: 20,
           ),
           Expanded(
             child: Padding(
