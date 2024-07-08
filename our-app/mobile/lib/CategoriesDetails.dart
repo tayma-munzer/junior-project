@@ -36,7 +36,8 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
     var response = await http.post(Uri.parse(url), body: {
       "s_id": widget.s_id.toString(),
     });
-
+    print("object");
+    print(response.body);
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
 
@@ -107,8 +108,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
   Future<void> fetchIsOwner() async {
     String? token = await AuthManager.getToken();
     var url = is_service_owner;
-    print("help me");
-    print(widget.s_id);
+
 
     var response = await http.post(Uri.parse(url), body: {
       's_id': widget.s_id.toString(), // Convert the integer to a string
@@ -360,6 +360,10 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CategoriesDetails(widget.s_id)), // Replace `YourPage` with the actual page you want to reload
+                                );
                               },
                               child: Text('موافق'),
                             ),
@@ -394,7 +398,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
           Visibility(
             visible: isEnrolled, // Show the button only if isEnrolled is true
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -420,17 +424,43 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
                                 labelText: 'شاركنا رأيك',
                                 border: OutlineInputBorder(),
                               ),
-                              textAlign: TextAlign
-                                  .right, // Set the text alignment to right-to-left
+                              textAlign: TextAlign.right, // Set the text alignment to right-to-left
                             ),
                           ),
                         ],
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () {
-                            print('Rating: ${RatingWidget2.getRating()}');
-                            print('Review: $review');
+                          onPressed: () async {
+
+                            double rating = RatingWidget2.getRating();
+                            String ratingAsString = rating.toString();
+                            // Prepare the request body
+                            Map<String, dynamic> requestBody = {
+                              'token': token,
+                              'rate': ratingAsString,
+                              'review': review,
+                              'service_id': widget.s_id.toString(),
+                            };
+
+                            // Make the HTTP POST request
+                            var response = await http.post(
+                              Uri.parse('http://10.0.2.2:8000/api/add_service_rating'),
+                              body: requestBody,
+                            );
+
+                            if (response.statusCode == 200) {
+                              // Rating added successfully
+                              print('Rating added successfully');
+                            } else if (response.statusCode == 402) {
+                              // Validation failed, handle the errors
+                              var errors = response.body;
+                              print('Validation errors: $errors');
+                            } else {
+                              // Handle other error cases
+                              print('Error: ${response.statusCode}');
+                            }
+
                             Navigator.of(context).pop();
                           },
                           child: Text('تم'),
@@ -462,6 +492,7 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
               ),
             ),
           ),
+
           SizedBox(
             height: 16,
           ),
