@@ -1,34 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/addalternativeservice.dart';
 import 'package:mobile/addcourse.dart';
-import 'package:mobile/addcveducation.dart';
-import 'package:mobile/addcvskills.dart';
+
 import 'package:mobile/addservice.dart';
 import 'package:mobile/addsugestiontoservice.dart';
-import 'package:mobile/addvideo.dart';
-import 'package:mobile/addwork.dart';
-import 'package:mobile/contactus.dart';
+
 import 'package:mobile/controller/authManager.dart';
-import 'package:mobile/editCourse.dart';
-import 'package:mobile/editcv.dart';
-import 'package:mobile/editgallery.dart';
-import 'package:mobile/listCourses.dart';
-import 'package:mobile/rules.dart';
+
 import 'package:mobile/settings_.dart';
+import 'package:mobile/veiwProfile.dart';
 import 'package:mobile/view%20_my_services_admin.dart';
 import 'package:mobile/viewCV.dart';
 import 'package:mobile/view_inrolled_courses.dart';
 import 'package:mobile/view_inrolled_services.dart';
 import 'package:mobile/view_my_courses_admin.dart';
-import 'package:mobile/viewallJobs.dart';
-import 'package:mobile/viewallaltservices.dart';
-import 'package:mobile/viewaltservice.dart';
-import 'package:mobile/viewjob.dart';
-import 'package:mobile/viewservice.dart';
-import 'package:mobile/viewuserservices.dart';
-import 'package:mobile/viewvideo.dart';
-import 'package:mobile/viewworkgallery.dart';
-import 'package:mobile/whoarewe.dart';
+
 import 'package:mobile/addjob.dart';
 import 'package:mobile/addcvmaininfo.dart';
 import 'package:mobile/colors.dart';
@@ -103,15 +88,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
               );
             },
           ),
-
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(' الحساب الشخصي'),
+                SizedBox(width: 10),
+                Icon(Icons.person),
+              ],
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewProfile()),
+              );
+            },
+          ),
           job == 'true'
               ? ListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('فرص العمل الخاصة بي'),
+                      Text('عرض فرص العمل الخاصة بي'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_carousel),
                     ],
                   ),
                   onTap: () {
@@ -122,56 +122,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   },
                 )
               : Container(),
-          job == 'true'
+          user == 'true'
               ? ListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(' سيرتي الذاتية'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_comfortable),
                     ],
                   ),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => viewcv()),
-                    );
-                  },
-                )
-              : Container(),
-          // user == 'true'
-          //     ? ListTile(
-          //         title: Row(
-          //           mainAxisAlignment: MainAxisAlignment.end,
-          //           children: [
-          //             Text('عرض حميع فرص العمل'),
-          //             SizedBox(width: 10),
-          //             Icon(Icons.rule),
-          //           ],
-          //         ),
-          //         onTap: () {
-          //           Navigator.push(
-          //             context,
-          //             MaterialPageRoute(builder: (context) => viewallJobs()),
-          //           );
-          //         },
-          //       )
-          //     : Container(),
-          service == 'true'
-              ? ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('عرض الخدمات الغير مخدمة'),
-                      SizedBox(width: 10),
-                      Icon(Icons.rule),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddjobPage()),
                     );
                   },
                 )
@@ -183,7 +147,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       Text('عرض الخدمات الخاصة بي'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_array),
                     ],
                   ),
                   onTap: () {
@@ -202,7 +166,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       Text('عرض الكورسات الخاصة بي'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_array),
                     ],
                   ),
                   onTap: () {
@@ -221,7 +185,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       Text('عرض الكورسات المسجلة'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_array),
                     ],
                   ),
                   onTap: () {
@@ -240,7 +204,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       Text('عرض الخدمات المسجلة'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.view_array),
                     ],
                   ),
                   onTap: () {
@@ -259,7 +223,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       Text('تقديم اقتراح لخدمة غير موجودة'),
                       SizedBox(width: 10),
-                      Icon(Icons.rule),
+                      Icon(Icons.new_label),
                     ],
                   ),
                   onTap: () {
@@ -318,7 +282,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddAltService(2)),
+                                builder: (context) => AddCourse()),
                           );
                         },
                       )
@@ -337,7 +301,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => viewallaltservices(2)),
+                                builder: (context) => AddjobPage()),
                           );
                         },
                       )
@@ -347,16 +311,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text('cv'),
+                            Text('سيرة ذاتية'),
                             SizedBox(width: 10),
-                            Icon(Icons.work),
+                            Icon(Icons.edit_document),
                           ],
                         ),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => viewservice(2)),
+                                builder: (context) => AddCVMain()),
                           );
                         },
                       )

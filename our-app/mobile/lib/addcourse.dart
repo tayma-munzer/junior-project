@@ -68,7 +68,6 @@ class _AddCourseState extends State<AddCourse> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetch();
   }
@@ -86,26 +85,12 @@ class _AddCourseState extends State<AddCourse> {
     });
   }
 
-  // Future<void> _getVideoFromGallery() async {
-  //   try {
-  //     XFile? pickedVideo = await _picker.pickVideo(source: ImageSource.gallery);
-  //     if (pickedVideo != null) {
-  //       setState(() {
-  //         videos.add(pickedVideo);
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Error picking video: $e');
-  //   }
-  // }
-
   Future<void> _saveImagesToFolder() async {
     for (XFile image in images) {
       final File newImage =
           File('path/to/images/folder/${image.path.split('/').last}');
       await newImage.writeAsBytes(await image.readAsBytes());
     }
-//هون بنخط اللوجيك تيع الفيديو video
   }
 
   @override

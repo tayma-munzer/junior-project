@@ -93,7 +93,6 @@ class _AddSkillState extends State<AddSkill> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                // Add Button
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -159,7 +158,6 @@ class _AddSkillState extends State<AddSkill> {
                     },
                   ),
                 ),
-
                 SizedBox(height: 16.0),
                 Row(
                   children: [
@@ -181,7 +179,6 @@ class _AddSkillState extends State<AddSkill> {
                                 ),
                               );
                             } else {
-                              // Error response
                               print(
                                   'Failed to add the skill to the CV. Error: ${value.body}');
                             }

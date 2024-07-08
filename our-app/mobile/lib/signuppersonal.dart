@@ -69,8 +69,8 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
     );
   }
 
-  String selectedMainCategory = 'female';
-  List gender = ['female', 'male'];
+  String selectedMainCategory = 'انثى';
+  List gender = ['انثى', 'ذكر'];
   Future<void> _chooseAccountPicture() async {
     _selectImage();
   }
@@ -91,7 +91,7 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
                     height: 40,
                   ),
                   Text(
-                    "   دع الاخرين يتعرفون عليك\n انشئ حسابك التعريفي ",
+                    " دع الاخرين يتعرفون عليك \n انشئ حسابك التعريفي ",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: const Color.fromARGB(255, 0, 0, 0),
@@ -175,25 +175,37 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
                     ],
                   ),
                   SizedBox(height: 30),
-                  Text(
-                    'المحافظة  ',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'الجنس  ',
+                      textAlign: TextAlign.right,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  DropdownButton<String>(
-                    value: selectedMainCategory,
-                    items: gender.map((value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, textAlign: TextAlign.right),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: gender.map((value) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            value,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Radio(
+                            value: value,
+                            groupValue: selectedMainCategory,
+                            onChanged: (val) {
+                              setState(() {
+                                selectedMainCategory = value;
+                              });
+                            },
+                          ),
+                        ],
                       );
                     }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMainCategory = value!;
-                      });
-                    },
-                    icon: SizedBox.shrink(),
                   ),
                   SizedBox(height: 20),
                   Row(
@@ -213,7 +225,7 @@ class _SignUpPersonalPageState extends State<SignUpPersonalPage> {
                               widget.api_data['username'] = _username;
                               widget.api_data['u_img_name'] = image_name!;
                               widget.api_data['u_img_data'] = base64Image!;
-                              widget.api_data['gender'] = "female";
+                              widget.api_data['gender'] = selectedMainCategory;
                               print(widget.api_data);
                             });
                             Navigator.push(

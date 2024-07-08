@@ -80,7 +80,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetch();
   }
@@ -170,13 +169,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        'المحافظة',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'المحافظة  ',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(height: 8),
                       Container(
-                        width: 350,
+                        width: 60,
                         child: DropdownButton(
                           value: selectedMainCategory,
                           onChanged: (newValue) {
