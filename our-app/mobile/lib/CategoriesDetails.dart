@@ -14,6 +14,7 @@ import 'package:mobile/serviceComplaint.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/services_types.dart';
 import 'controller/authManager.dart';
+import 'editService.dart';
 
 class CategoriesDetails extends StatefulWidget {
   final int s_id;
@@ -309,71 +310,98 @@ SizedBox(height: 15,),
               Visibility(
               visible: isEnrolled, // Show the button only if isEnrolled is true
               child: TextButton(
-              onPressed: () {
-              showDialog(
-              context: context,
-              builder: (BuildContext context) {
-              String review = ''; // Variable to store the review text
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      String review = ''; // Variable to store the review text
 
-              return AlertDialog(
-              title: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Text('أضف'),
-              ),
-              content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              RatingWidget2(),
-              SizedBox(height: 16.0),
-              Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextField(
-              onChanged: (value) {
-              review = value; // Update the review text
-              },
-              decoration: InputDecoration(
-              labelText: 'شاركنا رأيك',
-              border: OutlineInputBorder(),
-              ),
-              textAlign: TextAlign.right, // Set the text alignment to right-to-left
-              ),
-              ),
-              ],
-              ),
-              actions: [
-              TextButton(
-              onPressed: () {
-              print('Rating: ${RatingWidget2.getRating()}');
-              print('Review: $review');
-              Navigator.of(context).pop();
-              },
-              child: Text('تم'),
-              ),
-              TextButton(
-              onPressed: () {
-              Navigator.of(context).pop();
-              },
-              child: Text('إلغاء'),
-              ),
-              ],
-              );
-              },
-              );
-              },
-              child: Text(
-              'أضف تقييمك',
-              style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              ),
-              ),
-              style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-              padding: MaterialStateProperty.all<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
-              ),
-              ),
+                      return AlertDialog(
+                        title: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Text('أضف'),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RatingWidget2(),
+                            SizedBox(height: 16.0),
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: TextField(
+                                onChanged: (value) {
+                                  review = value; // Update the review text
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'شاركنا رأيك',
+                                  border: OutlineInputBorder(),
+                                ),
+                                textAlign: TextAlign.right, // Set the text alignment to right-to-left
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              String userId = 'user_id';
+                              double rating = RatingWidget2.getRating();
+
+                              // Prepare the request body
+                              Map<String, dynamic> requestBody = {
+                                'user_id': userId,
+                                'rate': rating,
+                                'review': review,
+                                'service_id':widget.s_id.toString() ,
+                              };
+
+                              // Make the HTTP POST request
+                              var response = await http.post(
+                                Uri.parse('http://10.0.2.2:8000/api/add_service_rating'),
+                                body: requestBody,
+                              );
+
+                              if (response.statusCode == 200) {
+                                // Rating added successfully
+                                print('Rating added successfully');
+                              } else if (response.statusCode == 402) {
+                                // Validation failed, handle the errors
+                                var errors = response.body;
+                                print('Validation errors: $errors');
+                              } else {
+                                // Handle other error cases
+                                print('Error: ${response.statusCode}');
+                              }
+
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('تم'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('إلغاء'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Text(
+                  'أضف تقييمك',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
+                  ),
+                ),
               ),
               ),
           SizedBox(
@@ -414,33 +442,40 @@ SizedBox(height: 15,),
 SizedBox(height: 10,),
              // Updated condition
           Visibility(
-            visible: isOwner == 'true', // Assuming 'true' is the expected value for isOwner
+            visible: isOwner == 'true',
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle button onPressed event
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditService(
+                            widget.s_id
+                        ),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'تعديل الدورة',
+                    'تعديل ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle button onPressed event
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'حذف الدورة',
+                    'حذف ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
