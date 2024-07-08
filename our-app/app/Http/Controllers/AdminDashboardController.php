@@ -128,21 +128,28 @@ class AdminDashboardController extends Controller
 
     public function get_courses_count($id): JsonResponse
     {
-        $user = User::findOrFail($id);
-        $count = $user->courses()->count();
-        return response()->json(['courses_count'=>$count]);
+    $user = User::findOrFail($id);
+    $totalcourses = $user->courses()->count();
+    $approvedcourse = $user->courses()->where('is_accepted', 'true')->count();
+    $count = ($totalcourses > 0) ? ($approvedcourse* 100) / $totalcourses : 0;
+    return response()->json(['courses_count'=>$count]);
     }
     public function get_services_count($id): JsonResponse
     {
         $user = User::findOrFail($id);
-        $count = $user->services()->count();
+        $totalservices = $user->services()->count();
+        $approvedservice = $user->services()->where('status', 'approved')->count();
+        $count = ($totalservices > 0) ? ( $approvedservice * 100) / $totalservices : 0;
         return response()->json(['services_count'=>$count]);
     }
+    
     public function get_jobs_count($id): JsonResponse
     {
-        $user = User::findOrFail($id);
-        $count = $user->jobs()->count();
-        return response()->json(['jobs_count'=>$count]);
+    $user = User::findOrFail($id);
+    $totalJobs = $user->jobs()->count();
+    $approvedJobs = $user->jobs()->where('is_accepted', 'true')->count();
+    $count = ($totalJobs > 0) ? ($approvedJobs * 100) / $totalJobs : 0;
+    return response()->json(['jobs_count' => $count]);
     }
     public function get_service_requests(): JsonResponse
     {
