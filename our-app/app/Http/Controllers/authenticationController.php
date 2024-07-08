@@ -105,10 +105,10 @@ class authenticationController extends Controller
     public function login(loginRequest $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required',//|email:rfc,dns
-            'password' => 'required|min:5',
+            'password' => 'required|min:8',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'min:5'=> 'the :attribute field should be minimum 5 chars'
+            'min:8'=> 'the :attribute field should be minimum 8 chars'
         ]);
         if ($validator->fails()){
             $errors = $validator->errors();
@@ -155,11 +155,6 @@ class authenticationController extends Controller
         return $types->get() ;
     }
 
-    // static public function getuser_id(string $token){
-    //     $user_id = DB::table('personal_access_tokens')->where('token','=',$token);
-    //     return $user_id;
-    // }
-
 // done
     public function addservice(addserviceRequest $request){
         $validator = Validator::make($request->all(), [
@@ -182,7 +177,6 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-
         $user_token = PersonalAccessToken::findToken($request->token);
         $img_data = $request ->service_img_data;
         $decoded_img = base64_decode($img_data);
@@ -1326,8 +1320,10 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $cv=skills::where('s_id','=',$request->s_id)->first();
+            $cv_id = $cv ->cv_id;
         $effected_rows=skills::where('s_id','=',$request->s_id)->delete();
-        $skills = skills::all();
+        $skills = skills::where('cv_id','=',$cv_id)->get();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully',
@@ -1379,8 +1375,9 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
+            $cv_id = projects::where('p_id','=',$request->p_id)->first()->cv_id;
         $effected_rows=projects::where('p_id','=',$request->p_id)->delete();
-        $projects = projects ::all();
+        $projects = projects::where('cv_id','=',$cv_id)->get();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully',
@@ -1466,8 +1463,9 @@ public function delete_exp(edit_exp_request $request){
         return response($errors,402);
     }
     else{
+        $cv_id = experience::where('exp_id','=',$request->exp_id)->first()->cv_id;
         $effected_rows=experience::where('exp_id','=',$request->exp_id)->delete();
-        $experiences = experience::all();
+        $experiences = experience::where('cv_id',$cv_id)->get();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully',
@@ -1721,8 +1719,9 @@ public function delete_education(edit_cv_education_request $request){
         return response($errors,402);
     }
     else{
+        $cv_id = projects::where('e_id','=',$request->e_id)->first()->cv_id;
         $effected_rows=education::where('e_id','=',$request->e_id)->delete();
-        $educations = education::all();
+        $educations = education::where('cv_id',$cv_id)->get();
         if ($effected_rows!=0){
         return response([
             'message'=> 'deleted successfully',
