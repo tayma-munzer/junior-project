@@ -58,7 +58,6 @@ class _AddjobPageState extends State<AddjobPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetch();
   }

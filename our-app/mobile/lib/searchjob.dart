@@ -65,7 +65,6 @@ class _SearchJobState extends State<SearchJob> {
     super.initState();
     fetchJobs();
     fetchRoles();
-    //connect("ws://10.0.2.2:8770"); // هاد استدعي جوا زر البحث و بس
   }
 
   Future<void> connect(url) async {
