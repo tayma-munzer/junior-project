@@ -60,24 +60,9 @@ class _editskillState extends State<editskill> {
                 ),
               ),
               SizedBox(height: 10),
-              buildTextField('اسم المهارة', nameController, (value) {
-                if (value.isEmpty) {
-                  return 'اسم المهارة يجب ان لا يكون فارغا';
-                }
-                return null;
-              }),
-              buildTextField('مستوى المهارة', levelController, (value) {
-                if (value.isEmpty) {
-                  return 'مستوى المهارة يجب ان لا يكون فارغا';
-                }
-                return null;
-              }),
-              buildTextField('عدد سنين الخبرة', yearsController, (value) {
-                if (value.isEmpty) {
-                  return 'عدد سنين الخبرة يجب ان لا يكون فارغا';
-                }
-                return null;
-              }),
+              buildTextField('اسم المهارة', nameController, (value) {}),
+              buildTextField('مستوى المهارة', levelController, (value) {}),
+              buildTextField('عدد سنين الخبرة', yearsController, (value) {}),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -85,7 +70,17 @@ class _editskillState extends State<editskill> {
                       levelController.text.isNotEmpty &&
                       yearsController.text.isNotEmpty) {
                     saveValues();
-                  } else {}
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'يرجى ملء جميع الحقول',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  }
                 },
                 child: Text('حفظ'),
               ),
@@ -103,6 +98,7 @@ class _editskillState extends State<editskill> {
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextFormField(
         controller: controller,
+        textAlign: TextAlign.right,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),

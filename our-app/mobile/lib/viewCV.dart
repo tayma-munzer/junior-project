@@ -22,6 +22,8 @@ import 'package:mobile/editskill.dart';
 import 'package:mobile/edittrainingcourse.dart';
 import 'package:mobile/addskill.dart';
 import 'package:mobile/firstpage.dart';
+import 'package:mobile/listCourses.dart';
+import 'package:mobile/main.dart';
 
 class viewcv extends StatefulWidget {
   const viewcv({Key? key}) : super(key: key);
@@ -301,6 +303,7 @@ class _viewcvState extends State {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
+                                  //padding: EdgeInsets.only(left: 19.0),
                                   icon: Icon(Icons.delete),
                                   onPressed: () async {
                                     var url = delete_training_courses;
@@ -313,7 +316,8 @@ class _viewcvState extends State {
                                       print('deleted seccessfully');
                                       Map data = json.decode(res.body);
                                       setState(() {
-                                        training_courses = data['courses'];
+                                        training_courses =
+                                            data['training_courses'];
                                       });
                                     } else {
                                       print('something went wrong');
@@ -321,7 +325,6 @@ class _viewcvState extends State {
                                   },
                                 ),
                                 IconButton(
-                                  padding: EdgeInsets.only(right: 100.0),
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
                                     Navigator.push(
@@ -339,7 +342,7 @@ class _viewcvState extends State {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  ' اسم الدورة : ${training_courses[i]['course_name']} \n اسم مركز التدريب: ${training_courses[i]['training_center']} \n  تاريخ انهاء الدورة :${training_courses[i]['completion_date']}',
+                                  ' اسم الدورة التدريبية : ${training_courses[i]['course_name']} \n   مكان التدريب : ${training_courses[i]['training_center']} \n تاريخ الانتهاء :${training_courses[i]['completion_date']}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -365,7 +368,7 @@ class _viewcvState extends State {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                AddExperience(mainInfo['cv_id']),
+                                AddTrainingCourse(mainInfo['cv_id']),
                           ));
                     },
                   ),
@@ -668,7 +671,7 @@ class _viewcvState extends State {
                       print('deleted seccessfully');
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FirstPage()),
+                        MaterialPageRoute(builder: (context) => HomePage()),
                       );
                     } else {
                       print('something went wrong');
@@ -679,7 +682,7 @@ class _viewcvState extends State {
                         MaterialStateProperty.all<Color>(Colors.blue),
                   ),
                   child: Text(
-                    'Delete',
+                    'حذف',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

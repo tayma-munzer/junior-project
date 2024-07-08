@@ -839,7 +839,6 @@ class authenticationController extends Controller
             's_price'=> 'required|integer',
             's_duration'=> 'required|string',
             's_img'=> 'required|string',
-            's_video'=> 'required|string',
             's_img_data'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -870,7 +869,6 @@ class authenticationController extends Controller
             's_price'=>$request->s_price,
             's_duration'=>$request->s_duration,
             's_img'=>$request->s_img,
-            's_video'=>$request->s_video,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -957,7 +955,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $service= services::where('s_id','=',$request->s_id);
+            $service= services::where('s_id','=',$request->s_id)->first();
             $service_img= $service->s_img;
             $path = storage_path('images\\');
             $fullpath = $path.''.$service_img;
@@ -1944,7 +1942,7 @@ public function  test_add_media(add_media_request $request){
 public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
+            'user_id' => ['required'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
             'course_id' => ['required', 'exists:courses,c_id'],
@@ -1953,8 +1951,10 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $errors = $validator->errors();
             return response($errors, 402);
         } else {
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             rates_reviews::create([
-                'user_id' => $request->user_id,
+                'user_id' => $user_id,
                 'rate' => $request->rate,
                 'review' => $request->review,
                 'ratable_id' => $request->service_id,
@@ -1969,7 +1969,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     public function add_service_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
+            'token' => ['required'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
             'service_id' => ['required', 'exists:services,s_id'],
@@ -1978,8 +1978,10 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $errors = $validator->errors();
             return response($errors, 402);
         } else {
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             rates_reviews::create([
-                'user_id' => $request->user_id,
+                'user_id' => $user_id,
                 'rate' => $request->rate,
                 'review' => $request->review,
                 'ratable_id' => $request->service_id,
@@ -1994,7 +1996,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
     public function add_job_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:user,u_id'],
+            'token' => ['required'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
             'job_id' => ['required', 'exists:jobs,j_id'],
@@ -2003,8 +2005,10 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             $errors = $validator->errors();
             return response($errors, 402);
         } else {
+            $token = PersonalAccessToken::findToken($request->token);
+            $user_id = $token->tokenable_id;
             rates_reviews::create([
-                'user_id' => $request->user_id,
+                'user_id' => $user_id,
                 'rate' => $request->rate,
                 'review' => $request->review,
                 'ratable_id' => $request->job_id,

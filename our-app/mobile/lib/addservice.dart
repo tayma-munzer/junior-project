@@ -440,6 +440,7 @@ class _AddServiceState extends State<AddService> {
                             print(duration);
                             print(base64Image);
                             print(image_name);
+                            print(couponValue);
                             AuthCont.addService(
                                     service_name,
                                     service_price,
@@ -447,7 +448,8 @@ class _AddServiceState extends State<AddService> {
                                     service_desc,
                                     duration,
                                     base64Image!,
-                                    image_name!)
+                                    image_name!,
+                                    couponValue!)
                                 .then((value) {
                               if (value.statusCode == 200) {
                                 print('Service added successfully');

@@ -35,18 +35,19 @@ class AuthCont {
       String description,
       String duration,
       String img_data,
-      String img_name) async {
+      String img_name,
+      String couponValue) async {
     var url = add_service;
     final token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {
       'service_name': name,
       'service_price': price,
-      //'mainCategory': mainCategory,
       'service_sec_type': subCategory,
       'service_desc': description,
       'service_duration': duration,
       'service_img_data': img_data,
       'img_name': img_name,
+      'couponValue': couponValue,
       'token': token,
     });
     return res;
@@ -203,6 +204,22 @@ class AuthCont {
       'j_max_age': j_max_age,
       'education': education,
       'num_of_exp_years': num_of_exp_years
+    });
+    return res;
+  }
+
+  static Future<http.Response> editaltservice(
+    String a_id,
+    String a_price,
+    String a_name,
+    String added_duration,
+  ) async {
+    var url = edit_job;
+    var res = await http.post(Uri.parse(url), body: {
+      'a_id': a_id,
+      'a_price': a_price,
+      'a_name': a_name,
+      'added_duration': added_duration,
     });
     return res;
   }
