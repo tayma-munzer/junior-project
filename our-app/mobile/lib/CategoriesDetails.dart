@@ -13,7 +13,10 @@ import 'package:mobile/rating.dart';
 import 'package:mobile/serviceComplaint.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/services_types.dart';
+import 'package:mobile/viewallaltservices.dart';
+import 'package:mobile/viewworkgallery.dart';
 import 'controller/authManager.dart';
+import 'editService.dart';
 
 class CategoriesDetails extends StatefulWidget {
   final int s_id;
@@ -26,17 +29,17 @@ class CategoriesDetails extends StatefulWidget {
 
 class _CategoriesDetailsState extends State<CategoriesDetails> {
   List<Map<String, dynamic>> data = [];
-String? token;
+  String? token;
   Future<void> fetchData() async {
     token = await AuthManager.getToken();
     var url = get_service;
     var response = await http.post(Uri.parse(url), body: {
       "s_id": widget.s_id.toString(),
     });
-
+    print("object");
+    print(response.body);
     if (response.statusCode == 200) {
       var decodedData = json.decode(response.body);
-
 
       if (decodedData is Map<String, dynamic>) {
         setState(() {
@@ -51,11 +54,10 @@ String? token;
               "discount": decodedData["discount"].toString(),
               "status": decodedData["status"],
               "image": decodedData["image"],
-              "rate":decodedData["rate"].toString(),
+              "rate": decodedData["rate"].toString(),
             }
           ];
         });
-
       } else {
         print("Invalid response format: $decodedData");
       }
@@ -63,6 +65,7 @@ String? token;
       print("Request failed with status: ${response.statusCode}");
     }
   }
+
   String? user;
   String? job;
   String? service;
@@ -81,7 +84,8 @@ String? token;
   bool isEnrolled = false;
 
   Future<void> fetchIsEnrolled() async {
-    var url = 'http://10.0.2.2:8000/api/is_user_service_enrolled'; // Replace with your API URL
+    var url =
+        'http://10.0.2.2:8000/api/is_user_service_enrolled'; // Replace with your API URL
     String? token = await AuthManager.getToken();
 
     var response = await http.post(
@@ -97,15 +101,14 @@ String? token;
     } else {
       print("Request failed with status: ${response.statusCode}");
     }
-
   }
+
   String isOwner = "";
 
   Future<void> fetchIsOwner() async {
     String? token = await AuthManager.getToken();
     var url = is_service_owner;
-    print("help me");
-    print(widget.s_id);
+
 
     var response = await http.post(Uri.parse(url), body: {
       's_id': widget.s_id.toString(), // Convert the integer to a string
@@ -119,8 +122,6 @@ String? token;
     print("object");
     print(isOwner);
   }
-
-
 
   Future<void> deleteService(dynamic service) async {
     var url = delete_service;
@@ -168,13 +169,13 @@ String? token;
       },
     );
   }
+
   @override
   void initState() {
     super.initState();
     fetchIsEnrolled();
     fetchIsOwner();
     fetchData();
-
   }
 
   @override
@@ -216,7 +217,6 @@ String? token;
       status: item["status"],
       discount: item["discount"],
       rate: item["rate"],
-
     );
   }
 
@@ -258,12 +258,95 @@ String? token;
             ],
           ),
           SizedBox(
+            height: 20,
+          ),
+          Text(
+            ' هل تريد رؤية اعمال تابعة لهذه الخدمة؟',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    print("work");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => viewworkgallery(widget.s_id),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    ' اعرض معرض الاعمال',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            '   هل تريد رؤية اعمال تابعة لهذه الخدمة؟',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    print("altservices");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => viewallaltservices(widget.s_id),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    ' الخدمات اللاحقة',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.blue),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
             height: 16,
           ),
           TextButton(
             onPressed: () {
-              AuthCont.service_enrollment(widget.s_id.toString())
-                  .then((value) {
+              AuthCont.service_enrollment(widget.s_id.toString()).then((value) {
                 if (value.statusCode == 200) {
                   showDialog(
                     context: context,
@@ -277,6 +360,10 @@ String? token;
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CategoriesDetails(widget.s_id)), // Replace `YourPage` with the actual page you want to reload
+                                );
                               },
                               child: Text('موافق'),
                             ),
@@ -305,149 +392,181 @@ String? token;
               ),
             ),
           ),
-SizedBox(height: 15,),
-              Visibility(
-              visible: isEnrolled, // Show the button only if isEnrolled is true
-              child: TextButton(
-              onPressed: () {
-              showDialog(
-              context: context,
-              builder: (BuildContext context) {
-              String review = ''; // Variable to store the review text
+          SizedBox(
+            height: 15,
+          ),
+          Visibility(
+            visible: isEnrolled, // Show the button only if isEnrolled is true
+            child: TextButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    String review = ''; // Variable to store the review text
 
-              return AlertDialog(
-              title: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Text('أضف'),
-              ),
-              content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              RatingWidget2(),
-              SizedBox(height: 16.0),
-              Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextField(
-              onChanged: (value) {
-              review = value; // Update the review text
-              },
-              decoration: InputDecoration(
-              labelText: 'شاركنا رأيك',
-              border: OutlineInputBorder(),
-              ),
-              textAlign: TextAlign.right, // Set the text alignment to right-to-left
-              ),
-              ),
-              ],
-              ),
-              actions: [
-              TextButton(
-              onPressed: () {
-              print('Rating: ${RatingWidget2.getRating()}');
-              print('Review: $review');
-              Navigator.of(context).pop();
-              },
-              child: Text('تم'),
-              ),
-              TextButton(
-              onPressed: () {
-              Navigator.of(context).pop();
-              },
-              child: Text('إلغاء'),
-              ),
-              ],
-              );
-              },
-              );
+                    return AlertDialog(
+                      title: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Text('أضف'),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          RatingWidget2(),
+                          SizedBox(height: 16.0),
+                          Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: TextField(
+                              onChanged: (value) {
+                                review = value; // Update the review text
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'شاركنا رأيك',
+                                border: OutlineInputBorder(),
+                              ),
+                              textAlign: TextAlign.right, // Set the text alignment to right-to-left
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+
+                            double rating = RatingWidget2.getRating();
+                            String ratingAsString = rating.toString();
+                            // Prepare the request body
+                            Map<String, dynamic> requestBody = {
+                              'token': token,
+                              'rate': ratingAsString,
+                              'review': review,
+                              'service_id': widget.s_id.toString(),
+                            };
+
+                            // Make the HTTP POST request
+                            var response = await http.post(
+                              Uri.parse('http://10.0.2.2:8000/api/add_service_rating'),
+                              body: requestBody,
+                            );
+
+                            if (response.statusCode == 200) {
+                              // Rating added successfully
+                              print('Rating added successfully');
+                            } else if (response.statusCode == 402) {
+                              // Validation failed, handle the errors
+                              var errors = response.body;
+                              print('Validation errors: $errors');
+                            } else {
+                              // Handle other error cases
+                              print('Error: ${response.statusCode}');
+                            }
+
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('تم'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('إلغاء'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               child: Text(
-              'أضف تقييمك',
-              style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              ),
+                'أضف تقييمك',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-              padding: MaterialStateProperty.all<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
+                ),
               ),
-              ),
-              ),
-              ),
+            ),
+          ),
+
           SizedBox(
             height: 16,
           ),
-             Visibility(
-               visible: isEnrolled,
-               child: TextButton(
-                onPressed: () {
-
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(
-                       builder: (context) => ComplaintPage(
-
-                         sId: widget.s_id.toString(),
-                       ),
-                     ),
-                  );
-                },
-                child: Text(
-                  'أضف شكوى',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ButtonStyle(
-                  backgroundColor:
-                  WidgetStateProperty.all<Color>(Colors.blue),
-                  padding: WidgetStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
-                  ),
-                ),
-                           ),
-             ),
-SizedBox(height: 10,),
-             // Updated condition
           Visibility(
-            visible: isOwner == 'true', // Assuming 'true' is the expected value for isOwner
+            visible: isEnrolled,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ComplaintPage(
+                      sId: widget.s_id.toString(),
+                    ),
+                  ),
+                );
+              },
+              child: Text(
+                'أضف شكوى',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                padding: WidgetStateProperty.all<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          // Updated condition
+          Visibility(
+            visible: isOwner ==
+                'true', // Assuming 'true' is the expected value for isOwner
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle button onPressed event
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditService(widget.s_id),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'تعديل الدورة',
+                    'تعديل ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle button onPressed event
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'حذف الدورة',
+                    'حذف ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
               ],
             ),
           )
-
         ],
       ),
     );

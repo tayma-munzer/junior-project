@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/services_types.dart';
 import 'dart:convert';
 
+import 'CategoriesDetails.dart';
 import 'appbar.dart';
 import 'bottombar.dart';
 import 'constant/links.dart';
@@ -96,46 +97,56 @@ print(response.body);
           itemCount: services.length,
           itemBuilder: (BuildContext context, int index) {
             var service = services[index];
-            return Card(
-              elevation: 2.0,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: ListTile(
-                title: Text(
-                  service['s_name'],
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoriesDetails(service['s_id']),
                   ),
-                ),
-                subtitle: Text(
-                  service['s_desc'],
-                  style: TextStyle(
-                    fontSize: 14.0,
+                );
+              },
+              child: Card(
+                elevation: 2.0,
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ListTile(
+                  title: Text(
+                    service['s_name'],
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditService(
-                              service['s_id'],
+                  subtitle: Text(
+                    service['s_desc'],
+                    style: TextStyle(
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditService(
+                                service['s_id'],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        confirmDeleteService(service);
-                      },
-                    ),
-                  ],
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          confirmDeleteService(service);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

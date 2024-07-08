@@ -4,13 +4,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/colors.dart';
+import 'package:mobile/constant/links.dart';
 import 'package:mobile/contactus.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/edit_profile.dart';
 import 'package:mobile/help.dart';
 import 'package:mobile/veiwProfile.dart';
 import 'package:mobile/wallet.dart';
-
+import 'package:http/http.dart' as http;
 enum PopupType {
   Message,
   TextField,
@@ -263,6 +264,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     PopupType.Message, "ٍيتم الذهاب ألى صفحة تسجيل الدخول"),
                 buildAccountOptionRow(context, "تسجيل الخروج",
                     PopupType.Message, "هل انت متأكد أنك تريد تسجيل الخروج"),
+
+                buildAccountOptionRow2(context, "حذف الحساب", () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WalletPage()),
+                  );
+                }),
                 SizedBox(height: 40,),
                 Divider(
                   height: 15,
@@ -365,8 +374,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget buildAccountOptionRow2(
-      BuildContext context, String title, VoidCallback onTap) {
+  Widget buildAccountOptionRow2(BuildContext context, String title, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -376,9 +384,106 @@ class _SettingsPageState extends State<SettingsPage> {
             title,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          GestureDetector(onTap: onTap, child: Icon(Icons.arrow_forward_ios)),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('تأكيد الحذف'),
+                    content: Text('هل أنت متأكد أنك تريد حذف الحساب؟'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        child: Text('إلغاء'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Call the delete account API
+                          deleteAccount();
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        child: Text('حذف'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Icon(Icons.arrow_forward_ios),
+          ),
         ],
       ),
     );
   }
-}
+
+// Function to delete the account
+  void deleteAccount() async {
+    try {
+      final uri = Uri.parse(delete_account); // Convert string to Uri
+
+      final response = await http.post(uri);
+print(response.body);
+      if (response.statusCode == 200) {
+        // Account deleted successfully
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('تم الحذف بنجاح'),
+              content: Text('تم حذف الحساب بنجاح.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text('حسنًا'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Failed to delete account
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('فشل في الحذف'),
+              content: Text(
+                  'حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text('حسنًا'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Error occurred during the API call
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('خطأ'),
+            content: Text('حدث خطأ أثناء إجراء الطلب. يرجى المحاولة مرة أخرى.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('حسنًا'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }}
