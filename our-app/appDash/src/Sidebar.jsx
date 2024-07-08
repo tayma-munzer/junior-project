@@ -33,11 +33,7 @@ function Sidebar({openSidebarToggle}) {
                 </Link>
             </li>
 
-            <li className='sidebar-list-item'>
-                <Link to="/Addcategory">
-                    <BsFillBellFill className='icon'/> أدارة الأقسام
-                </Link>
-            </li>
+           
             
            
         </ul>
