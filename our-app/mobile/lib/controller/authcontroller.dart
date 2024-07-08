@@ -339,8 +339,8 @@ class AuthCont {
     String s_name,
     String s_desc,
     String s_price,
-    String s_img,
     String s_duration,
+      String s_img,
     String s_img_data,
   ) async {
     var url = edit_service;

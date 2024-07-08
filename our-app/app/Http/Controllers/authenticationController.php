@@ -218,7 +218,7 @@ class authenticationController extends Controller
             'alt_service'=> 'required|array',
             'alt_service.*.a_name' => 'required|string',
             'alt_service.*.a_price' => 'required|gte:5000',
-            'alt_service.*.added_duration'=>'required' 
+            'alt_service.*.added_duration'=>'required'
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'gte:5000'=> 'the :attribute field should be minimum 5000',
@@ -831,55 +831,57 @@ class authenticationController extends Controller
     }
     }
     //done
-    public function edit_service(edit_service_request $request){
+    public function edit_service(edit_service_request $request)
+    {
         $validator = Validator::make($request->all(), [
             's_id' => 'required|exists:services,s_id',
             's_name' => 'required|string',
-            's_desc'=> 'required|string',
-            's_price'=> 'required|integer',
-            's_duration'=> 'required|string',
-            's_img'=> 'required|string',
-            's_img_data'=>'required',
+            's_desc' => 'required|string',
+            's_price' => 'required|integer',
+            's_duration' => 'required|string',
+            's_img' => 'required|string',
+            's_img_data' => 'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
-            'exists'=> 'the :attribute field should be exist',
-            'string' => 'The :attribute field must be string.',
-            'integer' => 'The :attribute field must be integer.',
+            'exists' => 'The :attribute field should exist',
+            'string' => 'The :attribute field must be a string.',
+            'integer' => 'The :attribute field must be an integer.',
         ]);
-        if ($validator->fails()){
+
+        if ($validator->fails()) {
             $errors = $validator->errors();
-            return response($errors,402);
-        }else{
-            $service = services::where('s_id','=',$request->s_id);
-            $service_img =$service ->s_img;
-            $path = storage_path('images\\');
-            $fullpath = $path.''.$service_img;
+            return response($errors, 402);
+        } else {
+            $service = services::where('s_id', '=', $request->s_id)->first();
+            $service_img = $service->s_img;
+            $path = storage_path('images/');
+            $fullpath = $path . $service_img;
             File::delete($fullpath);
-            $img_data = $request ->s_img_data;
+            $img_data = $request->s_img_data;
             $decoded_img = base64_decode($img_data);
             $path = storage_path('images/');
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
             }
-            $fullpath = $path.''.$request->s_img;
-            file_put_contents($fullpath,$decoded_img);
-        $effected_rows=services::where('s_id','=',$request->s_id)->update([
-            's_name'=>$request->s_name,
-            's_desc'=>$request->s_desc,
-            's_price'=>$request->s_price,
-            's_duration'=>$request->s_duration,
-            's_img'=>$request->s_img,
-        ]);
-        if ($effected_rows!=0){
-        return response([
-            'message'=> 'updated successfully'
-        ],200); }
-        else {
-            return response([
-                'message'=> 'nothing is updated something went wrong'
-            ],402);
+            $fullpath = $path . $request->s_img;
+            file_put_contents($fullpath, $decoded_img);
+            $effected_rows = services::where('s_id', '=', $request->s_id)->update([
+                's_name' => $request->s_name,
+                's_desc' => $request->s_desc,
+                's_price' => $request->s_price,
+                's_duration' => $request->s_duration,
+                's_img' => $request->s_img,
+            ]);
+            if ($effected_rows != 0) {
+                return response([
+                    'message' => 'Updated successfully'
+                ], 200);
+            } else {
+                return response([
+                    'message' => 'Nothing is updated, something went wrong'
+                ], 402);
+            }
         }
-    }
     }
     //done
     public function edit_cv(edit_cv_request $request){
@@ -2484,7 +2486,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             }
             $finalData[] = $data;
         }
-        return $finalData; 
+        return $finalData;
     }
 
     public function is_user_course_enrolled(is_user_course_enrolled $request){
@@ -2768,7 +2770,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
                 $query->where('num_of_exp_years','<=', $request->max_num_of_exp_years);
             }
             $results = $query->get();
-    
+
             return response()->json($results);
 
         }
@@ -2808,7 +2810,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             if( $rate->isEmpty() && $enrollmet->isNotEmpty()){
                 return "true" ;
             }
-            return "false" ; 
+            return "false" ;
         }
     }
 
@@ -2831,7 +2833,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             if( $rate->isEmpty() && $enrollmet->isNotEmpty()){
                 return "true" ;
             }
-            return "false" ; 
+            return "false" ;
         }
     }
 
@@ -2853,7 +2855,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             if($owner->isNotEmpty()){
                 return "true" ;
             }
-            return "false" ; 
+            return "false" ;
         }
     }
 
@@ -2875,7 +2877,7 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             if($owner->isNotEmpty()){
                 return "true" ;
             }
-            return "false" ; 
+            return "false" ;
         }
     }
 
@@ -2897,14 +2899,14 @@ public function add_course_rating(Request $request): \Illuminate\Foundation\Appl
             if($owner->isNotEmpty()){
                 return "true" ;
             }
-            return "false" ; 
+            return "false" ;
         }
     }
 
     public function num_of_pindings(){
         $pinding_services = services::where('status','pinding')->count();
-        $pinding_courses = course::where('is_accepted','0')->count();     
-        $pinding_jobs = job::where('is_accepted','0')->count();     
+        $pinding_courses = course::where('is_accepted','0')->count();
+        $pinding_jobs = job::where('is_accepted','0')->count();
         return ['services'=> $pinding_services, 'courses'=>$pinding_courses,'jobs'=>$pinding_jobs];
     }
 
@@ -2977,7 +2979,7 @@ public function get_aprovments_last_7_days()
             }
             $finalData[] = $data;
         }
-        return $finalData; 
+        return $finalData;
     }
 
     public function get_users_last_month()
@@ -3018,7 +3020,7 @@ public function get_aprovments_last_7_days()
         return $media->first(); }
     }
 
-    
+
 
 
 

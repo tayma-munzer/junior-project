@@ -104,11 +104,11 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       print("Request failed with status: ${response.statusCode}");
     }
   }
-
+  String? token;
   bool isEnrolled = false;
   Future<void> fetch_is_student() async {
     var url = is_user_course_enrolled;
-    String? token = await AuthManager.getToken();
+     token = await AuthManager.getToken();
     print('object');
     print(token);
     print(widget.c_id);
@@ -525,75 +525,80 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                 ),
                 user == 'true'
                     ? ElevatedButton(
-                        onPressed: () async {
-                          AuthCont.fatora().then((value) {
-                            print(value.body);
-                            final data = jsonDecode(value.body);
-                            print(data['Data']['url']);
-                            final url = data['Data']['url'];
-                            // final WebViewController controller =
-                            //     WebViewController()
-                            //       ..setJavaScriptMode(
-                            //           JavaScriptMode.unrestricted)
-                            //       ..loadRequest(Uri.parse(url));
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => fatora()),
-                            // );
-                          });
-                          AuthCont.course_enrollment(widget.c_id.toString())
-                              .then((value) {
-                            if (value.statusCode == 2000) {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Directionality(
-                                    textDirection: TextDirection.rtl,
-                                    child: AlertDialog(
-                                      title: Text('تم التسجيل بنجاح'),
-                                      content:
-                                          Text('أنت الآن مسجل في هذا الكورس'),
-                                      actions: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text('تم'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              print("error");
-                              print(value.body);
-                            }
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          minimumSize: Size(150, 40),
-                        ),
-                        child: Text(
-                          'اشتري',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      )
+                  onPressed: () async {
+                    AuthCont.fatora().then((value) {
+                      print(value.body);
+                      final data = jsonDecode(value.body);
+                      print(data['Data']['url']);
+                      final url = data['Data']['url'];
+                      // final WebViewController controller =
+                      //     WebViewController()
+                      //       ..setJavaScriptMode(
+                      //           JavaScriptMode.unrestricted)
+                      //       ..loadRequest(Uri.parse(url));
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => fatora()),
+                      // );
+                    });
+                    AuthCont.course_enrollment(widget.c_id.toString()).then((value) {
+                      final responseBody = jsonDecode(value.body);
+                      if (responseBody['message'] == 'added successfully') {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: AlertDialog(
+                                title: Text('تم التسجيل بنجاح'),
+                                content: Text('أنت الآن مسجل في هذا الكورس'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => CourseDetailsPage(widget.c_id)), // Replace `YourPage` with the actual page you want to reload
+                                      );
+                                    },
+                                    child: Text('تم'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        print("error");
+                        print(value.body);
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    minimumSize: Size(150, 40),
+                  ),
+                  child: Text(
+                    'اشتري',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                )
                     : Container(),
                 SizedBox(height: 10,),
                 Visibility(
-                  visible: isEnrolled,
+                  visible: isEnrolled, // Show the button only if isEnrolled is true
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           String review = ''; // Variable to store the review text
 
                           return AlertDialog(
-                            title: Directionality(textDirection: TextDirection.rtl,
-                                child: Text('أضف')),
+                            title: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text('أضف'),
+                            ),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -605,8 +610,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                     onChanged: (value) {
                                       review = value; // Update the review text
                                     },
-                                    decoration:
-                                    InputDecoration(
+                                    decoration: InputDecoration(
                                       labelText: 'شاركنا رأيك',
                                       border: OutlineInputBorder(),
                                     ),
@@ -617,9 +621,36 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () {
-                                  print('Rating: ${RatingWidget2.getRating()}');
-                                  print('Review: $review');
+                                onPressed: () async {
+
+                                  double rating = RatingWidget2.getRating();
+                                  String ratingAsString = rating.toString();
+                                  // Prepare the request body
+                                  Map<String, dynamic> requestBody = {
+                                    'token': token,
+                                    'rate': ratingAsString,
+                                    'review': review,
+                                    'service_id': widget.c_id.toString(),
+                                  };
+
+                                  // Make the HTTP POST request
+                                  var response = await http.post(
+                                    Uri.parse('http://10.0.2.2:8000/api/add_course_rating'),
+                                    body: requestBody,
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    // Rating added successfully
+                                    print('Rating added successfully');
+                                  } else if (response.statusCode == 402) {
+                                    // Validation failed, handle the errors
+                                    var errors = response.body;
+                                    print('Validation errors: $errors');
+                                  } else {
+                                    // Handle other error cases
+                                    print('Error: ${response.statusCode}');
+                                  }
+
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('تم'),
@@ -644,9 +675,9 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                       ),
                     ),
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                      padding: WidgetStateProperty.all<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
                       ),
                     ),
                   ),
