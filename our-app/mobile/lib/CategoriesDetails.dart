@@ -16,6 +16,7 @@ import 'package:mobile/services_types.dart';
 import 'package:mobile/viewallaltservices.dart';
 import 'package:mobile/viewworkgallery.dart';
 import 'controller/authManager.dart';
+import 'editService.dart';
 
 class CategoriesDetails extends StatefulWidget {
   final int s_id;
@@ -505,27 +506,30 @@ class _CategoriesDetailsState extends State<CategoriesDetails> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle button onPressed event
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditService(widget.s_id),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'تعديل الدورة',
+                    'تعديل ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle button onPressed event
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     minimumSize: Size(150, 40),
                   ),
                   child: Text(
-                    'حذف الدورة',
+                    'حذف ',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
