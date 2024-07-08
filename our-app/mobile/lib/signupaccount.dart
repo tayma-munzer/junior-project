@@ -38,8 +38,8 @@ class _SignUpAccountPageState extends State<SignUpAccountPage> {
     if (value.isEmpty) {
       showErrorMessage('$fieldName يجب ان لا يكون فارغ');
       return false;
-    } else if (value.length < 8) {
-      showErrorMessage('$fieldName يجب ان يحتوي على 8 أحرف على الأقل');
+    } else if (value.length < 6) {
+      showErrorMessage('$fieldName يجب ان يحتوي على 6 أحرف على الأقل');
       return false;
     } else {
       return true;
