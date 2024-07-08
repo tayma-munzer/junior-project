@@ -1942,7 +1942,7 @@ public function  test_add_media(add_media_request $request){
 public function add_course_rating(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
+            'token' => ['required'],
             'rate' => ['required', 'numeric'],
             'review' => ['required', 'string'],
             'course_id' => ['required', 'exists:courses,c_id'],
