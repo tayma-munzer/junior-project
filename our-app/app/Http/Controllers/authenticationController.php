@@ -839,7 +839,6 @@ class authenticationController extends Controller
             's_price'=> 'required|integer',
             's_duration'=> 'required|string',
             's_img'=> 'required|string',
-            's_video'=> 'required|string',
             's_img_data'=>'required',
         ], $messages = [
             'required' => 'The :attribute field is required.',
@@ -870,7 +869,6 @@ class authenticationController extends Controller
             's_price'=>$request->s_price,
             's_duration'=>$request->s_duration,
             's_img'=>$request->s_img,
-            's_video'=>$request->s_video,
         ]);
         if ($effected_rows!=0){
         return response([
@@ -957,7 +955,7 @@ class authenticationController extends Controller
             $errors = $validator->errors();
             return response($errors,402);
         }else{
-            $service= services::where('s_id','=',$request->s_id);
+            $service= services::where('s_id','=',$request->s_id)->first();
             $service_img= $service->s_img;
             $path = storage_path('images\\');
             $fullpath = $path.''.$service_img;
