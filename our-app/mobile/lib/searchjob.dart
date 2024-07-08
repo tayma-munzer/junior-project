@@ -81,13 +81,15 @@ class _SearchJobState extends State<SearchJob> {
       socket.listen(
         (message) {
           print("receive");
+          // ********************
           setState(() {
             results = jsonDecode(message);
             print(results);
             _searchResults = results!['jobs'];
             print(_searchResults);
-            // jobs = _searchResults;
+            jobs = _searchResults!;
           });
+          // ***********************
         },
         onError: (error) {
           print('WebSocket error: $error');
