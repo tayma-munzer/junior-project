@@ -299,6 +299,7 @@ class _AddCourseState extends State<AddCourse> {
                               if (value.statusCode == 200) {
                                 print('course added successfully');
                                 int c_id = json.decode(value.body)['course_id'];
+                                print(c_id);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

@@ -6,6 +6,7 @@ import 'package:mobile/bottombar.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
+import 'package:mobile/jobsCategories.dart';
 import 'package:mobile/viewjob.dart';
 import 'package:http/http.dart' as http;
 
@@ -287,7 +288,7 @@ class _AddjobPageState extends State<AddjobPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(' لا يوجد مهارات مطلوبة'),
+                    Text(' لا يوجد مهارات '),
                     Radio(
                       value: 'noSkills',
                       groupValue: selectedskilloption,
@@ -448,8 +449,7 @@ class _AddjobPageState extends State<AddjobPage> {
                         int j_id = json.decode(value.body)['j_id'];
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => viewjob(j_id)),
+                          MaterialPageRoute(builder: (context) => jobs_types()),
                         );
                       });
                     }

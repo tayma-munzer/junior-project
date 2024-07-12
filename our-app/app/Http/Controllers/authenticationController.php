@@ -105,7 +105,7 @@ class authenticationController extends Controller
     public function login(loginRequest $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required',//|email:rfc,dns
-            'password' => 'required|min:8',
+            'password' => 'required|min:6',
         ], $messages = [
             'required' => 'The :attribute field is required.',
             'min:8'=> 'the :attribute field should be minimum 8 chars'
@@ -470,7 +470,7 @@ class authenticationController extends Controller
         //event(new CourseCreated($course->c_name));
         return response([
             'message'=> 'added successfully',
-            'course_id'=>$course->id,
+            'course_id'=>$course->c_id,
         ],200);
     }
     }

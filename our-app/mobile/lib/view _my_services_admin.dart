@@ -26,7 +26,7 @@ class _ViewServicesState extends State<ViewServices> {
   }
 
   void fetchServices() async {
-    var url = 'http://10.0.2.2:8000/api/get_user_services'; // Replace with your API URL
+    var url = get_user_services; // Replace with your API URL
     String? token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {'token': token});
     List<dynamic> data = json.decode(res.body);
@@ -41,12 +41,12 @@ class _ViewServicesState extends State<ViewServices> {
     var response = await http.post(Uri.parse(url), body: {
       "s_id": service['s_id'].toString(), // Convert s_id to a string
     });
-print(response.body);
+    print(response.body);
     if (response.statusCode == 200) {
       // Service deleted successfully
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ViewServices ()),
+        MaterialPageRoute(builder: (context) => ViewServices()),
       );
     } else {
       print("Delete request failed with status: ${response.statusCode}");

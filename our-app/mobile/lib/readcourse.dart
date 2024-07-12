@@ -104,11 +104,12 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
       print("Request failed with status: ${response.statusCode}");
     }
   }
+
   String? token;
   bool isEnrolled = false;
   Future<void> fetch_is_student() async {
     var url = is_user_course_enrolled;
-     token = await AuthManager.getToken();
+    token = await AuthManager.getToken();
     print('object');
     print(token);
     print(widget.c_id);
@@ -285,8 +286,7 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text
-                                  (
+                                Text(
                                   courseData != null
                                       ? courseData["c_name"].toString()
                                       : "",
@@ -296,7 +296,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                   ),
                                 ),
                                 RatingStars(rate: courseData["rate"]),
-
                               ],
                             ),
                             SizedBox(
@@ -482,117 +481,126 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                   height: 20,
                 ),
                 Visibility(
-                  visible: isOwner=="true",
-
-                      child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditCourse(widget.c_id)),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                minimumSize: Size(150, 40),
-                              ),
-                              child: Text('تعديل الدورة',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18)),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                confirmDeleteCourse();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                minimumSize: Size(150, 40),
-                              ),
-                              child: Text('حذف الدورة',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18)),
-                            ),
-                          ],
-                        )
-
-                ),
+                    visible: isOwner == "true",
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditCourse(widget.c_id)),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            minimumSize: Size(150, 40),
+                          ),
+                          child: Text('تعديل الدورة',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            confirmDeleteCourse();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            minimumSize: Size(150, 40),
+                          ),
+                          child: Text('حذف الدورة',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18)),
+                        ),
+                      ],
+                    )),
                 SizedBox(
                   height: 20,
                 ),
                 user == 'true'
                     ? ElevatedButton(
-                  onPressed: () async {
-                    AuthCont.fatora().then((value) {
-                      print(value.body);
-                      final data = jsonDecode(value.body);
-                      print(data['Data']['url']);
-                      final url = data['Data']['url'];
-                      // final WebViewController controller =
-                      //     WebViewController()
-                      //       ..setJavaScriptMode(
-                      //           JavaScriptMode.unrestricted)
-                      //       ..loadRequest(Uri.parse(url));
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => fatora()),
-                      // );
-                    });
-                    AuthCont.course_enrollment(widget.c_id.toString()).then((value) {
-                      final responseBody = jsonDecode(value.body);
-                      if (responseBody['message'] == 'added successfully') {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: AlertDialog(
-                                title: Text('تم التسجيل بنجاح'),
-                                content: Text('أنت الآن مسجل في هذا الكورس'),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => CourseDetailsPage(widget.c_id)), // Replace `YourPage` with the actual page you want to reload
-                                      );
-                                    },
-                                    child: Text('تم'),
-                                  ),
-                                ],
-                              ),
+                        onPressed: () async {
+                          AuthCont.fatora().then((value) {
+                            print(value.body);
+                            final data = jsonDecode(value.body);
+                            print(data['Data']['url']);
+                            final url = data['Data']['url'];
+                            final WebViewController controller =
+                                WebViewController()
+                                  ..setJavaScriptMode(
+                                      JavaScriptMode.unrestricted)
+                                  ..loadRequest(Uri.parse(url));
+                            print("kokoko");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => fatora()),
                             );
-                          },
-                        );
-                      } else {
-                        print("error");
-                        print(value.body);
-                      }
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    minimumSize: Size(150, 40),
-                  ),
-                  child: Text(
-                    'اشتري',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                )
+                          });
+
+                          AuthCont.course_enrollment(widget.c_id.toString())
+                              .then((value) {
+                            final responseBody = jsonDecode(value.body);
+                            if (responseBody['message'] ==
+                                'added successfully') {
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return Directionality(
+                              //       textDirection: TextDirection.rtl,
+                              //       child: AlertDialog(
+                              //         title: Text('تم التسجيل بنجاح'),
+                              //         content:
+                              //             Text('أنت الآن مسجل في هذا الكورس'),
+                              //         actions: [
+                              //           ElevatedButton(
+                              //             onPressed: () {
+                              //               Navigator.of(context).pop();
+                              //               Navigator.pushReplacement(
+                              //                 context,
+                              //                 MaterialPageRoute(
+                              //                     builder: (context) =>
+                              //                         CourseDetailsPage(widget
+                              //                             .c_id)), // Replace `YourPage` with the actual page you want to reload
+                              //               );
+                              //             },
+                              //             child: Text('تم'),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     );
+                              //   },
+                              // );
+                            } else {
+                              print("error");
+                              print(value.body);
+                            }
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          minimumSize: Size(150, 40),
+                        ),
+                        child: Text(
+                          'اشتري',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      )
                     : Container(),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Visibility(
-                  visible: isEnrolled, // Show the button only if isEnrolled is true
+                  visible:
+                      isEnrolled, // Show the button only if isEnrolled is true
                   child: TextButton(
                     onPressed: () async {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          String review = ''; // Variable to store the review text
+                          String review =
+                              ''; // Variable to store the review text
 
                           return AlertDialog(
                             title: Directionality(
@@ -614,7 +622,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                                       labelText: 'شاركنا رأيك',
                                       border: OutlineInputBorder(),
                                     ),
-                                    textAlign: TextAlign.right, // Set the text alignment to right-to-left
+                                    textAlign: TextAlign
+                                        .right, // Set the text alignment to right-to-left
                                   ),
                                 ),
                               ],
@@ -622,7 +631,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                             actions: [
                               TextButton(
                                 onPressed: () async {
-
                                   double rating = RatingWidget2.getRating();
                                   String ratingAsString = rating.toString();
                                   // Prepare the request body
@@ -635,7 +643,8 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
 
                                   // Make the HTTP POST request
                                   var response = await http.post(
-                                    Uri.parse('http://10.0.2.2:8000/api/add_course_rating'),
+                                    Uri.parse(
+                                        'http://10.0.2.2:8000/api/add_course_rating'),
                                     body: requestBody,
                                   );
 
@@ -669,20 +678,20 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                     child: Text(
                       'أضف تقييمك',
                       style: TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                         EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
                       ),
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 10,
                 ),
@@ -694,7 +703,6 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ComplaintCoursePage(
-
                             cId: widget.c_id.toString(),
                           ),
                         ),
@@ -710,11 +718,12 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
                     ),
                     style: ButtonStyle(
                       backgroundColor:
-                      WidgetStateProperty.all<Color>(Colors.blue),
+                          WidgetStateProperty.all<Color>(Colors.blue),
                       padding: WidgetStateProperty.all<EdgeInsets>(
-                          EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 7.0),
+                      ),
                     ),
-                  ),),
+                  ),
                 ),
               ],
             ),

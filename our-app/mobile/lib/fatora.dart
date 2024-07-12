@@ -16,12 +16,13 @@ class _fatoraState extends State<fatora> {
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..loadRequest(Uri.parse(
-        "https://egate-t.fatora.me/start/a8317857-e290-4b6a-a7e0-6302560d58d1/ar/1"));
+        "https://egate-t.fatora.me/start/c699aae9-4db5-4ea8-8bcb-ecbf78b047bb/ar/1"));
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("ji");
   }
 
   @override

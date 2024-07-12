@@ -221,7 +221,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('تقديم اقتراح لخدمة غير موجودة'),
+                      Text(' اقتراح لخدمة غير موجودة'),
                       SizedBox(width: 10),
                       Icon(Icons.new_label),
                     ],

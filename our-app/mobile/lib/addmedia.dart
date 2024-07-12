@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:mobile/appbar.dart';
 import 'package:mobile/bottombar.dart';
 import 'package:mobile/controller/authcontroller.dart';
+import 'package:mobile/courses_types.dart';
 import 'package:mobile/drawer.dart';
 import 'package:mobile/constant/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile/jobsCategories.dart';
+import 'package:mobile/listCourses.dart';
 
 class addmedia extends StatefulWidget {
   final int c_id;
@@ -247,12 +250,12 @@ class _addmediaState extends State<addmedia> {
                           //     .then((value) {
                           //   if (value.statusCode == 200) {
                           //     print('skill added to the CV successfully');
-                          //     // Navigator.push(
-                          //     //   context,
-                          //     //   MaterialPageRoute(
-                          //     //     builder: (context) => viewcv(),
-                          //     //   ),
-                          //     // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Course_types(),
+                            ),
+                          );
                           //   } else {
                           //     // Error response
                           //     print(

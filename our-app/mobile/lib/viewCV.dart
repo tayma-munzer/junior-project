@@ -495,7 +495,7 @@ class _viewcvState extends State {
                     height: 10,
                   ),
                   if (languages.isEmpty)
-                    Text('No languages to be displayed')
+                    Text('لا يوجد لغات لعرضها')
                   else
                     for (int i = 0; i < languages.length; i++)
                       Container(
@@ -589,7 +589,7 @@ class _viewcvState extends State {
                     height: 10,
                   ),
                   if (education.isEmpty)
-                    Text('No education to be displayed')
+                    Text('لا يوجد تعليم لعرضه')
                   else
                     for (int i = 0; i < education.length; i++)
                       Container(

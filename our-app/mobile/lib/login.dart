@@ -115,6 +115,7 @@ class _LoginState extends State<Login> {
                           } else if (value.statusCode == 402) {
                             setState(() {
                               emailError = 'هذا ليس البريد الالكتروني الصحيح';
+                              print(value.body);
                             });
                           } else if (value.statusCode == 422) {
                             setState(() {

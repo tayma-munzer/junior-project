@@ -9,6 +9,7 @@ import 'package:mobile/controller/authManager.dart';
 import 'package:mobile/controller/authcontroller.dart';
 import 'package:mobile/drawer.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/veiwProfile.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -274,7 +275,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   bool _validateEmail(String email) {
-    if (email.isEmpty || email.length > 35 || !email.contains('@') || !email.contains('.')) {
+    if (email.isEmpty ||
+        email.length > 35 ||
+        !email.contains('@') ||
+        !email.contains('.')) {
       return false;
     }
     return true;
@@ -331,7 +335,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
       return;
     }
-    if (_passwordController.text.length < 4 || _passwordController.text.length > 20) {
+    if (_passwordController.text.length < 4 ||
+        _passwordController.text.length > 20) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -377,6 +382,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (value.statusCode == 200) {
           print('edited successfully');
           print(userDetails);
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ViewProfile()));
         } else {
           print(value.statusCode);
           print(value.body);
@@ -397,6 +405,4 @@ class _EditProfilePageState extends State<EditProfilePage> {
       print(userDetails![key]);
     }
   }
-
-
 }

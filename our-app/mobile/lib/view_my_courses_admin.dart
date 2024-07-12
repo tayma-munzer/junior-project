@@ -26,7 +26,7 @@ class _ViewCoursesState extends State<ViewCourses> {
   }
 
   void fetchCourses() async {
-    var url = 'http://10.0.2.2:8000/api/get_my_courses';
+    var url = get_my_courses;
     String? token = await AuthManager.getToken();
     var res = await http.post(Uri.parse(url), body: {'token': token});
     dynamic data = json.decode(res.body);
@@ -40,6 +40,7 @@ class _ViewCoursesState extends State<ViewCourses> {
     }
     print(courses);
   }
+
   Future<void> deleteCourse(int courseId) async {
     var url = delete_course;
     var response = await http.post(Uri.parse(url), body: {
@@ -106,7 +107,7 @@ class _ViewCoursesState extends State<ViewCourses> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CourseDetailsPage( course['c_id']),
+                    builder: (context) => CourseDetailsPage(course['c_id']),
                   ),
                 );
               },
@@ -144,7 +145,8 @@ class _ViewCoursesState extends State<ViewCourses> {
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          confirmDeleteCourse(course['c_id']); // Pass the courseId to confirmDeleteCourse
+                          confirmDeleteCourse(course[
+                              'c_id']); // Pass the courseId to confirmDeleteCourse
                         },
                       ),
                     ],
